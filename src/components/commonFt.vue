@@ -1,5 +1,6 @@
 <template>
   <div class="footer">
+    <div class="block"></div>
     <van-tabbar v-model="activeIndex" active-color="#a0191f" inactive-color="#000" @change="onChange">
       <van-tabbar-item replace v-for="(item, index) in tabbars" :key="index">
         <span>{{ item.name }}</span>
@@ -65,6 +66,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .block {
+    width: 100%;
+    height: 50px;
+  }
   .icons {
     width: 25px;
     height: 21px;

@@ -78,6 +78,21 @@ export default {
   #swiper .van-swipe__indicators {
     left: auto;
     right: 0;
+    .banner-item {
+    position: relative;
+
+    .title {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      padding-left: 9px;
+      padding-right: 145px;
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      background: rgba(34, 32, 35, 0.3)
+    }
+  }
 
     .van-swipe__indicator {
       background: #fff;

@@ -1,8 +1,10 @@
 <template>
-  <div class="cover-block">
+  <div class="cover-block" @click="handleClick">
     <div class="pic-box">
       <van-image
-        fit="contain"
+        :width="width"
+        :height="height"
+        fit="cover"
         :src="info.path"
       />
     </div>
@@ -17,17 +19,35 @@
 export default {
   name: "commonCover",
   props: {
+    width: {
+      type: Number,
+      default: 343
+    },
+    height: {
+      type: Number,
+      default: 130
+    },
     info: {
       type: Object,
       default: () => {
         return {};
-      }
+      },
+      required: true
     }
   },
   data() {
     return {};
   },
-  methods: {}
+  methods: {
+    handleClick() {
+      this.$router.push({
+        path: '/',
+        query: {
+          id: this.info.id
+        }
+      })
+    }
+  }
 };
 </script>
 
@@ -57,4 +77,11 @@ export default {
     }
   }
 }
+</style>
+<style lang="less">
+  .cover-block {
+    .van-image {
+      display: block
+    }
+  }
 </style>
