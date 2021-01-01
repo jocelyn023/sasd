@@ -4,10 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 const routes = [
-  // {
-  //   path: '*',
-  //   redirect: '/goods'
-  // },
+  
   {
     name: 'demo',
     component: () => import('./view/demo'),
@@ -23,25 +20,22 @@ const routes = [
     }
   },
   {
-    name: 'user',
-    component: () => import('./view/user'),
+    name: 'studyCenter',
+    component: () => import('./view/study/studyCenter'),
     meta: {
-      title: '会员中心'
+      title: '学习中心'
     }
   },
   {
-    name: 'cart',
-    component: () => import('./view/cart'),
+    name: 'studyList',
+    component: () => import('./view/study/studyList'),
     meta: {
-      title: '购物车'
+      title: '学习列表'
     }
   },
   {
-    name: 'goods',
-    component: () => import('./view/goods'),
-    meta: {
-      title: '商品详情'
-    }
+    path: '*',
+    redirect: '/404'
   }
 ];
 
