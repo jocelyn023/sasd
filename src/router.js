@@ -4,9 +4,16 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 const routes = [
+  // {
+  //   path: '*',
+  //   redirect: '/goods'
+  // },
   {
-    path: '*',
-    redirect: '/goods'
+    name: '/',
+    component: () => import('./view/index'),
+    meta: {
+      title: '首页'
+    }
   },
   {
     name: 'user',
