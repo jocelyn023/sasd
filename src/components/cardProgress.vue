@@ -24,6 +24,7 @@ export default {
     },
   },
   data() {
+    return {};
   },
   methods: {
   }
@@ -32,13 +33,15 @@ export default {
 
 <style lang="less" scoped>
   .card-progress {
-    margin: 0 auto;
+    margin: 0 auto 16px;
     padding: 20px 10px;
     width: 343px;
-    min-height: 200px;
     background: #fff;
     border-radius: 2px;
     box-sizing: border-box;
     box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
+  }
+  .card-progress:last-child{
+    margin-bottom: 0
   }
 </style>
