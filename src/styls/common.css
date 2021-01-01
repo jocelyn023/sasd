@@ -1,3 +1,7 @@
+body {
+  font-family: MicrosoftYaHei;
+  color: #333;
+}
 .col-theme {
   color: #a0191f
 }
@@ -74,6 +78,9 @@
 }
 .m-r-10 {
   margin-right: 10px;
+}
+.m-r-15 {
+  margin-right: 15px;
 }
 .m-r-20 {
   margin-right: 20px;

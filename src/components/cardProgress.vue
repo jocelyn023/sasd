@@ -1,74 +1,44 @@
 <template>
-  <div class="card-progress">
-    <van-tabbar v-model="activeIndex" active-color="#a0191f" inactive-color="#000" @change="onChange">
-      <van-tabbar-item replace v-for="(item, index) in tabbars" :key="index">
-        <span>{{ item.name }}</span>
-        <template #icon="props">
-          <img class="icons" :src="props.active ? item.icon.active : item.icon.normal" />
-        </template>
-      </van-tabbar-item>
-    </van-tabbar>
+  <div class="card-progress flex">
+    <van-image
+      class="m-r-15"
+      width="90"
+      height="64"
+      fit="contain"
+      :src="item.img"
+    />
+    <div class="flex-auto">
+      <p class="van-ellipsis">{{ item.title }}</p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "cardProgress",
-  watch: {
-    active(val){
-      this.activeIndex = val
-    }
-  },
   props: {
-    active: {
-      type: Number,
-      default: 0
+    item: {
+      type: Object,
+      default: () => ({}),
+      required: true
     },
   },
   data() {
-    return {
-      activeIndex: 0,
-      tabbars: [
-        {
-          name: '首页',
-          linkPath: '/',
-          icon: {
-            normal: require('@/assets/tabbar/icon_index.png'),
-            active: require('@/assets/tabbar/icon_index_active.png')
-          }
-        },
-        {
-          name: '学习中心',
-          linkPath: '/',
-          icon: {
-            normal: require('@/assets/tabbar/icon_study.png'),
-            active: require('@/assets/tabbar/icon_study_active.png')
-          }
-        },
-        {
-          name: '我的',
-          linkPath: '/',
-          icon: {
-            normal: require('@/assets/tabbar/icon_me.png'),
-            active: require('@/assets/tabbar/icon_me_active.png')
-          }
-        }
-      ]
-    };
   },
   methods: {
-    onChange(val) {
-      console.log(val)
-    }
   }
 };
 </script>
 
 <style lang="less" scoped>
   .card-progress {
+    margin: 0 auto;
+    padding: 20px 10px;
     width: 343px;
+    min-height: 200px;
     background: #fff;
     border-radius: 2px;
-    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
   }
 </style>
