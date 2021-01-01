@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <van-tabbar v-model="active" active-color="#a0191f" inactive-color="#000" @change="onChange">
+    <van-tabbar v-model="activeIndex" active-color="#a0191f" inactive-color="#000" @change="onChange">
       <van-tabbar-item replace v-for="(item, index) in tabbars" :key="index">
         <span>{{ item.name }}</span>
         <template #icon="props">
@@ -14,6 +14,11 @@
 <script>
 export default {
   name: "commonFt",
+  watch: {
+    active(val){
+      this.activeIndex = val
+    }
+  },
   props: {
     active: {
       type: Number,
@@ -22,6 +27,7 @@ export default {
   },
   data() {
     return {
+      activeIndex: 0,
       tabbars: [
         {
           name: '首页',
