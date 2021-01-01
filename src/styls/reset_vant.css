@@ -1,0 +1,6 @@
+/* 全局reset vant ui */
+.van-button--theme {
+  color: #fff;
+  background-color: #a0191f;
+  border: 1px solid #a0191f;
+}
