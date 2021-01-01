@@ -1,17 +1,18 @@
 <template>
   <div class="index">
-    <CommonFt :active="0"></CommonFt>
+    <cardProgress></cardProgress>
   </div>
 </template>
 
 <script>
-import CommonFt from '@/components/commonFt'
+import cardProgress from '@/components/cardProgress'
 export default {
-  components: { CommonFt },
-
+  components: { cardProgress },
   data() {
     return {
-      goods: {}
+      list: [{
+        id: 1,
+      }]
     };
   },
 
