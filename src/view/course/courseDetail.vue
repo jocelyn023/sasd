@@ -1,45 +1,34 @@
 <template>
-  <div class="course-list-page">
-    <div class="search-block">
-      <van-search v-model="value" show-action shape="round" placeholder="请输入搜索关键词" @search="onSearch"
-        @cancel="onCancel" />
-    </div>
-    <div class="course-main">
-      <div class="course-sidebar">
-        <van-sidebar v-model="activeKey">
-          <van-sidebar-item title="popping" />
-          <van-sidebar-item title="jazz" />
-          <van-sidebar-item title="breaking" />
-          <van-sidebar-item title="hip-hop" />
-          <van-sidebar-item title="locking" />
-        </van-sidebar>
-      </div>
+  <div class="course-detail-page">
+    <div class="course-video-block">
+      <video
+        src="https://vd2.bdstatic.com/mda-kk4vqsmdxiiw40bz/sc/cae_h264_clips/1604584081/mda-kk4vqsmdxiiw40bz.mp4?auth_key=1609512380-0-0-27f2f7ebc3c767201fbcf07a45e80dab&bcevod_channel=searchbox_feed&pd=1&pt=3&abtest="
+        poster="https://tukuimg.bdstatic.com/processed/5c40d2171b9dec12be32c3f13b9dac31.jpg@s_2,w_681,h_381,q_100,f_webp">
+      </video>
+      <i class="icon_play"></i>
 
-      <div class="course-main-right">
-        <div v-for="n in 3" :key="n">
-          <commonCover :info="info"></commonCover>
-        </div>
-      </div>
+    </div>
+    <div class="course-main-con">
+      <p class="course-title">popping精品学习</p>
+      <p class="course-num">共50课时</p>
+      <p class="course-price">￥300</p>
+    </div>
+    <div class="line5"></div>
+    <div class="course-tab-block">
+      <van-tabs v-model="active">
+        <van-tab title="课程详情">课程详情</van-tab>
+        <van-tab title="课程目录">课程目录</van-tab>
+      </van-tabs>
     </div>
 
   </div>
 </template>
 
 <script>
-  import commonCover from "@/components/commonCover";
   export default {
-    components: {
-      commonCover
-    },
     data() {
       return {
-        value: "",
-        activeKey: 0,
-        info: {
-          path: "https://img.yzcdn.cn/vant/cat.jpeg",
-          desc: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-          price: "132"
-        }
+        active: 0,
       };
     },
 
@@ -55,61 +44,73 @@
 </script>
 
 <style lang="less" scoped>
-  .course-list-page {
-    /deep/.search-block {
-      .van-search--show-action {
-        padding: 15px 29px;
+  .course-detail-page {
+    .course-video-block {
+      position: relative;
+      height: 178px;
+      overflow: hidden;
+
+      video {
+        width: 100%;
       }
 
-      .van-search__content {
-        border: 1px solid rgba(149, 149, 149, 0.5);
-        background: #fff;
-      }
-
-      .van-search__action,.van-cell {
-        color: #999;
-      }
-
-    }
-    /deep/.cover-block .pic-box{
-      height: 88px;
-    }
-
-    .course-main {
-      display: flex;
-      padding-top: 5px;
-
-      .course-sidebar {
-        flex-basis: 114px;
-        flex: 1;
-        min-width: 114px;
-      }
-
-      .course-main-right {
-        width: calc(100% - 114px);
-        padding: 20px 18px 20px 10px;
+      .icon_play {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 56px;
+        height: 56px;
+        background: url("../../assets/icon_play.png") no-repeat;
+        background-size: 100% 100%;
       }
     }
 
-    /deep/.van-sidebar {
-      width: 100%;
+    .course-main-con {
+      padding: 0 16px;
+
+      p {
+        margin: 0;
+        padding: 0;
+      }
+
+      .course-title {
+        padding-top: 15px;
+        padding-bottom: 8px;
+        line-height: 16px;
+        font-size: 15px;
+        font-weight: 400;
+        text-align: left;
+      }
+
+      .course-num {
+        font-size: 11px;
+        color: #999999;
+        line-height: 24px;
+      }
+
+      .course-price {
+        margin-top: 16px;
+        font-size: 21px;
+        color: #a0191f;
+        line-height: 24px;
+        padding-bottom: 12px;
+      }
+
     }
 
-    /deep/.van-sidebar-item {
-      background: #f5f5f5;
-      color: #999999;
-      padding: 20px 18px;
-      font-size: 15px;
+    .line5 {
+      height: 5px;
+      background: #f0f0f0;
     }
 
-    /deep/.van-sidebar-item--select {
-      color: #333333;
-    }
-
-    /deep/.van-sidebar-item--select::before {
-      width: 4px;
-      height: 12px;
-      background: #a0191f;
+    /deep/.course-tab-block {
+      .van-tabs__line {
+        border-radius: 0;
+        width: 30px;
+        height: 6px;
+        background: #a0191f;
+      }
     }
   }
 </style>

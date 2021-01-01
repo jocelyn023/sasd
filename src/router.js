@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 const routes = [
-  
+
   {
     name: 'demo',
     component: () => import('./view/demo'),
@@ -41,6 +41,13 @@ const routes = [
     }
   },
   {
+    name: 'courseDetail',
+    component: () => import('./view/course/courseDetail'),
+    meta: {
+      title: '课程详情'
+    }
+  },
+  {
     path: '*',
     redirect: '/404'
   }
@@ -51,7 +58,10 @@ routes.forEach(route => {
   route.path = route.path || '/' + (route.name || '');
 });
 
-const router = new Router({ mode: 'history', routes });
+const router = new Router({
+  mode: 'history',
+  routes
+});
 
 router.beforeEach((to, from, next) => {
   const title = to.meta && to.meta.title;
