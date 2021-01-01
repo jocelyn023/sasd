@@ -1,6 +1,8 @@
 <template>
   <div id="app">
+    <van-nav-bar safe-area-inset-top />
     <router-view />
+    <van-number-keyboard safe-area-inset-bottom />
   </div>
 </template>
 
