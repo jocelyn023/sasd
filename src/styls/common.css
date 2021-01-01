@@ -2,6 +2,9 @@ body {
   font-family: MicrosoftYaHei;
   color: #333;
 }
+*{
+  box-sizing: border-box;
+}
 .col-theme {
   color: #a0191f
 }
