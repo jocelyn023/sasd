@@ -4,21 +4,14 @@
       class="m-r-10"
       width="90"
       height="56"
-      fit="contain"
+      fit="cover"
       :src="item.img"
     />
     <div class="flex-auto">
       <div class="van-ellipsis m-b-10 course-title">{{ item.title }}</div>
-      <div class="col-gray-9 f12 course-num">
-        <span>共{{ item.courseNum }}节</span>｜
-        <span>已学习{{ item.learned }}节</span>
-      </div>
-      <div>
-        <div v-if="percentage != 100" class="col-gray-9 f12 txt-r">已学习{{ percentage }}%</div>
-        <div v-else class="col-gray-9 f12 txt-r">已学完</div>
-        <div class="progress-bar">
-          <div class="bar" :style="'width: ' + percentage + '%'"></div>
-        </div>
+      <div class="flex">
+        <span class="col-gray-9 f12">{{ item.duration }}</span>
+        <van-button v-if="item.status == 1" type="info" plain hairline>试看</van-button>
       </div>
     </div>
   </div>
@@ -26,15 +19,7 @@
 
 <script>
 export default {
-  name: "cardProgress",
-  watch: {
-    item: {
-      immediate: true,
-      handler(val) {
-        this.percentage = parseInt(val.learned/val.courseNum*100)
-      }
-    }
-  },
+  name: "cardCourse",
   props: {
     item: {
       type: Object,
@@ -43,15 +28,9 @@ export default {
     },
   },
   data() {
-    return {
-      percentage: 0
-    };
+    return {};
   },
-  methods: {
-    emitClick() {
-      this.$emit("emitClick", this.item)
-    }
-  }
+  methods: {}
 };
 </script>
 
@@ -62,42 +41,22 @@ export default {
   border-bottom: 1px solid #d7d7d7;
 
   .course-title {
-    width: 213px;
+    margin-bottom: 16px;
+    width: 244px;
     height: 16px;
     line-height: 16px;
   }
-  .card-progress {
-    
-    .course-num {
-      padding-left: 16px;
-      box-sizing: border-box;
-      background: url(../assets/icon_play.png) left center no-repeat;
-      background-size: 11px;
-    }
-    .progress-bar {
-      position: relative;
-      width: 100%;
-      height: 4px;
-      border-radius: 2px;
-      background: #bfbfbf;
-      overflow: hidden;
 
-      .bar {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 0;
-        height: 100%;
-        background-image: linear-gradient(-90deg,	#a0191f 0%,	#c8363d 50%, #f0535a 100%), linear-gradient(#a0191f,	#a0191f);
-      }
-    }
-  }
-
-  .van-button {
-    height: 20px;
-    line-height: 20px;
-    border-radius: 5px;
+  .van-button.van-button--info {
+    height: 18px;
+    line-height: 18px;
     font-size: 12px;
+    border-color: #a0191f;
+    color: #333;
+    overflow: hidden;
+  }
+  .van-button--hairline::after {
+    border-radius: 18px;
   }
 
 }
