@@ -1,12 +1,13 @@
 <template>
   <div class="index">
+    <Swiper :bannerList="banner"></Swiper>
     <commonCover :info="info"></commonCover>
     <CommonFt :active="3"></CommonFt>
 
     <!-- 课程列表card -->
-    <template v-for="(item, index) in courseList">
+    <!-- <template v-for="(item, index) in courseList">
       <cardCourse :key="index" :item="item"></cardCourse>
-    </template>
+    </template> -->
 
     <!-- 学习列表card -->
     <template v-for="(item, index) in studyList">
@@ -20,13 +21,32 @@ import commonCover from '@/components/commonCover'
 import CommonFt from '@/components/commonFt'
 
 import cardProgress from '@/components/cardProgress'
-import cardCourse from '@/components/cardCourse'
+// import cardCourse from '@/components/cardCourse'
+import Swiper from '@/components/swiper'
 export default {
-  components: { CommonFt,commonCover, cardCourse, cardProgress },
+  components: {
+    CommonFt,
+    commonCover,
+    // cardCourse,
+    cardProgress,
+    Swiper
+  },
 
   data() {
     return {
       goods: {},
+      //swiper图片
+      banner: [{
+        id: 1,
+        img: 'https://img.yzcdn.cn/vant/cat.jpeg',
+        title: '标题',
+        link: '/', //跳转地址
+      }, {
+        id: 2,
+        img: 'https://img.yzcdn.cn/vant/cat.jpeg',
+        title: '标题',
+        link: '/', //跳转地址
+      }], 
       info: {
         path: "https://img.yzcdn.cn/vant/cat.jpeg",
         desc: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
