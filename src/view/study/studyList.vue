@@ -19,18 +19,31 @@ export default {
       list: [{
         id: 1,
         img: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: 'popping精品学习课程学习呢再来几个字呢最多能多少',
-        learned: 10,
-        courseNum: 20,
-        status: 0 //0学习中 1已结业
+        duration: '12:12',
+        title: 'hipop',
+        status: 0 //0不能试看， 1可以试看
       }, {
         id: 2,
+        duration: '12:10',
         img: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: 'popping精品学习课程学习呢2',
-        learned: 20,
-        courseNum: 20,
-        status: 1 //0学习中 1已结业
+        title: 'hipop',
+        status: 1 //0不能试看， 1可以试看
       }]
+      // list: [{
+      //   id: 1,
+      //   img: 'https://img.yzcdn.cn/vant/cat.jpeg',
+      //   title: 'popping精品学习课程学习呢再来几个字呢最多能多少',
+      //   learned: 10,
+      //   courseNum: 20,
+      //   status: 0 //0学习中 1已结业
+      // }, {
+      //   id: 2,
+      //   img: 'https://img.yzcdn.cn/vant/cat.jpeg',
+      //   title: 'popping精品学习课程学习呢2',
+      //   learned: 20,
+      //   courseNum: 20,
+      //   status: 1 //0学习中 1已结业
+      // }]
     };
   },
 
