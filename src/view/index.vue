@@ -1,14 +1,13 @@
 <template>
   <div class="index">
-    <footer :active="3"></footer>
+    <CommonFt :active="3"></CommonFt>
   </div>
 </template>
 
 <script>
-import footer from '@components/footer'
-
+import CommonFt from '@/components/commonFt'
 export default {
-  components: { footer },
+  components: { CommonFt },
 
   data() {
     return {

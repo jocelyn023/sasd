@@ -1,6 +1,5 @@
 <template>
-  <div class="footer">
-  </div>
+  <div class="footer">1111</div>
 </template>
 
 <script>
@@ -13,14 +12,9 @@ export default {
     },
   },
   data() {
-    return {
-      goods: {}
-    };
+    return {};
   },
-
-  methods: {
-    
-  }
+  methods: {}
 };
 </script>
 
