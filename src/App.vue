@@ -12,4 +12,9 @@
 body {
   -webkit-font-smoothing: antialiased;
 }
+#app {
+  font-size: 14px;
+  font-family: MicrosoftYaHei;
+  color: #333;
+}
 </style>
