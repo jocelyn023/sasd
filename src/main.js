@@ -3,6 +3,7 @@ import App from './App';
 import { router } from './router';
 import Vant from 'vant';
 import 'vant/lib/index.css';
+import 'lib-flexible/flexible'
 
 Vue.use(Vant);
 
