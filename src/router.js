@@ -34,6 +34,13 @@ const routes = [
     }
   },
   {
+    name: 'courseList',
+    component: () => import('./view/course/courseList'),
+    meta: {
+      title: '课程列表'
+    }
+  },
+  {
     path: '*',
     redirect: '/404'
   }
