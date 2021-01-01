@@ -17,7 +17,7 @@ export default {
       info: {
         path: "https://img.yzcdn.cn/vant/cat.jpeg",
         desc: "这是一段最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        price: "122"
+        price: "132"
       }
     };
   },
