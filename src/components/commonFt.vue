@@ -1,10 +1,10 @@
 <template>
   <div class="footer">
-    <van-tabbar v-model="active" active-color="#ee0a24" inactive-color="#000" route>
-      <van-tabbar-item replace :to="item.linkPath" v-for="(item, index) in tabbars" :key="index">
+    <van-tabbar v-model="active" active-color="#a0191f" inactive-color="#000" @change="onChange">
+      <van-tabbar-item replace v-for="(item, index) in tabbars" :key="index">
         <span>{{ item.name }}</span>
         <template #icon="props">
-          <img class="icons" :src="props.active ? item.icon.normal : item.icon.active" />
+          <img class="icons" :src="props.active ? item.icon.active : item.icon.normal" />
         </template>
       </van-tabbar-item>
     </van-tabbar>
@@ -32,7 +32,7 @@ export default {
           }
         },
         {
-          name: '首页',
+          name: '学习中心',
           linkPath: '/',
           icon: {
             normal: require('@/assets/tabbar/icon_study.png'),
@@ -40,7 +40,7 @@ export default {
           }
         },
         {
-          name: '首页',
+          name: '我的',
           linkPath: '/',
           icon: {
             normal: require('@/assets/tabbar/icon_me.png'),
@@ -50,7 +50,11 @@ export default {
       ]
     };
   },
-  methods: {}
+  methods: {
+    onChange(val) {
+      console.log(val)
+    }
+  }
 };
 </script>
 
