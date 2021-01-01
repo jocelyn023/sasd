@@ -1,5 +1,6 @@
 <template>
   <div class="index">
+    <div class="test"></div>
     <CommonFt :active="3"></CommonFt>
   </div>
 </template>
@@ -22,5 +23,9 @@ export default {
 </script>
 
 <style lang="less">
-
+  .test {
+    width: 750px;
+    height: 750px;
+    background: #333
+  }
 </style>
