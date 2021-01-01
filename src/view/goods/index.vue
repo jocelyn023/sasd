@@ -6,6 +6,8 @@
       </van-swipe-item>
     </van-swipe>
 
+    <van-button type="theme">主要按钮</van-button>
+    
     <van-cell-group>
       <van-cell>
         <div class="goods-title">{{ goods.title }}</div>

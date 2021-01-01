@@ -7,6 +7,7 @@
 </template>
 
 <style>
+@import url(./styls/reset_vant.css);
 body {
   font-size: 16px;
   background-color: #f8f8f8;
