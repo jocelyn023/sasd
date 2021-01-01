@@ -1,6 +1,5 @@
 <template>
   <div class="index">
-    <div class="test"></div>
     <CommonFt :active="3"></CommonFt>
   </div>
 </template>
