@@ -68,7 +68,7 @@ export default {
 <style lang="less" scoped>
   .block {
     width: 100%;
-    height: 50px;
+    height: 60px;
   }
   .icons {
     width: 25px;
