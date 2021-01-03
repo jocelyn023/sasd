@@ -1,11 +1,5 @@
 <template>
   <div>
-    <van-nav-bar
-      :title="type == 1 ? '我的订单' : '成绩查询'"
-      left-arrow
-      @click-left="onClickLeft"
-    />
-
     <van-list
       class="container"
       v-model="loading"
@@ -75,13 +69,12 @@ export default {
         }
       } else {
         // 成绩查询
+        routerParams.path = '/myScore'
       }
+      console.log(routerParams);
 
       this.$router.push(routerParams)
-    },
-    onClickLeft() {
-      this.$router.go(-1)
-    },
+    }
   }
 };
 </script>

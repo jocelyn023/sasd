@@ -1,11 +1,5 @@
 <template>
   <div>
-    <van-nav-bar
-      :title="msgType == 1 ? '系统公告' : '考试提醒'"
-      left-arrow
-      @click-left="onClickLeft"
-    />
-
     <van-list
       v-model="loading"
       :finished="finished"
@@ -62,10 +56,7 @@ export default {
           id: id
         }
       })
-    },
-    onClickLeft() {
-      this.$router.go(-1)
-    },
+    }
   }
 };
 </script>

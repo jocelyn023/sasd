@@ -1,11 +1,5 @@
 <template>
   <div>
-    <van-nav-bar
-      title="消息中心"
-      left-arrow
-      @click-left="onClickLeft"
-    />
-
     <van-cell-group>
       <van-cell :to="{path: '/msgList', query: {type: 1}}" is-link>
         <template #title>
@@ -45,9 +39,6 @@ export default {
     }
   },
   methods:{
-    onClickLeft() {
-      this.$router.go(-1)
-    }
   }
 };
 </script>

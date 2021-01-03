@@ -16,7 +16,8 @@ const routes = [
     name: '/',
     component: () => import('./view/index'),
     meta: {
-      title: '首页'
+      title: '首页',
+      hideNavBar: true
     }
   },
   {
@@ -37,7 +38,8 @@ const routes = [
     name: 'studyCenter',
     component: () => import('./view/study/studyCenter'),
     meta: {
-      title: '学习中心'
+      title: '学习中心',
+      hideNavBar: true
     }
   },
   {
@@ -72,7 +74,8 @@ const routes = [
     name: 'me',
     component: () => import('./view/user/index'),
     meta: {
-      title: '我的'
+      title: '我的',
+      hideNavBar: true
     }
   },
   {
@@ -101,6 +104,18 @@ const routes = [
     component: () => import('./view/user/orderList'),
     meta: {
       title: '我的订单'
+    }
+  }, {
+    name: 'scoreList',
+    component: () => import('./view/user/orderList'),
+    meta: {
+      title: '成绩查询'
+    }
+  }, {
+    name: 'myScore',
+    component: () => import('./view/user/score'),
+    meta: {
+      title: '成绩单'
     }
   }, {
     name: 'examStep',
@@ -140,13 +155,6 @@ const routes = [
     }]
   },
   {
-    name: 'score',
-    component: () => import('./view/user/score'),
-    meta: {
-      title: '成绩单'
-    }
-  },
-  {
     path: '*',
     redirect: '/404'
   }
@@ -166,6 +174,11 @@ const router = new Router({
   mode: 'history',
   routes
 });
+
+const VueRouterPush = Router.prototype.push
+Router.prototype.push = function push (to) {
+  return VueRouterPush.call(this, to).catch(err => err)
+}
 
 router.beforeEach((to, from, next) => {
   const title = to.meta && to.meta.title;

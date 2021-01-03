@@ -34,7 +34,7 @@
       <!-- <van-cell icon="points" title="消息中心" is-link /> -->
       <van-cell to="/msgCenter" title="消息中心" is-link />
       <van-cell :to="{path: '/orderList', query: {type: 1}}" title="我的订单" is-link />
-      <van-cell :to="{path: '/orderList', query: {type: 2}}" title="成绩查询" is-link />
+      <van-cell :to="{path: '/scoreList', query: {type: 2}}" title="成绩查询" is-link />
       <van-cell to="/msgList" title="我的证书" is-link />
       <van-cell to="/msgList" title="邮寄地址" is-link />
       <van-cell to="/msgList" title="我的钱包" is-link />
