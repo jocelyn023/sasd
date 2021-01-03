@@ -90,7 +90,4 @@ export default {
   height: 20px;
   line-height: 20px;
 }
-.msg-subtitle {
-
-}
 </style>

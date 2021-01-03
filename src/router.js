@@ -97,6 +97,13 @@ const routes = [
     }
   },
   {
+    name: 'orderList',
+    component: () => import('./view/user/orderList'),
+    meta: {
+      title: '我的订单'
+    }
+  },
+  {
     path: '*',
     redirect: '/404'
   }
