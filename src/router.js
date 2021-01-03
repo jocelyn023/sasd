@@ -104,6 +104,13 @@ const routes = [
     }
   },
   {
+    name: 'score',
+    component: () => import('./view/user/score'),
+    meta: {
+      title: '成绩单'
+    }
+  },
+  {
     path: '*',
     redirect: '/404'
   }
