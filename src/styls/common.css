@@ -4,6 +4,9 @@
 .col-theme {
   color: #a0191f
 }
+.bg-theme {
+  background: #a0191f
+}
 .col-white {
   color: #fff
 }
@@ -182,6 +185,9 @@
 }
 .txt-l {
   text-align: left
+}
+.txt-c {
+  text-align: center
 }
 .txt-r {
   text-align: right

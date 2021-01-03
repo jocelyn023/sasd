@@ -40,7 +40,7 @@ export default {
         },
         {
           name: '学习中心',
-          linkPath: '/',
+          linkPath: '/studyCenter',
           icon: {
             normal: require('@/assets/tabbar/icon_study.png'),
             active: require('@/assets/tabbar/icon_study_active.png')
@@ -48,7 +48,7 @@ export default {
         },
         {
           name: '我的',
-          linkPath: '/',
+          linkPath: '/me',
           icon: {
             normal: require('@/assets/tabbar/icon_me.png'),
             active: require('@/assets/tabbar/icon_me_active.png')
@@ -59,7 +59,10 @@ export default {
   },
   methods: {
     onChange(val) {
-      console.log(val)
+      let pathParams = {
+        path: this.tabbars[val].linkPath
+      }
+      this.$router.push(pathParams)
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-  <div class="cover-block" @click="handleClick">
+  <div class="cover-block">
     <div class="pic-box">
       <van-image
         :width="width"
@@ -38,16 +38,7 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    handleClick() {
-      this.$router.push({
-        path: '/',
-        query: {
-          id: this.info.id
-        }
-      })
-    }
-  }
+  methods: {}
 };
 </script>
 

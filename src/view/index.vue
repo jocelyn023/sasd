@@ -7,7 +7,7 @@
         <span class="f16 col-gray-3 m-r-20">学院介绍</span>
         <van-image width="37" height="37" fit="contain" :src="require('@/assets/icon_structure.png')"></van-image>
       </router-link>
-      <router-link class="item flex" :to="{path: '/studyList'}">
+      <router-link class="item flex" :to="{path: '/courseList'}">
         <span class="f16 col-gray-3 m-r-20">课程</span>
         <van-image width="37" height="37" fit="contain" :src="require('@/assets/icon_school_desc.png')"></van-image>
       </router-link>
@@ -19,12 +19,14 @@
     <!-- 内容列表 -->
     <div class="container">
       <div class="see-more">
-        <router-link class="col-theme" :to="'/studyList'">查看更多></router-link>
+        <router-link class="col-theme" :to="'/courseList'">查看更多></router-link>
       </div>
 
       <div class="list">
         <template v-for="(item, index) in list">
-          <commonCover :info="item" :key="index"></commonCover>
+          <div :key="index" @click="pushRouter({path: '/courseDetail', query: {id: item.id}})">
+            <commonCover :info="item"></commonCover>
+          </div>
         </template>
       </div>
     </div>
@@ -34,11 +36,11 @@
       <div class="flex title">
         <span class="f16 font-bold">通知公告</span>
         <div class="see-more">
-          <router-link class="col-theme" :to="'/studyList'">查看更多></router-link>
+          <router-link class="col-theme" :to="'/newsList'">查看更多></router-link>
         </div>
       </div>
 
-      <div class="item-new" v-for="item in newsList" :key="item.id">
+      <div class="item-new" v-for="item in newsList" :key="item.id" @click="pushRouter({path: '/newsDetails', query: {id: item.id}})">
         <cardNews :info="item"></cardNews>
       </div>
     </div>
@@ -106,7 +108,9 @@ export default {
   },
 
   methods: {
-    
+    pushRouter(path) {
+      this.$router.push(path)
+    }
   }
 };
 </script>
