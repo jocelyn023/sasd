@@ -48,6 +48,13 @@ const routes = [
     }
   },
   {
+    name: 'courseBuy',
+    component: () => import('./view/course/courseBuy'),
+    meta: {
+      title: '购买课程'
+    }
+  },
+  {
     path: '*',
     redirect: '/404'
   }
