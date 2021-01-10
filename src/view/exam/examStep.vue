@@ -32,7 +32,7 @@
 
 <style lang="less" scoped>
   .step-block {
-    padding: 20px 42px;
+    padding: 15px 42px;
 
     /deep/.van-steps--horizontal {
       padding: 0;
