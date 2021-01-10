@@ -23,15 +23,13 @@
     </div>
 
     <van-cell-group>
-      <van-cell title="申请成为推广员" is-link :to="{path: '/orderList', query: {type: 1}}" />
-      <van-cell to="/msgCenter" title="消息中心" is-link />
-      <van-cell :to="{path: '/orderList', query: {type: 1}}" title="我的订单" is-link />
-      <van-cell :to="{path: '/scoreList', query: {type: 2}}" title="成绩查询" is-link />
-      <van-cell to="/msgList" title="我的证书" is-link />
-      <van-cell to="/msgList" title="邮寄地址" is-link />
-      <van-cell to="/msgList" title="我的钱包" is-link />
-      <van-cell to="/msgList" title="消息中心" is-link />
-      <van-cell to="/msgList" title="消息中心" is-link />
+      <van-cell title="申请成为推广员" to="/applyPromoter" is-link />
+      <van-cell title="消息中心" to="/msgCenter" is-link />
+      <van-cell title="我的订单" :to="{path: '/orderList', query: {type: 1}}" is-link />
+      <van-cell title="成绩查询" :to="{path: '/scoreList', query: {type: 2}}" is-link />
+      <van-cell title="我的证书" to="/msgList" is-link />
+      <van-cell title="邮寄地址" to="/msgList" is-link />
+      <van-cell title="我的钱包" to="/msgList" is-link />
     </van-cell-group>
     <CommonFt :active="2"></CommonFt>
   </div>

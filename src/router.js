@@ -1,10 +1,10 @@
-import Vue from 'vue';
-import Router from 'vue-router';
+import Vue from 'vue'
 
-Vue.use(Router);
+import Router from 'vue-router'
+
+Vue.use(Router)
 
 const routes = [
-
   {
     name: 'demo',
     component: () => import('./view/demo'),
@@ -79,6 +79,20 @@ const routes = [
     }
   },
   {
+    name: 'applyPromoter',
+    component: () => import('./view/user/applyPromoter'),
+    meta: {
+      title: '申请成为推广员'
+    }
+  },
+  {
+    name: 'applyResult',
+    component: () => import('./view/user/applyResult'),
+    meta: {
+      title: '申请结果'
+    }
+  },
+  {
     name: 'msgCenter',
     component: () => import('./view/user/msgCenter'),
     meta: {
@@ -123,57 +137,57 @@ const routes = [
     meta: {
       title: '考试'
     },
-    redirect: "/examStep_1",
+    redirect: '/examStep_1',
     children: [{
       name: 'examStep_1',
       component: () => import('./view/exam/examStep_1'),
       meta: {
         title: '上传一寸照',
-        stepActive: 0,
-      },
+        stepActive: 0
+      }
     }, {
       name: 'examStep_2',
       component: () => import('./view/exam/examStep_2'),
       meta: {
         title: '笔试成绩',
-        stepActive: 1,
-      },
+        stepActive: 1
+      }
     }, {
       name: 'examStep_3',
       component: () => import('./view/exam/examStep_3'),
       meta: {
         title: '上传视频',
-        stepActive: 2,
-      },
+        stepActive: 2
+      }
     }, {
       name: 'examStep_4',
       component: () => import('./view/exam/examStep_4'),
       meta: {
         title: '证书地址',
-        stepActive: 3,
-      },
+        stepActive: 3
+      }
     }]
   },
   {
     path: '*',
     redirect: '/404'
   }
-];
+]
 
 // add route path
 routes.forEach(route => {
-  route.path = route.path || '/' + (route.name || '');
+  route.path = route.path || '/' + (route.name || '')
   if (route.children) {
     route.children.forEach(child => {
-      child.path = child.path || '/' + (child.name || '');
+      child.path = child.path || '/' + (child.name || '')
     })
   }
-});
+})
 
 const router = new Router({
   mode: 'history',
   routes
-});
+})
 
 const VueRouterPush = Router.prototype.push
 Router.prototype.push = function push (to) {
@@ -181,13 +195,13 @@ Router.prototype.push = function push (to) {
 }
 
 router.beforeEach((to, from, next) => {
-  const title = to.meta && to.meta.title;
+  const title = to.meta && to.meta.title
   if (title) {
-    document.title = title;
+    document.title = title
   }
-  next();
-});
+  next()
+})
 
 export {
   router
-};
+}
