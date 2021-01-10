@@ -4,16 +4,12 @@
       <h3>基础信息填写</h3>
       <div>
         <van-field v-model="userInfo.name" label="姓名" placeholder="请输入用户名" />
-        <van-field v-model="userInfo.sex" label="性别" placeholder="请选择性别" @click="sexShow = true" readonly />
         <van-field v-model="userInfo.name" label="联系方式" placeholder="请输入用户名" />
-        <van-field v-model="userInfo.type" label="证件类型" placeholder="请选择证件类型" @click="typeShow = true" readonly />
-        <van-field v-model="userInfo.name" label="证件号" placeholder="请输入用户名" />
       </div>
     </div>
     <div class="buy-course-info">
       <h3>课程信息</h3>
-
-      <commonCover v-for="n in 3" :key="n" :info="info"></commonCover>
+      <commonCover :info="info"></commonCover>
     </div>
     <div class="b-buy-box">
       <p><span class="col-gray-9 f12">价格</span> 399.00</p>
@@ -79,7 +75,6 @@
 
     .buy-user-info {
       width: 343px;
-      height: 222px;
       background: #ffffff;
       border-radius: 6px;
       box-shadow: 0 1px 10px 4px #ebebeb;
