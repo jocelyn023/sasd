@@ -93,6 +93,14 @@ const routes = [
     }
   },
   {
+    name: 'address',
+    component: () => import('./view/user/address'),
+    meta: {
+      title: '邮寄地址',
+      hideNavBar: true
+    }
+  },
+  {
     name: 'msgCenter',
     component: () => import('./view/user/msgCenter'),
     meta: {

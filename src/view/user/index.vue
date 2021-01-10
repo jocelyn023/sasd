@@ -28,7 +28,7 @@
       <van-cell title="我的订单" :to="{path: '/orderList', query: {type: 1}}" is-link />
       <van-cell title="成绩查询" :to="{path: '/scoreList', query: {type: 2}}" is-link />
       <van-cell title="我的证书" to="/msgList" is-link />
-      <van-cell title="邮寄地址" to="/msgList" is-link />
+      <van-cell title="邮寄地址" to="/address" is-link />
       <van-cell title="我的钱包" to="/msgList" is-link />
     </van-cell-group>
     <CommonFt :active="2"></CommonFt>
