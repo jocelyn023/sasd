@@ -1,4 +1,5 @@
 <template>
+
   <div>
     <div class="user-info bg-theme flex ">
       <van-image
@@ -19,19 +20,10 @@
         <!-- <div>填写基本信息</div>
         <div>申请成为代理商</div> -->
       </div>
-      <template v-if="userInfo.isAgent">
-        <van-image
-          width="75"
-          height="75"
-          fit="contain"
-          :src="agentInfo.erCode"
-        >
-        </van-image>
-      </template>
     </div>
 
     <van-cell-group>
-      <!-- <van-cell icon="points" title="消息中心" is-link /> -->
+      <van-cell title="申请成为推广员" is-link :to="{path: '/orderList', query: {type: 1}}" />
       <van-cell to="/msgCenter" title="消息中心" is-link />
       <van-cell :to="{path: '/orderList', query: {type: 1}}" title="我的订单" is-link />
       <van-cell :to="{path: '/scoreList', query: {type: 2}}" title="成绩查询" is-link />
@@ -50,7 +42,7 @@ import CommonFt from '@/components/commonFt'
 
 export default {
   components: { CommonFt },
-  data() {
+  data () {
     return {
       isLogin: false,
       userInfo: {
@@ -64,7 +56,7 @@ export default {
       }
     }
   }
-};
+}
 </script>
 
 <style lang="less">
