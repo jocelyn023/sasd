@@ -1,35 +1,37 @@
 <template>
   <div class="new-detail">
+    <div class="m-b-10">{{ detail.adName }}</div>
+    <div class="m-b-10">
+      <span class="m-r-10">{{ detail.modifyBy }}</span>
+      <span>{{ detail.modifyDate }}</span>
+    </div>
+
+    <div v-html="detail.content"></div>
   </div>
 </template>
 
 <script>
+import { getBannerDetail } from '@/api/index'
+
 export default {
   components: {},
 
   data() {
     return {
-      newsList: [{
-        id: 1,
-        link: '/studyList',
-        imgs: ["https://img.yzcdn.cn/vant/cat.jpeg"],
-        title: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        times: "2021-01-01",
-        author: '云南合作单位'
-      },{
-        id: 2,
-        link: '/studyList',
-        imgs: ["https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg"],
-        title: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        times: "2021-01-01",
-        author: '云南合作单位'
-      }]
+      detail: {},
     };
   },
-
+  created () {
+    this.getBannerDetail()
+  },
   methods: {
     pushRouter(path) {
       this.$router.push(path)
+    },
+    getBannerDetail () {
+      getBannerDetail({id: "1349343698310246401"}).then(res => {
+        this.detail = res.data;
+      })
     }
   }
 };

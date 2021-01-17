@@ -1,8 +1,15 @@
-import { axios } from "@/utils/request";
+import { get, post } from '@/utils/request'
 
-export function getBanner() {
-  return axios({
-    url: "/wx/api/index/advertisementList?position=index",
-    method: "get"
-  });
-}
+// 首页banner
+export const getBanner = params => get('/wx/api/index/advertisementList', params)
+
+// banner详情
+export const getBannerDetail = params => get('/wx/api/index/getAdvertisementDetail', params)
+
+// 首页通知公告
+export const getIndexNews = params => get('/wx/api/index/getIndexNews', params)
+
+// 首页通知公告列表
+export const getIndexNewsList = params => post('/wx/api/index/getNewsPageByType', params)
+
+

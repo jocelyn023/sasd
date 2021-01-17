@@ -4,12 +4,12 @@
 
     <div class="buttons flex">
       <router-link class="item flex" :to="{path: '/studyList'}">
-        <span class="f16 col-gray-3 m-r-20">学院介绍</span>
-        <van-image width="37" height="37" fit="contain" :src="require('@/assets/icon_structure.png')"></van-image>
+        <van-image class="img-box m-r-20" fit="contain" :src="require('@/assets/icon_structure.png')"></van-image>
+        <span class="f16 col-green-31ad37">学院介绍</span>
       </router-link>
       <router-link class="item flex" :to="{path: '/courseList'}">
-        <span class="f16 col-gray-3 m-r-20">课程</span>
-        <van-image width="37" height="37" fit="contain" :src="require('@/assets/icon_school_desc.png')"></van-image>
+        <van-image class="img-box m-r-20" fit="contain" :src="require('@/assets/icon_school_desc.png')"></van-image>
+        <span class="f16 col-yellow-fb9833">课程</span>
       </router-link>
     </div>
 
@@ -30,28 +30,31 @@
         </template>
       </div>
     </div>
-
-    <!-- 通知公告 -->
-    <!-- <div class="notice-wrap">
-      <div class="flex title">
-        <span class="f16 font-bold">通知公告</span>
-        <div class="see-more">
-          <router-link class="col-theme" :to="'/newsList'">查看更多></router-link>
-        </div>
-      </div>
-
-      <div class="item-new" v-for="item in newsList" :key="item.id" @click="pushRouter({path: '/newsDetails', query: {id: item.id}})">
-        <cardNews :info="item"></cardNews>
-      </div>
-    </div> -->
     
+    <!-- 通知公告 -->
+    <template v-if="noticeList && noticeList.length">
+      <template v-for="(item, index) in noticeList">
+        <div class="notice-wrap" :key="index">
+          <div class="flex title">
+            <span class="f16 font-bold">{{ item.typeName }}</span>
+            <div class="see-more">
+              <router-link class="col-theme" :to="'/newsList'">查看更多></router-link>
+            </div>
+          </div>
+
+          <div class="item-new" v-for="item2 in item.articles" :key="item2.id" @click="pushRouter({path: '/newsDetails', query: {id: item2.id}})">
+            <cardNews :info="item2"></cardNews>
+          </div>
+        </div>
+      </template>
+    </template>
     <!-- <commonCover :info="info"></commonCover> -->
     <CommonFt :active="0"></CommonFt>
   </div>
 </template>
 
 <script>
-import { getBanner } from '@/api/index'
+import { getBanner, getIndexNews } from '@/api/index'
 import swiper from '@/components/swiper'
 import commonCover from '@/components/commonCover'
 import cardNews from '@/components/cardNews'
@@ -68,6 +71,7 @@ export default {
   data() {
     return {
       bannerList: [],
+      noticeList: [],
       typeList: ['POPPING', 'BREKING', 'JAZZ', 'HIP-HOP', 'LOCKING', 'POPPING2'],
       list: [{
         id: 1,
@@ -99,14 +103,20 @@ export default {
   },
   created () {
     this.getBanner()
+    this.getIndexNews()
   },
   methods: {
     pushRouter(path) {
       this.$router.push(path)
     },
     getBanner () {
-      getBanner().then(res => {
+      getBanner({ position: "index" }).then(res => {
         this.bannerList = res.data;
+      })
+    },
+    getIndexNews () {
+      getIndexNews().then(res => {
+        this.noticeList = res.data;
       })
     }
   }
@@ -114,6 +124,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .col-yellow-fb9833 {
+    color: #fb9833
+  }
+  .col-green-31ad37 {
+    color: #31ad37
+  }
   .buttons {
     margin: 0 auto 20px;
     width: 343px;
@@ -130,6 +146,11 @@ export default {
     .item:first-child {
       border-right: 1px solid #c9c9c9;
     }
+
+    .img-box {
+      width: 37px;
+      height: 37px;
+    }
   }
   .container {
     padding: 0 16px;
@@ -142,7 +163,7 @@ export default {
   }
 
   .notice-wrap {
-    margin: 0 auto;
+    margin: 0 auto 20px;
     width: 343px;
     box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
     border-radius: 5px;

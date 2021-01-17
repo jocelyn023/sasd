@@ -8,12 +8,21 @@
 
 <script>
 import cardNews from '@/components/cardNews'
+import { getIndexNewsList } from '@/api/index'
+
 
 export default {
   components: { cardNews },
 
   data() {
     return {
+      params: {
+        rows: 10,
+        page: 1,
+        queryConditions:{
+          articleType:"1348846386056130562"
+        }
+      },
       newsList: [{
         id: 1,
         link: '/studyList',
@@ -31,10 +40,17 @@ export default {
       }]
     };
   },
-
+  created () {
+    this.getIndexNewsList()
+  },
   methods: {
     pushRouter(path) {
       this.$router.push(path)
+    },
+    getIndexNewsList () {
+      getIndexNewsList(this.params).then(res => {
+        // this.detail = res.data;
+      })
     }
   }
 };
