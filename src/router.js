@@ -24,7 +24,8 @@ const routes = [
     name: 'newsList',
     component: () => import('./view/index/newsList'),
     meta: {
-      title: '新闻列表'
+      title: '新闻列表',
+      hideNavBar: true
     }
   },
   {

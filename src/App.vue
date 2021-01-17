@@ -17,7 +17,7 @@ export default {
   watch: {
     '$route'(to) {
       this.hideNavBar = to.meta.hideNavBar;
-      this.navTitle = to.meta.title
+      this.navTitle = to.meta.title;
     }
   },
   data() {

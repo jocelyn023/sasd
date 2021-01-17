@@ -1,8 +1,28 @@
 <template>
   <div class="news-list">
-      <div class="item-new" v-for="item in newsList" :key="item.id" @click="pushRouter({path: '/newsDetails', query: {id: item.id}})">
-        <cardNews :info="item"></cardNews>
-      </div>
+    <van-nav-bar
+      safe-area-inset-top
+      :title="title"
+      left-arrow
+      @click-left="onClickLeft"
+    />
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <div
+          class="item-new"
+          v-for="(item, index) in list"
+          :key="index"
+          @click="clickBanner(item)"
+        >
+          <cardNews :info="item"></cardNews>
+        </div>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -20,36 +40,60 @@ export default {
         rows: 10,
         page: 1,
         queryConditions:{
-          articleType:"1348846386056130562"
+          articleType: "1348846386056130562"
         }
       },
-      newsList: [{
-        id: 1,
-        link: '/studyList',
-        imgs: ["https://img.yzcdn.cn/vant/cat.jpeg"],
-        title: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        times: "2021-01-01",
-        author: '云南合作单位'
-      },{
-        id: 2,
-        link: '/studyList',
-        imgs: ["https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg"],
-        title: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        times: "2021-01-01",
-        author: '云南合作单位'
-      }]
+      list: [],
+      loading: false,
+      finished: false,
+      refreshing: false,
+      title: "其他新闻"
     };
   },
   created () {
-    this.getIndexNewsList()
+    this.params.queryConditions.articleType = this.$route.query.articleType;
+    this.title = this.$route.query.navName
   },
+  mounted () {},
   methods: {
-    pushRouter(path) {
-      this.$router.push(path)
+    onClickLeft () {
+      this.$router.go(-1)
     },
-    getIndexNewsList () {
+    clickBanner(item) {
+      if (item.contentUrl != null) {
+        if (item.adDetailUrl.indexOf('?') == -1) {
+          window.location.href = item.contentUrl + "?id = " + item.id
+        } else {
+          window.location.href = item.contentUrl + "&id = " + item.id
+        }
+      }
+    },
+    onRefresh () {
+      // 清空列表数据
+      this.finished = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      this.loading = true;
+      this.onLoad();
+    },
+    onLoad() {
+      if (this.refreshing) {
+        this.list = [];
+        this.refreshing = false;
+        this.params.page = 1;
+      }
       getIndexNewsList(this.params).then(res => {
-        // this.detail = res.data;
+        this.loading = false;
+        this.params.total = res.data.total;
+        if (this.params.page < res.data.total) {
+          this.params.page = this.params.page + 1
+        } else {
+          this.finished = true;
+        }
+        res.data.records.forEach(item => {
+          this.list.push(item)
+        })
       })
     }
   }
@@ -60,8 +104,6 @@ export default {
   .news-list {
     margin: 0 auto;
     width: 100%;
-    // box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
-    // border-radius: 5px;
 
     .title {
       padding-top: 14px;

@@ -38,7 +38,7 @@
           <div class="flex title">
             <span class="f16 font-bold">{{ item.typeName }}</span>
             <div class="see-more">
-              <router-link class="col-theme" :to="'/newsList'">查看更多></router-link>
+              <router-link class="col-theme" :to="{path: '/newsList', query: {navName: item.typeName, articleType: item.id}}">查看更多></router-link>
             </div>
           </div>
 
