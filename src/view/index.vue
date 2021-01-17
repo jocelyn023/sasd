@@ -32,7 +32,7 @@
     </div>
 
     <!-- 通知公告 -->
-    <div class="notice-wrap">
+    <!-- <div class="notice-wrap">
       <div class="flex title">
         <span class="f16 font-bold">通知公告</span>
         <div class="see-more">
@@ -43,7 +43,7 @@
       <div class="item-new" v-for="item in newsList" :key="item.id" @click="pushRouter({path: '/newsDetails', query: {id: item.id}})">
         <cardNews :info="item"></cardNews>
       </div>
-    </div>
+    </div> -->
     
     <!-- <commonCover :info="info"></commonCover> -->
     <CommonFt :active="0"></CommonFt>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { getBanner } from '@/api/index'
 import swiper from '@/components/swiper'
 import commonCover from '@/components/commonCover'
 import cardNews from '@/components/cardNews'
@@ -66,17 +67,7 @@ export default {
 
   data() {
     return {
-      bannerList: [{
-        id: 1,
-        img: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '标题',
-        link: '/', //跳转地址
-      }, {
-        id: 2,
-        img: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '标题',
-        link: '/', //跳转地址
-      }],
+      bannerList: [],
       typeList: ['POPPING', 'BREKING', 'JAZZ', 'HIP-HOP', 'LOCKING', 'POPPING2'],
       list: [{
         id: 1,
@@ -106,10 +97,17 @@ export default {
       }]
     };
   },
-
+  created () {
+    this.getBanner()
+  },
   methods: {
     pushRouter(path) {
       this.$router.push(path)
+    },
+    getBanner () {
+      getBanner().then(res => {
+        this.bannerList = res.data;
+      })
     }
   }
 };

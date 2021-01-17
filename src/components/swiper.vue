@@ -1,16 +1,14 @@
 <template>
   <div class="swiper" id="swiper">
-    <van-swipe :autoplay="3000">
+    <van-swipe :autoplay="100000">
       <van-swipe-item class="banner-item" v-for="(item, key) in bannerList" :key="key" @click="clickBanner(item)">
         <van-image
-          class="m-r-10"
-          :width="width"
-          :height="height"
+          class="m-r-10 img-box"
           fit="cover"
           lazy-load
-          :src="item.img"
+          :src="item.adThumbnail"
         />
-        <div class="title van-ellipsis col-white f12">{{ item.title }}</div>
+        <div class="title van-ellipsis col-white f12">{{ item.adName }}</div>
       </van-swipe-item>
     </van-swipe>
   </div>
@@ -20,14 +18,6 @@
 export default {
   name: "cardCourse",
   props: {
-    width: {
-      type: Number,
-      default: 375
-    },
-    height: {
-      type: Number,
-      default: 200
-    },
     bannerList: {
       type: Array,
       default: () => ([]),
@@ -38,14 +28,13 @@ export default {
     return {};
   },
   methods: {
-    clickBanner(val) {
-      if (val && val.link) {
-        this.$router.push({
-          path: val.link,
-          query: {
-            id: val.id
-          }
-        })
+    clickBanner(item) {
+      if (item.adDetailUrl != null) {
+        if (item.adDetailUrl.indexOf('?') == -1) {
+          window.location.href = item.adDetailUrl + "?id = " + item.id
+        } else {
+          window.location.href = item.adDetailUrl + "&id = " + item.id
+        }
       }
     }
   }
@@ -70,6 +59,11 @@ export default {
       line-height: 40px;
       background: rgba(34, 32, 35, 0.3)
     }
+    .img-box {
+      width: 375px;
+      height: 200px;
+      overflow: hidden;
+    }
   }
   
 }
@@ -93,7 +87,6 @@ export default {
       background: rgba(34, 32, 35, 0.3)
     }
   }
-
     .van-swipe__indicator {
       background: #fff;
       opacity: 0.42;
