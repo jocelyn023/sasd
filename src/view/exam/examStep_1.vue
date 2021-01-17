@@ -66,6 +66,16 @@
         // 此时可以自行将文件上传至服务器
         console.log(file);
       },
+      onSelect(item) {
+        console.log(item);
+        this.sexShow = false;
+        this.userInfo.sex = item.name;
+      },
+      onSelectType(item) {
+        console.log(item);
+        this.typeShow = false;
+        this.userInfo.type = item.name;
+      },
     }
   };
 </script>
