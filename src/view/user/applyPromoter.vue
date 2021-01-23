@@ -207,7 +207,9 @@ export default {
       }
 
       agentApply(params).then(res => {
-        console.log(res)
+        this.$router.push({
+          path: '/applyResult'
+        })
       })
     },
     onOversize(file) {

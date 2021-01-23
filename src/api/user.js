@@ -16,3 +16,7 @@ export const getMessageDetailAndRead = params => post('/wx/api/personal/getMessa
 
 // 申请代理商
 export const agentApply = params => post('/wx/api/personal/agentApply', params)
+
+// 代理商申请状态
+export const getAgentStatus = params => get('/wx/api/personal/getAgentApplyResult', params)
+
