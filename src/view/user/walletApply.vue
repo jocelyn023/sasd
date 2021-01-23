@@ -8,7 +8,7 @@
     />
 
     <walletApply v-if="!loading && showApply"></walletApply>
-    <walletResult v-if="!loading && !showApply"></walletResult>
+    <walletResult ref="walletResult" v-if="!loading && !showApply"></walletResult>
   </div>
 </template>
 
