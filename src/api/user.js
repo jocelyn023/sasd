@@ -1,7 +1,7 @@
 import { get, post } from '@/utils/request'
 
 // 个人中心
-// 首页banner
+// 个人信息
 export const getMyPersonalInfo = params => get('/wx/api/personal/getMyPersonalInfo', params)
 
 // 消息
@@ -14,12 +14,16 @@ export const getMessagePageByType = params => post('/wx/api/personal/getMessageP
 // 获取消息详情并阅读消息
 export const getMessageDetailAndRead = params => post('/wx/api/personal/getMessageDetailAndRead?id=' + params.id, params)
 
+
+// 代理商
 // 申请代理商
 export const agentApply = params => post('/wx/api/personal/agentApply', params)
 
 // 代理商申请状态
 export const getAgentStatus = params => get('/wx/api/personal/getAgentApplyResult', params)
 
+
+// 我的钱包
 // 账户余额
 export const getMyMoney = params => get('/wx/api/personal/getUserIncomeCashoutTotal', params)
 
@@ -37,5 +41,17 @@ export const getUserIncomeCashoutTotal = params => get('/wx/api/personal/getUser
 
 // 收支明细
 export const getIncomeCashoutDetail = params => post('/wx/api/personal/getIncomeCashoutDetail', params)
+
+
+// 订单
+// 订单列表
+export const getOrderList = params => post('/wx/api/personal/getCoursePurchaseOrderPage', params)
+
+
+// 我的成绩
+// 成绩列表
+export const getScoreList = params => post('/wx/api/personal/getCourseScorePage', params)
+
+
 
 
