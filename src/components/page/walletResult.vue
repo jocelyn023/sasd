@@ -1,61 +1,42 @@
 <template>
   <div class="apply-result">
-    <template v-if="showPayResult">
       <div class="wrapper">
         <div class="icon-result">
-          <van-icon v-if="result.status != 'REJECT'" name="checked" color="#31ac37" size="60px" />
+          <van-icon v-if="result.approvalResult != 'REJECT'" name="checked" color="#31ac37" size="60px" />
           <van-icon v-else name="clear" color="#f39a35" size="60px" />
         </div>
 
-        <div class="txt-c title-result" :class="result.status != 'REJECT' ? 'col-yellow-f39a35' : 'col-gray-3'">
-          <span v-if="result.status == 'APPROVING'">申请已提交</span>
-          <span v-if="result.status == 'REJECT'">申请未通过</span>
-          <span v-if="result.status == 'APPROVED'">申请通过</span>
+        <div class="txt-c title-result" :class="result.approvalResult != 'REJECT' ? 'col-yellow-f39a35' : 'col-gray-3'">
+          <span v-if="result.approvalResult == 'APPROVING'">申请已提交</span>
+          <span v-if="result.approvalResult == 'REJECT'">申请未通过</span>
+          <span v-if="result.approvalResult == 'APPROVED'">申请通过</span>
         </div>
         
         <div class="tips-result">
-          <span class="result-wait" v-if="result.status != 'REJECT'">
-            <span v-if="result.status == 'APPROVING'">您的提现申请已经提交，工作人员会在三个工作日内，进行处理，请耐心等待！</span>
-            <span v-if="result.status == 'APPROVED'">恭喜您，申请通过！请尽快缴纳推广员押金。</span>
+          <span class="result-wait" v-if="result.approvalResult != 'REJECT'">
+            <span v-if="result.approvalResult == 'APPROVING'">您的提现申请已经提交，工作人员会在三个工作日内，进行处理，请耐心等待！</span>
+            <span v-if="result.approvalResult == 'APPROVED'">恭喜您，申请通过！请尽快缴纳推广员押金。</span>
           </span>
           
           <div v-else class="no-pass">
             <span class="title col-theme">审批回执</span>
-            <span>申请理由不通过</span>
+            <span>{{ result.approvalComments }}</span>
           </div>
         </div>
       </div>
-      <div class="btn-submit-box txt-c" v-if="result.status != 'APPROVING'">
-        <van-button v-if="result.status == 'REJECT'" class="btn-submit" type="theme" @click="submitAgain">重新提交</van-button>
-        <van-button v-if="result.status == 'APPROVED'" class="btn-submit" type="theme" @click="pay">缴纳押金</van-button>
+      <div class="btn-submit-box txt-c" v-if="result.approvalResult != 'APPROVING'">
+        <van-button v-if="result.approvalResult == 'REJECT'" class="btn-submit" type="theme" @click="pushRouter('/walletApply')">重新提交</van-button>
       </div>
-    </template>
-    <template v-else>
-      <div class="wrapper pay">
-        <div class="title txt-c">缴费成功</div>
-        <div class="col-theme f12 m-b-20">恭喜您，缴费成功，成为思爱思帝课程推广员。</div>
-        <div class="m-b-20">推广员编码：123456789910</div>
-        <div class="m-b-10">推广员专属二维码：</div>
-        <div class="ercode">
-          <img src="" alt="" srcset="">
-        </div>
-      </div>
-
-      <div class="btn-submit-box txt-c">
-        <van-button class="btn-submit" type="theme" @click="pushRouter">回到个人中心</van-button>
-      </div>
-    </template>
   </div>
 </template>
 
 <script>
-import { getAgentStatus } from '@/api/user'
+import { cashoutResult } from '@/api/user'
 
 export default {
   components: {},
   data () {
     return {
-      showPayResult: true,
       result: {}
     }
   },
@@ -64,18 +45,13 @@ export default {
   },
   methods: {
     init () {
-      getAgentStatus().then(res => {
+      cashoutResult().then(res => {
         this.result = res.data
       })
     },
-    submitAgain () {
-
-    },
-    pay () {
-
-    },
-    pushRouter() {
-      this.$router.push('me')
+    submitAgain () {},
+    pushRouter(url) {
+      this.$parent.showApply = true
     }
   }
 }

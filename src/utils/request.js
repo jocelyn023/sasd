@@ -3,7 +3,6 @@ import axios from 'axios'
 axios.defaults.baseURL = process.env.VUE_APP_PROXY_API_URL
 axios.defaults.timeout = 10000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8;multipart/form-data'
-
 // // 请求拦截器
 axios.interceptors.request.use(
   config => {

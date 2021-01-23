@@ -78,8 +78,34 @@ const routes = [
       title: '我的',
       hideNavBar: true
     }
-  },
+  }, {
+    name: 'wallet',
+    component: () => import('./view/user/wallet'),
+    meta: {
+      title: '我的钱包'
+    }
+  }, 
+  // {
+  //   name: 'walletResult',
+  //   component: () => import('./view/user/walletResult'),
+  //   meta: {
+  //     title: '提现结果'
+  //   }
+  // },
   {
+    name: 'walletApply',
+    component: () => import('./view/user/walletApply'),
+    meta: {
+      title: '提现申请',
+      hideNavBar: true
+    }
+  }, {
+    name: 'walletDetails',
+    component: () => import('./view/user/walletDetails'),
+    meta: {
+      title: '收支明细'
+    }
+  }, {
     name: 'applyPromoter',
     component: () => import('./view/user/applyPromoter'),
     meta: {

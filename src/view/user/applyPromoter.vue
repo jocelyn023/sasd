@@ -38,9 +38,9 @@
         <div class="label">
           <div class="f12 tips"><span class="col-theme">*</span> 请输入您的姓名</div>
           <van-field
-            v-model="form.userName"
+            v-model="form.fullName"
             placeholder="请输入"
-            :rules="rules.userName"
+            :rules="rules.fullName"
           />
         </div>
 
@@ -124,14 +124,16 @@
 import {
   serchByKeyGroup,
   getToken,
-  uploadToQiniu,
-  agentApply
+  uploadFileToQiniu
 } from '@/api/common'
+
+import { agentApply } from '@/api/user'
 
 export default {
   components: {},
   data () {
     return {
+      domin: process.env.VUE_APP_QINIU_DOMIN,
       pickerType: '',
       pickerConfig: {
         show: false,
@@ -147,7 +149,7 @@ export default {
         applyName: '',
         cityId: '',
         teachingCampName: '',
-        userName: '',
+        fullName: '',
         idenType: '',
         idenName: '',
         cardNo: '',
@@ -181,47 +183,63 @@ export default {
       })
     },
     onSubmit() {
-      this.$router.push({path: ''})
-      console.log(this.form)
-      console.log(this.fileList)
-      // agentApply().then(res => {
+      // this.$router.push({path: ''})
+      let params = {
+        applyType: this.form.applyType,
+      }
+      if (this.fileList && this.fileList.length < 2) {
+        return;
+      }
 
-      // })
+      if (params.applyType == 'TEACHING_CAMP') {
+        params.teachingCampName = this.form.teachingCampName
+        params.cityId = '500106'
+      }
+
+      params = {
+        fullName: this.form.fullName,
+        cardType: this.form.cardType,
+        cardNo: this.form.cardNo,
+        telNo: this.form.telNo,
+        idChardFontPhoto: this.fileList[0].url,
+        idChardBackPhoto: this.fileList[1].url,
+        applyReason: this.form.applyReason,
+      }
+
+      agentApply(params).then(res => {
+        this.$router.push({
+          path: '/applyResult'
+        })
+      })
     },
     onOversize(file) {
       Toast('文件大小不能超过' + this.maxUploadSize/ 1024 / 1024);
     },
-    beforeRead (file) {
-      file.status = 'uploading';
-      file.message = '上传中...';
-
-      getToken().then(res => {
-        if (res.code == 200) {
-          const fileName = file.name
-          this.uploadParams = {
-            token: res.data,
-            key: 'picture/' + new Date().getTime() + '.' + fileName.split('.').pop().toLowerCase(),
-            name: fileName,
-            file: file.file
-          }
-        } else {
-          return false;
+    async beforeRead (file) {
+      await getToken({}).then(res => {
+        const fileName = file.name
+        this.uploadParams = {
+          token: res.data,
+          key: 'picture/' + new Date().getTime() + '.' + fileName.split('.').pop().toLowerCase(),
+          name: fileName,
+          file: file
         }
+        return true;
       })
     },
-    afterRead({ file }) {
-      uploadToQiniu(this.uploadParams).then(res => {
-        if (res.code == 200) {
-          // this.fileList.push({
-          //   content: file.content,
-          //   status: 'failed',
-          //   message: '上传失败',
-          //   url: res.
-          // })
-        } else {
-          file.status = 'failed';
-          file.message = '上传失败';
-        }
+    afterRead( file ) {
+      file.status = 'uploading'
+      file.message = '上传中...'
+      uploadFileToQiniu(this.uploadParams, function(event) {
+        //TODO 列表上传进度
+        // _this.progressVal = parseInt((event.loaded / event.total) * 100);
+        // option.onProgress({
+        //     percent: parseInt((event.loaded / event.total) * 100)
+        // });
+      }).then(res => {
+        file.url = this.domin + this.uploadParams.key
+        file.status = 'complete'
+        file.message = ''
       })
     },
     showPicker(type) {
