@@ -20,3 +20,22 @@ export const agentApply = params => post('/wx/api/personal/agentApply', params)
 // 代理商申请状态
 export const getAgentStatus = params => get('/wx/api/personal/getAgentApplyResult', params)
 
+// 账户余额
+export const getMyMoney = params => get('/wx/api/personal/getUserIncomeCashoutTotal', params)
+
+// 获取最近一次提现申请信息
+export const getCashoutApplyInfo = params => get('/wx/api/personal/getLastCashoutApply', params)
+
+// 提现申请
+export const cashoutApply = params => post('/wx/api/personal/cashoutApply', params)
+
+// 提现结果
+export const cashoutResult = params => get('/wx/api/personal/getCashoutApplyResult', params)
+
+// 收支总额
+export const getUserIncomeCashoutTotal = params => get('/wx/api/personal/getUserIncomeCashoutTotal', params)
+
+// 收支明细
+export const getIncomeCashoutDetail = params => post('/wx/api/personal/getIncomeCashoutDetail', params)
+
+
