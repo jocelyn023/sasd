@@ -2,29 +2,33 @@
   <div class="course-detail-page">
     <div class="course-video-block">
       <video
-        src="https://vd2.bdstatic.com/mda-kk4vqsmdxiiw40bz/sc/cae_h264_clips/1604584081/mda-kk4vqsmdxiiw40bz.mp4?auth_key=1609512380-0-0-27f2f7ebc3c767201fbcf07a45e80dab&bcevod_channel=searchbox_feed&pd=1&pt=3&abtest="
-        poster="https://tukuimg.bdstatic.com/processed/5c40d2171b9dec12be32c3f13b9dac31.jpg@s_2,w_681,h_381,q_100,f_webp">
+        :src="videoPath"
+        :poster="courseInfo.thumbnail">
       </video>
       <i class="icon_play"></i>
 
     </div>
     <div class="course-main-con">
-      <p class="course-title">popping精品学习</p>
-      <p class="course-num">课程方式: 线上课程</p>
-      <p class="course-num">共50课时</p>
-      <p class="course-price">￥300</p>
+      <p class="course-title">{{courseInfo.name}}</p>
+      <p class="course-num">舞种: {{courseInfo.dancyTypeValue}} <span
+          class="level">等级：{{courseInfo.dancyLevelValue}}</span></p>
+      <p class="course-num">举办地区: {{courseInfo.cityNamePath}}</p>
+      <p class="course-num">课程方式: {{courseInfo.teachingTypeValue}}课程</p>
+      <p class="course-num">课程结束时间: {{courseInfo.endDate}}</p>
+      <p class="course-num">共{{courseInfo.courseLength}}课时</p>
+      <p class="course-price">￥{{courseInfo.price}}</p>
     </div>
     <div class="line5"></div>
     <div class="course-tab-block">
       <van-tabs v-model="active">
         <van-tab title="课程详情">
           <div class="tab-course-info">
-            课程详情
+            {{courseInfo.intro}}
           </div>
         </van-tab>
         <van-tab title="课程目录">
-          <template v-for="(item, index) in courseList">
-            <cardCourse :key="index" :item="item"></cardCourse>
+          <template v-for="(item, index) in courseCatalogList">
+            <cardCourse @handleClick="playVideo" :key="index" :item="item"></cardCourse>
           </template>
         </van-tab>
       </van-tabs>
@@ -41,6 +45,11 @@
 </template>
 
 <script>
+  import {
+    getCourseDetailInfo,
+    getCourseCatalogList,
+    getVedioAddress
+  } from '@/api/course'
   import cardCourse from "@/components/cardCourse";
   export default {
     components: {
@@ -50,39 +59,53 @@
       return {
         active: 1,
         type: this.$route.query.type,
-        courseList: [{
-            id: 1,
-            img: "https://img.yzcdn.cn/vant/cat.jpeg",
-            duration: "12:12",
-            title: "hipop",
-            status: 0
-          },
-          {
-            id: 2,
-            duration: "12:10",
-            img: "https://img.yzcdn.cn/vant/cat.jpeg",
-            title: "hipop",
-            status: 1
-          },
-          {
-            id: 2,
-            duration: "12:10",
-            img: "https://img.yzcdn.cn/vant/cat.jpeg",
-            title: "hipop",
-            status: 2
-          },
-          {
-            id: 2,
-            duration: "12:10",
-            img: "https://img.yzcdn.cn/vant/cat.jpeg",
-            title: "hipop",
-            status: 3
-          }
-        ]
+        videoPath: "",
+        courseInfo: {
+          cityId: "110102"
+          // cityNamePath: "北京,北京市,西城区"
+          // courseHours: 30
+          // courseLength: "30"
+          // dancyLevel: "lv3"
+          // dancyLevelValue: "三级"
+          // dancyType: "Popping"
+          // dancyTypeValue: "Popping"
+          // endDate: "2022-01-22"
+          // id: "1349729841098825729"
+          // intro: null
+          // name: "111"
+          // price: 199
+          // startDate: "2021-01-21"
+          // teachingType: "ON"
+          // teachingTypeValue: "线上"
+          // thumbnail: "http://qiniu.csda.cn.com/picture/1610621367127.jpg"
+        },
+        courseCatalogList: [{
+          // duration: "120"
+          // id: "1352456149945257985"
+          // ifTry: "1"
+          // name: "breaking课程1"
+          // orderNo: 1
+          // thumbnail: "http://qiniu.csda.cn.com/picture/1611297816825.jpg"
+          // tryDuration: "2"
+          // vedioId: "1352456149848788993"         
+        }],
       };
+    },
+    mounted() {
+      this.getCourseDetailInfo();
+      this.getCourseCatalogList(); 
+      this.getVedioAddress("1352456149848788993"); 
     },
 
     methods: {
+      getVedioAddress(id) {
+        getVedioAddress({vedioId:id}).then(res => {
+          this.videoPath = res.data
+        })
+      },
+      playVideo(item){
+        this.getVedioAddress(item.vedioId)
+      },
       buyCourse() {
         this.$router.push({
           path: "/courseBuy",
@@ -90,7 +113,25 @@
             id: this.$route.query.id
           }
         })
-      }
+      },
+      getCourseCatalogList() {
+        let params = {
+          courseId: this.$route.query.id,
+        }
+
+        getCourseCatalogList(params).then(res => {
+          this.courseCatalogList = res.data
+        })
+      },
+      getCourseDetailInfo() {
+        let params = {
+          courseId: this.$route.query.id,
+        }
+
+        getCourseDetailInfo(params).then(res => {
+          this.courseInfo = res.data
+        })
+      },
     }
   };
 </script>
@@ -123,6 +164,11 @@
     .course-main-con {
       padding: 0 16px;
 
+      .level {
+        display: inline-block;
+        margin-left: 10px;
+      }
+
       p {
         margin: 0;
         padding: 0;
@@ -144,7 +190,7 @@
       }
 
       .course-price {
-        margin-top: 16px;
+        margin-top: 5px;
         font-size: 21px;
         color: #a0191f;
         line-height: 24px;
@@ -171,7 +217,8 @@
         background: #a0191f;
       }
     }
-    .tab-course-info{
+
+    .tab-course-info {
       padding: 0 16px;
     }
 

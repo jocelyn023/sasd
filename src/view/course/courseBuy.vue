@@ -9,10 +9,10 @@
     </div>
     <div class="buy-course-info">
       <h3>课程信息</h3>
-      <commonCover :info="info"></commonCover>
+      <commonCover :info="courseInfo"></commonCover>
     </div>
     <div class="b-buy-box">
-      <p><span class="col-gray-9 f12">价格</span> 399.00</p>
+      <p><span class="col-gray-9 f12">价格</span>￥{{courseInfo.price}}</p>
       <van-button type="theme" class="btn">确认支付</van-button>
     </div>
 
@@ -22,6 +22,9 @@
 </template>
 
 <script>
+import {
+    getCourseDetailInfo,
+  } from '@/api/course'
   import commonCover from "@/components/commonCover";
   export default {
     components: {
@@ -32,6 +35,7 @@
         sexShow: false,
         typeShow: false,
         value: "",
+        courseInfo: {},
         typeActions: [{
           name: "身份证"
         }, {
@@ -53,8 +57,19 @@
 
       };
     },
-
+mounted() {
+      this.getCourseDetailInfo();
+    },
     methods: {
+      getCourseDetailInfo() {
+        let params = {
+          courseId: this.$route.query.id,
+        }
+
+        getCourseDetailInfo(params).then(res => {
+          this.courseInfo = res.data
+        })
+      },
       onSelect(item) {
         console.log(item);
         this.sexShow = false;

@@ -5,13 +5,13 @@
       width="90"
       height="56"
       fit="cover"
-      :src="item.img"
+      :src="item.thumbnail"
     />
     <div class="flex-auto">
-      <div class="van-ellipsis m-b-10 course-title">{{ item.title }}</div>
+      <div class="van-ellipsis m-b-10 course-title">{{ item.name }}</div>
       <div class="flex">
         <span class="col-gray-9 f12">{{ item.duration }}</span>
-        <van-button v-if="item.status == 1" type="info" plain hairline>试看</van-button>
+        <van-button v-if="item.ifTry == 1" type="info" plain hairline @click="handeClick">试看</van-button>
         <van-button v-if="item.status == 2" type="info" plain hairline>学习中</van-button>
         <span class="col-gray-9 f12" v-if="item.status == 3">已学习</span>
       </div>
@@ -32,7 +32,11 @@ export default {
   data() {
     return {};
   },
-  methods: {}
+  methods: {
+    handeClick(){
+      this.$emit("handleClick",this.item)
+    }
+  }
 };
 </script>
 

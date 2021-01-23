@@ -1,82 +1,164 @@
 <template>
   <div class="course-list-page">
     <div class="search-block">
-      <van-search v-model="value" show-action shape="round" placeholder="请输入搜索关键词" @search="onSearch"
+      <van-search v-model="queryConditions.name" show-action shape="round" placeholder="请输入搜索关键词" @search="onSearch"
         @cancel="onCancel" />
     </div>
     <div class="filter-select">
-      <van-dropdown-menu>
-        <van-dropdown-item v-model="selectValue" :options="option" />
-      </van-dropdown-menu>
+      <div class="dropdown-item"  @click="showPopup(2)">
+        <span class="dropdown-title">课程状态</span>
+      </div>
+      <div class="dropdown-item" :class="queryConditions.teachingType?'active': ''" @click="showPopup(3)">
+        <span class="dropdown-title">课程方式</span>
+      </div>
+      <div class="dropdown-item" :class="queryConditions.cityId?'active': ''" @click="showPopup(1)">
+        <span class="dropdown-title">地区选择</span>
+      </div>
     </div>
     <div class="course-main">
       <div class="course-sidebar">
         <van-sidebar v-model="activeKey">
-          <van-sidebar-item title="popping" />
-          <van-sidebar-item title="jazz" />
-          <van-sidebar-item title="breaking" />
-          <van-sidebar-item title="hip-hop" />
-          <van-sidebar-item title="locking" />
+          <van-sidebar-item v-for="(item, index) in danceTypeList" :key="index" :title="item.value"
+            @click="sidebarClick(item.keyName)" />
         </van-sidebar>
       </div>
-
       <div class="course-main-right">
-        <div v-for="n in 3" :key="n" @click="handleClick(n)">
-          <commonCover :info="info"></commonCover>
+        <div v-for="(item,index) in courseList" :key="index+'course'" @click="handleClick(item)">
+          <commonCover :info="item"></commonCover>
         </div>
       </div>
     </div>
-
+    <van-popup v-model="showPicker" round position="bottom" :style="{ height: '40%' }">
+      <van-area v-show="selectActive == 1" title="选择城市" :area-list="cityObj" :columns-num="2" value="110101"
+        @cancel="showPicker = false" @confirm="onConfirm" />
+      <van-picker v-show="selectActive == 2" show-toolbar :columns="option" @cancel="showPicker = false"
+        @confirm="onConfirm" />
+      <van-picker v-show="selectActive == 3" show-toolbar :columns="teachingTypeList" @cancel="showPicker = false"
+        @confirm="onConfirm" />
+    </van-popup>
   </div>
 </template>
-
 <script>
+  import {
+    queryCourseInfoPage,
+  } from '@/api/course'
+  import {
+    serchByKeyGroup,
+  } from '@/api/common'
+  import {
+    filterJson
+  } from '@/utils/utils'
   import commonCover from "@/components/commonCover";
+  import city from "@/mixins/city";
   export default {
     components: {
       commonCover
     },
+    mixins: [city],
     data() {
       return {
-        selectValue: 1,
+        showPicker: false,
+        selectActive: 1,
         option: [{
-            text: "全部",
-            value: 0
-          }, {
-            text: "线上",
-            value: 1
-          },
-          {
-            text: "线下",
-            value: 2
-          },
-        ],
+          text: "开课中",
+          key: 2
+        }, {
+          text: "已结课",
+          key: 1
+        }],
         value: "",
+        selectValue: {},
         activeKey: 0,
+        danceTypeList: [],
+        courseList: [],
+        teachingTypeList: [],
+        queryConditions: {
+          danceType: "",
+          name: "",
+          teachingType: "",
+          cityId: ""
+        },
         info: {
-          status: 1,
-          path: "https://img.yzcdn.cn/vant/cat.jpeg",
-          desc: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-          price: "132"
-        }
+          // dancyType: "Popping"
+          // dancyTypeValue: "Popping"
+          // id: "1349729841098825729"
+          // name: "111"
+          // price: 199
+          // teachingType: "ON"
+          // teachingTypeValue: "线上"
+          // thumbnail: "http://qiniu.csda.cn.com/picture/1610621367127.jpg",
+        },
       };
+    },
+    mounted() {
+      this.getDanceTypeList();
+      this.getModeList();
     },
 
     methods: {
-      handleClick(id){
+      getDanceTypeList() {
+        serchByKeyGroup("DANCY_TYPE").then(res => {
+          this.danceTypeList = res.data;
+          this.queryConditions.danceType = this.danceTypeList[0].keyName
+          this.getCourseList();
+        })
+      },
+      getModeList() {
+        serchByKeyGroup("EXAM_MODE").then(res => {
+          this.teachingTypeList = res.data.map(item => {
+            return {
+              text: item.value,
+              key: item.keyName
+            }
+          })
+          console.log(this.teachingTypeList)
+        })
+      },
+
+      getCourseList(page) {
+        let params = {
+          page: page,
+          rows: 10,
+          queryConditions: this.queryConditions
+        }
+
+        queryCourseInfoPage(filterJson(params)).then(res => {
+          console.log(res)
+          this.courseList = res.data.records;
+        })
+      },
+      sidebarClick(val) {
+        this.queryConditions.danceType = val
+        this.getCourseList(1);
+      },
+      showPopup(active) {
+        this.showPicker = true;
+        this.selectActive = active;
+      },
+      onConfirm(value) {
+        this.selectValue = value;
+        this.showPicker = false;
+        if (this.selectActive == 1) {
+          this.queryConditions.cityId = value[1].code
+        } else if (this.selectActive == 3) {
+          this.queryConditions.teachingType = value.key
+        }
+        this.getCourseList(1);
+      },
+      handleClick(item) {
         this.$router.push({
           path: "/courseDetail",
           query: {
-            id: id,
+            id: item.id,
             type: 1
           }
         })
       },
       onSearch(val) {
-        console.log(val);
+        this.getCourseList(1);
       },
       onCancel() {
-        console.log("取消");
+        this.getCourseList(1);
       }
     }
   };
@@ -84,24 +166,44 @@
 
 <style lang="less" scoped>
   .course-list-page {
-    /deep/.filter-select {
-      .van-dropdown-menu__bar {
-        box-shadow: none;
+    .filter-select {
+      display: flex;
+      padding: 0 19px;
+      height: 48px;
+      background-color: #fff;
+      justify-content: center;
+
+      .dropdown-item {
+        flex: 1;
+        cursor: pointer;
+
+        &.active,&:hover {
+          .dropdown-title {
+            color: #a0191f;
+
+            &:after {
+              border-color: transparent transparent #a0191f #a0191f;
+            }
+          }
+        }
       }
 
-      .van-dropdown-menu__item {
-        justify-content: flex-end;
-        padding-right: 20px;
-      }
-
-      .van-dropdown-menu__title {
-        color: #999999;
+      .dropdown-title {
         padding-right: 15px;
+        position: relative;
       }
 
-      .van-dropdown-menu__title::after {
+      .dropdown-title:after {
         border: 5px solid;
-        border-color: transparent transparent #dcdee0 #dcdee0;
+        position: absolute;
+        top: 50%;
+        right: -0.10667rem;
+        margin-top: -7px;
+        border-color: transparent transparent #999999 #999999;
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+        opacity: .8;
+        content: '';
       }
     }
 

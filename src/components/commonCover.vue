@@ -1,11 +1,11 @@
 <template>
   <div class="cover-block">
-    <p class="online-status" v-if="info.status == 1"><span>线上</span></p>
+    <p class="online-status" v-if="info.status == 1"><span>{{info.teachingTypeValue}}</span></p>
     <div class="pic-box">
-      <van-image :width="width" :height="height" fit="cover" :src="info.path" />
+      <van-image :width="width" :height="height" fit="cover" :src="info.thumbnail" />
     </div>
     <div class="cover-item">
-      <p class="van-ellipsis">{{info.desc}}</p>
+      <p class="van-ellipsis">{{info.name}}</p>
       <span class="price">￥{{info.price}}</span>
     </div>
   </div>
