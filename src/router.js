@@ -112,7 +112,8 @@ const routes = [
     name: 'msgList',
     component: () => import('./view/user/msgList'),
     meta: {
-      title: '消息列表'
+      title: '消息列表',
+      hideNavBar: true
     }
   },
   {

@@ -5,12 +5,33 @@
         <div class="label">
           <div class="f12 tips"><span class="col-theme">*</span> 请选择您要认证的类型</div>
           <van-field
-            v-model="form.type"
+            v-model="form.applyName"
             placeholder="请选择"
             is-link
             readonly
             @click="showPicker('applytype')"
-            :rules="rules.type"
+            :rules="rules.applyType"
+          />
+        </div>
+
+        <div class="label" v-if="form.applyType == 'TEACHING_CAMP'">
+          <div class="f12 tips"><span class="col-theme">*</span> 请选择师资营所在地区</div>
+          <van-field
+            v-model="form.cityId"
+            placeholder="请选择"
+            is-link
+            readonly
+            @click="showPicker('applytype')"
+            :rules="rules.cityId"
+          />
+        </div>
+
+        <div class="label" v-if="form.applyType == 'TEACHING_CAMP'">
+          <div class="f12 tips"><span class="col-theme">*</span> 请输入您的师资营名称</div>
+          <van-field
+            v-model="form.teachingCampName"
+            placeholder="请输入"
+            :rules="rules.teachingCampName"
           />
         </div>
 
@@ -26,53 +47,57 @@
         <div class="label">
           <div class="f12 tips"><span class="col-theme">*</span> 请选择您的证件类型</div>
           <van-field
-            v-model="form.idenType"
+            v-model="form.idenName"
             placeholder="请选择"
             is-link
             readonly
             @click="showPicker('identype')"
-            :rules="rules.idenType"
+            :rules="rules.idenName"
           />
         </div>
 
         <div class="label">
           <div class="f12 tips"><span class="col-theme">*</span> 请输入您的证件号码</div>
           <van-field
-            v-model="form.idCard"
+            v-model="form.cardNo"
             placeholder="请输入"
-            :rules="rules.idCard"
+            :rules="rules.cardNo"
           />
         </div>
 
         <div class="label">
           <div class="f12 tips"><span class="col-theme">*</span> 请输入您的联系电话</div>
           <van-field
-            v-model="form.tel"
+            v-model="form.telNo"
             placeholder="请输入"
-            :rules="rules.tel"
+            :rules="rules.telNo"
           />
         </div>
 
         <div class="label">
           <div class="f12 tips"><span class="col-theme">*</span> 请提供身份证正反面照片</div>
           <van-uploader
+            :max-size="maxUploadSize"
             v-model="fileList"
             multiple
+            :before-read="beforeRead"
             :after-read="afterRead"
             :max-count="2"
+            @oversize="onOversize"
           />
         </div>
 
         <div class="label">
-          <div class="f12 tips"><span class="col-theme">*</span> 请提供身份证正反面照片</div>
+          <div class="f12 tips"><span class="col-theme">*</span> 请输入您的申请理由</div>
           <van-field
-            v-model="form.reason"
+            v-model="form.applyReason"
             rows="2"
             autosize
             type="textarea"
             maxlength="50"
             placeholder="请输入留言"
             show-word-limit
+            :rules="rules.applyReason"
           />
         </div>
         
@@ -86,17 +111,25 @@
       <van-picker
         :title="pickerConfig.title"
         show-toolbar
+        value-key="value"
         :columns="pickerConfig.columns"
         @confirm="onConfirm"
-        @cancel="closePicker"
+        @cancel="pickerConfig.show = false"
       />
     </van-popup>
   </div>
 </template>
 
 <script>
+import {
+  serchByKeyGroup,
+  getToken,
+  uploadToQiniu,
+  agentApply
+} from '@/api/common'
+
 export default {
-  components: { },
+  components: {},
   data () {
     return {
       pickerType: '',
@@ -105,47 +138,91 @@ export default {
         title: '',
         columns: []
       },
-      typeColumns: ['杭州', '宁波', '温州', '绍兴', '湖州', '嘉兴', '金华', '衢州'],
-      idenColumns: ['身份证', '护照'],
+      maxUploadSize: 1024 * 1024 * 3,
+      typeColumns: [],
+      idenColumns: [],
+      uploadParams: {},
       form: {
-        type: '',
+        applyType: '', 
+        applyName: '',
+        cityId: '',
+        teachingCampName: '',
         userName: '',
         idenType: '',
-        idCard: '',
-        tel: '',
-        avatar: '',
-        reason: ''
+        idenName: '',
+        cardNo: '',
+        telNo: '',
+        applyReason: ''
       },
-      fileList: [{
-        url: 'https://cloud-image',
-        isImage: true,
-        status: 'uploading',
-        message: '上传中...'
-      }],
+      fileList: [],
       rules: {
-        type: [{ required: false, message: '请选择认证类型' }],
-        userName: [{ required: true, message: '请填写用户名' }],
-        idenType: [{ required: false, message: '请选择证件类型' }],
-        idCard: [{ required: true, message: '请填写用户名' }],
-        tel: [{ required: true, message: '请填写联系电话' }],
-        avatar: [{ required: true, message: '请填写用户名' }],
-        reason: [{ required: true, message: '请填写用户名' }],
+        applyName: [{ required: false, message: '请选择认证类型' }],
+        cityId: [{ required: false, message: '请选择认证类型' }],
+        teachingCampName: [{ required: true, message: '请填写师资营名称' }],
+        fullName: [{ required: true, message: '请填写用户名' }],
+        idenName: [{ required: false, message: '请选择证件类型' }],
+        cardNo: [{ required: true, message: '请填写用户名' }],
+        telNo: [{ required: true, message: '请填写联系电话' }],
+        applyReason: [{ required: true, message: '请填写申请原因' }],
       }
     }
   },
+  created () {
+    this.init()
+  },
   methods: {
+    init () {
+      serchByKeyGroup('AGENT_TYPE').then(res => {
+        this.typeColumns = res.data
+      })
+
+      serchByKeyGroup('CARD_TYPE').then(res => {
+        this.idenColumns = res.data
+      })
+    },
     onSubmit() {
       this.$router.push({path: ''})
+      console.log(this.form)
+      console.log(this.fileList)
+      // agentApply().then(res => {
+
+      // })
     },
-    afterRead(file) {
-      console.log(file)
+    onOversize(file) {
+      Toast('文件大小不能超过' + this.maxUploadSize/ 1024 / 1024);
+    },
+    beforeRead (file) {
       file.status = 'uploading';
       file.message = '上传中...';
 
-      setTimeout(() => {
-        file.status = 'failed';
-        file.message = '上传失败';
-      }, 1000);
+      getToken().then(res => {
+        if (res.code == 200) {
+          const fileName = file.name
+          this.uploadParams = {
+            token: res.data,
+            key: 'picture/' + new Date().getTime() + '.' + fileName.split('.').pop().toLowerCase(),
+            name: fileName,
+            file: file.file
+          }
+        } else {
+          return false;
+        }
+      })
+    },
+    afterRead({ file }) {
+      uploadToQiniu(this.uploadParams).then(res => {
+        if (res.code == 200) {
+          // this.fileList.push({
+          //   content: file.content,
+          //   status: 'failed',
+          //   message: '上传失败',
+          //   url: res.
+          // })
+        } else {
+          file.status = 'failed';
+          file.message = '上传失败';
+        }
+      })
     },
     showPicker(type) {
       this.pickerConfig.show = true
@@ -157,12 +234,15 @@ export default {
         this.pickerConfig.title = "证件类型"
         this.pickerConfig.columns = this.idenColumns
       }
-      console.log(this.pickerConfig)
     },
     onConfirm(val, index) {
-      this.closePicker()
+      this.pickerConfig.show = false
       if (this.pickerType === 'applytype') {
-        this.form.type = val
+        this.form.applyName = val.value
+        this.form.applyType = val.keyName
+      } else {
+        this.form.idenName = val.value
+        this.form.idenType = val.keyName
       }
     },
     closePicker() {
