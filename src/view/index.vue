@@ -16,6 +16,7 @@
     <van-tabs type="card" class="m-b-10">
       <van-tab v-for="(item, index) in typeList" :key="index" :title="item"></van-tab>
     </van-tabs>
+    
     <!-- 内容列表 -->
     <div class="container">
       <div class="see-more">
@@ -48,7 +49,6 @@
         </div>
       </template>
     </template>
-    <!-- <commonCover :info="info"></commonCover> -->
     <CommonFt :active="0"></CommonFt>
   </div>
 </template>
@@ -83,21 +83,6 @@ export default {
         path: "https://img.yzcdn.cn/vant/cat.jpeg",
         desc: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
         price: "132"
-      }],
-      newsList: [{
-        id: 1,
-        link: '/studyList',
-        imgs: ["https://img.yzcdn.cn/vant/cat.jpeg"],
-        title: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        times: "2021-01-01",
-        author: '云南合作单位'
-      },{
-        id: 2,
-        link: '/studyList',
-        imgs: ["https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg", "https://img.yzcdn.cn/vant/cat.jpeg"],
-        title: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        times: "2021-01-01",
-        author: '云南合作单位'
       }]
     };
   },

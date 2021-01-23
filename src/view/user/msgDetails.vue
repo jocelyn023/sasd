@@ -1,26 +1,37 @@
 <template>
   <div class="msg-details">
-    <div class="msg-date col-gray-3 f12 txt-c">2020-01-01</div>
+    <div class="msg-date col-gray-3 f12 txt-c">{{ detail.createDate}}</div>
 
-    <div class="content bg-white f14" v-html="content"></div>
+    <div class="content bg-white f14" v-html="detail.content"></div>
   </div>
 </template>
 
 <script>
+import { getMessageDetailAndRead } from '@/api/user'
+
 export default {
   data() {
     return {
-      id: null,
-      loading: false,
-      content: ''
+      params: {
+        id: this.$route.query.id
+      },
+      loading: true,
+      content: '',
+      detail: {}
     }
   },
   created() {
-    this.id = this.$route.query.id;
+    this.getMessageDetailAndRead();
   },
   methods:{
     getContent() {
       this.content = '<p>111</p><p>111</p><p>111</p>';
+    },
+    getMessageDetailAndRead () {
+      getMessageDetailAndRead(this.params).then(res => {
+        this.loading = false
+        this.detail = res.data
+      })
     }
   }
 };

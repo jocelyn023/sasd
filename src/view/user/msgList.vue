@@ -1,53 +1,87 @@
 <template>
   <div>
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
-    >
+    <van-nav-bar
+      safe-area-inset-top
+      :title="title"
+      left-arrow
+      @click-left="onClickLeft"
+    />
 
-      <template v-for="item in list">
-        <div class="msg-item flex" :key="item.id" @click="pushRouter(item.id)">
-          <van-icon color="#a0191f" v-if="msgType == '1'" class="m-r-10" size="24px" name="setting-o" />
-          <div style="width: 100%">
-            <div class="flex title-box">
-              <div class="flex">
-                <van-badge v-if="msgType != '1'" dot class="m-r-5" />
-                <span class="van-ellipsis msg-title f16">{{msgType == '1'?'系统公告': '考试提醒'}}</span>
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <template v-for="(item, index) in list">
+          <div class="msg-item flex" :key="index" @click="pushRouter(item.id)">
+            <van-icon color="#a0191f" v-if="title == 'system'" class="m-r-10" size="24px" name="setting-o" />
+            <div style="width: 100%">
+              <div class="flex title-box">
+                <div class="flex">
+                  <van-badge v-if="item.status == 'to_read'" dot class="m-r-5" />
+                  <span class="van-ellipsis msg-title f16">{{ item.title }}</span>
+                </div>
+                <div>{{ item.createDate }}</div>
               </div>
-              <div>2020-01-01</div>
+              <div class="subtitle van-multi-ellipsis--l2">{{ item.content }}</div>
             </div>
-            <div class="subtitle van-multi-ellipsis--l2">{{item.content}}</div>
           </div>
-        </div>
-      </template>
-    </van-list>
+        </template>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
+import { getMessagePageByType } from '@/api/user'
+
 export default {
   data() {
     return {
-      msgType: this.$route.query.type, //1 系统公告， 2考试提醒
+      title: this.$route.query.title,
+      params: {
+        rows: 10,
+        page: 1,
+        queryConditions:{
+          messageType: this.$route.query.type
+        }
+      },
       loading: false,
       finished: false,
-      list: [{
-        id: 1,
-        title: '',
-        content: '1消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心'
-      }, {
-        id: 2,
-        title: '',
-        content: '2消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心消息中心'
-      }]
+      refreshing: false,
+      list: []
     }
   },
   methods:{
     onLoad() {
-      this.loading = true
-      this.finished = true
+      if (this.refreshing) {
+        this.list = [];
+        this.refreshing = false;
+        this.params.page = 1;
+      }
+      getMessagePageByType(this.params).then(res => {
+        this.loading = false;
+        this.params.total = res.data.total;
+        if (this.params.page < res.data.total) {
+          this.params.page = this.params.page + 1
+        } else {
+          this.finished = true;
+        }
+        res.data.records.forEach(item => {
+          this.list.push(item)
+        })
+      })
+    },
+    onRefresh () {
+      // 清空列表数据
+      this.finished = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      this.loading = true;
+      this.onLoad();
     },
     pushRouter(id) {
       this.$router.push({
@@ -56,6 +90,9 @@ export default {
           id: id
         }
       })
+    },
+    onClickLeft () {
+      this.$router.go(-1)
     }
   }
 };
