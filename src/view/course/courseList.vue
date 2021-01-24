@@ -1,20 +1,22 @@
 <template>
   <div class="course-list-page">
-    <div class="search-block">
-      <van-search v-model="queryConditions.name" show-action shape="round" placeholder="请输入搜索关键词" @search="onSearch"
-        @cancel="onCancel" />
-    </div>
-    <div class="filter-select">
-      <div class="dropdown-item"  @click="showPopup(2)">
-        <span class="dropdown-title">课程状态</span>
+    <van-sticky>
+      <div class="search-block">
+        <van-search v-model="queryConditions.name" show-action shape="round" placeholder="请输入搜索关键词" @search="onSearch"
+          @cancel="onCancel" />
       </div>
-      <div class="dropdown-item" :class="queryConditions.teachingType?'active': ''" @click="showPopup(3)">
-        <span class="dropdown-title">课程方式</span>
+      <div class="filter-select">
+        <div class="dropdown-item" :class="queryConditions.courseStatus?'active': ''" @click="showPopup(2)">
+          <span class="dropdown-title">课程状态</span>
+        </div>
+        <div class="dropdown-item" :class="queryConditions.teachingType?'active': ''" @click="showPopup(3)">
+          <span class="dropdown-title">课程方式</span>
+        </div>
+        <div class="dropdown-item" :class="queryConditions.cityId?'active': ''" @click="showPopup(1)">
+          <span class="dropdown-title">地区选择</span>
+        </div>
       </div>
-      <div class="dropdown-item" :class="queryConditions.cityId?'active': ''" @click="showPopup(1)">
-        <span class="dropdown-title">地区选择</span>
-      </div>
-    </div>
+    </van-sticky>
     <div class="course-main">
       <div class="course-sidebar">
         <van-sidebar v-model="activeKey">
@@ -23,15 +25,19 @@
         </van-sidebar>
       </div>
       <div class="course-main-right">
-        <div v-for="(item,index) in courseList" :key="index+'course'" @click="handleClick(item)">
-          <commonCover :info="item"></commonCover>
-        </div>
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+          <div v-for="(item,index) in courseList" :key="index+'course'" @click="handleClick(item)">
+            <commonCover :info="item"></commonCover>
+          </div>
+        </van-list>
+
+
       </div>
     </div>
     <van-popup v-model="showPicker" round position="bottom" :style="{ height: '40%' }">
       <van-area v-show="selectActive == 1" title="选择城市" :area-list="cityObj" :columns-num="2" value="110101"
         @cancel="showPicker = false" @confirm="onConfirm" />
-      <van-picker v-show="selectActive == 2" show-toolbar :columns="option" @cancel="showPicker = false"
+      <van-picker v-show="selectActive == 2" show-toolbar :columns="teachingStatusList" @cancel="showPicker = false"
         @confirm="onConfirm" />
       <van-picker v-show="selectActive == 3" show-toolbar :columns="teachingTypeList" @cancel="showPicker = false"
         @confirm="onConfirm" />
@@ -59,24 +65,19 @@
       return {
         showPicker: false,
         selectActive: 1,
-        option: [{
-          text: "开课中",
-          key: 2
-        }, {
-          text: "已结课",
-          key: 1
-        }],
         value: "",
         selectValue: {},
         activeKey: 0,
         danceTypeList: [],
         courseList: [],
         teachingTypeList: [],
+        teachingStatusList: [],
         queryConditions: {
           danceType: "",
           name: "",
           teachingType: "",
-          cityId: ""
+          cityId: "",
+          courseStatus: ""
         },
         info: {
           // dancyType: "Popping"
@@ -88,14 +89,35 @@
           // teachingTypeValue: "线上"
           // thumbnail: "http://qiniu.csda.cn.com/picture/1610621367127.jpg",
         },
+        loading: false,
+        finished: false,
+        page: 1,
       };
     },
     mounted() {
       this.getDanceTypeList();
       this.getModeList();
+      this.getTeachingStatusList();
     },
 
     methods: {
+      onLoad() {
+        let page = 1;
+        this.finished = true;
+        this.getCourseList(page);
+      },
+      getTeachingStatusList() {
+        serchByKeyGroup("COURSE_TEACHING_STATUS").then(res => {
+          this.teachingStatusList = res.data.map(item => {
+            return {
+              text: item.value,
+              key: item.keyName
+            }
+          })
+          this.queryConditions.courseStatus = this.teachingStatusList[0].keyName
+          this.getCourseList();
+        })
+      },
       getDanceTypeList() {
         serchByKeyGroup("DANCY_TYPE").then(res => {
           this.danceTypeList = res.data;
@@ -111,19 +133,17 @@
               key: item.keyName
             }
           })
-          console.log(this.teachingTypeList)
         })
       },
 
       getCourseList(page) {
         let params = {
-          page: page,
+          page: page ? page : this.page,
           rows: 10,
           queryConditions: this.queryConditions
         }
 
         queryCourseInfoPage(filterJson(params)).then(res => {
-          console.log(res)
           this.courseList = res.data.records;
         })
       },
@@ -142,6 +162,8 @@
           this.queryConditions.cityId = value[1].code
         } else if (this.selectActive == 3) {
           this.queryConditions.teachingType = value.key
+        } else if (this.selectActive == 2) {
+          this.queryConditions.courseStatus = value.key
         }
         this.getCourseList(1);
       },
@@ -177,7 +199,8 @@
         flex: 1;
         cursor: pointer;
 
-        &.active,&:hover {
+        &.active,
+        &:hover {
           .dropdown-title {
             color: #a0191f;
 
@@ -229,6 +252,7 @@
     }
 
     .course-main {
+      height: calc(100vh - 120px);
       display: flex;
       padding-top: 5px;
 
@@ -239,6 +263,7 @@
       }
 
       .course-main-right {
+        overflow: auto;
         width: calc(100% - 114px);
         padding: 20px 18px 20px 10px;
       }

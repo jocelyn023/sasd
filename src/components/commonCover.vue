@@ -1,12 +1,17 @@
 <template>
   <div class="cover-block">
-    <p class="online-status" v-if="info.status == 1"><span>{{info.teachingTypeValue}}</span></p>
+    <p class="online-status" :class="info.courseStatus=='teaching'?'green_bg':'red_bg'">
+      <span>{{info.courseStatusValue}}</span></p>
     <div class="pic-box">
       <van-image :width="width" :height="height" fit="cover" :src="info.thumbnail" />
     </div>
     <div class="cover-item">
       <p class="van-ellipsis">{{info.name}}</p>
       <span class="price">￥{{info.price}}</span>
+    </div>
+    <div class="cover-item gray-color">
+      <p class="mr10">课程方式：{{info.teachingTypeValue}}</p>
+      <p class="van-ellipsis">地区：{{info.cityNamePath}}</p>
     </div>
   </div>
 </template>
@@ -41,6 +46,8 @@
 <style lang="less" scoped>
   .cover-block {
     position: relative;
+    overflow: hidden;
+    border-radius: 10px;
 
     .online-status {
       color: #fff;
@@ -48,26 +55,32 @@
       top: 0;
       right: 0;
       margin: 0;
+      &.red_bg{
+         &:after{
+           border-color: transparent transparent #a0191f;
+         }
+      }
 
       span {
         position: relative;
         z-index: 2;
         transform: rotate(45deg);
         display: block;
-        padding-top: 5px;
+        padding-left: 27px;
+        margin-right: -5px;
         font-size: 9px;
       }
 
       &:after {
         content: "";
         position: absolute;
-        top: -28px;
-        right: -28px;
+        top: -38px;
+        right: -38px;
         z-index: 1;
         transform: rotate(45deg);
         width: 0;
         height: 0;
-        border: 28px solid;
+        border: 37.5px solid;
         border-color: transparent transparent #31ad37;
       }
 
@@ -82,7 +95,20 @@
     .cover-item {
       display: flex;
       line-height: 24px;
-      padding: 10px 0;
+      padding-top: 10px;
+
+      &.gray-color {
+        padding-bottom: 10px;
+        padding-top: 0;
+        color: #999;
+
+        p {
+          font-size: 12px;
+          color: #999999;
+          margin-right: 10px;
+          white-space: nowrap;
+        }
+      }
 
       p {
         margin: 0;

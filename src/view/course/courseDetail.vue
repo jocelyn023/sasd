@@ -61,7 +61,7 @@
         type: this.$route.query.type,
         videoPath: "",
         courseInfo: {
-          cityId: "110102"
+          // cityId: "110102"
           // cityNamePath: "北京,北京市,西城区"
           // courseHours: 30
           // courseLength: "30"

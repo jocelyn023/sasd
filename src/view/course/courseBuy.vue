@@ -1,28 +1,29 @@
 <template>
   <div class="course-buy-page">
-    <div class="buy-user-info">
-      <h3>基础信息填写</h3>
-      <div>
-        <van-field v-model="userInfo.name" label="姓名" placeholder="请输入用户名" />
-        <van-field v-model="userInfo.name" label="联系方式" placeholder="请输入用户名" />
+    <van-form @submit="handlePay">
+      <div class="buy-user-info">
+        <h3>基础信息填写</h3>
+        <div>
+          <van-field v-model="userInfo.name" label="姓名" :rules="[{ required: true, message: '请填写姓名' }]"
+            placeholder="请输入" />
+          <van-field v-model="userInfo.tel" type="tel" name="pattern" label="联系方式" :rules="[{ pattern, required: true, message: '请填写联系方式' }]"
+            placeholder="请输入" />
+        </div>
       </div>
-    </div>
-    <div class="buy-course-info">
-      <h3>课程信息</h3>
-      <commonCover :info="courseInfo"></commonCover>
-    </div>
-    <div class="b-buy-box">
-      <p><span class="col-gray-9 f12">价格</span>￥{{courseInfo.price}}</p>
-      <van-button type="theme" class="btn">确认支付</van-button>
-    </div>
-
-    <van-action-sheet v-model="sexShow" :actions="actions" @select="onSelect" />
-    <van-action-sheet v-model="typeShow" :actions="typeActions" @select="onSelectType" />
+      <div class="buy-course-info">
+        <h3>课程信息</h3>
+        <commonCover :info="courseInfo"></commonCover>
+      </div>
+      <div class="b-buy-box">
+        <p><span class="col-gray-9 f12">价格</span>￥{{courseInfo.price}}</p>
+        <van-button type="theme" class="btn" native-type="submit">确认支付</van-button>
+      </div>
+    </van-form>
   </div>
 </template>
 
 <script>
-import {
+  import {
     getCourseDetailInfo,
   } from '@/api/course'
   import commonCover from "@/components/commonCover";
@@ -32,35 +33,21 @@ import {
     },
     data() {
       return {
-        sexShow: false,
-        typeShow: false,
-        value: "",
+        pattern: /^1[3|4|5|8|7][0-9]\d{8}$/,
         courseInfo: {},
-        typeActions: [{
-          name: "身份证"
-        }, {
-          name: "其他"
-        }],
-        actions: [{
-          name: "男"
-        }, {
-          name: "女"
-        }],
         userInfo: {
-          name: ""
-        },
-        info: {
-          path: "https://img.yzcdn.cn/vant/cat.jpeg",
-          desc: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-          price: "132"
+          name: "",
+          tel: ""
         }
-
       };
     },
-mounted() {
+    mounted() {
       this.getCourseDetailInfo();
     },
     methods: {
+      handlePay(values) {
+        console.log(values);
+      },
       getCourseDetailInfo() {
         let params = {
           courseId: this.$route.query.id,
@@ -88,6 +75,10 @@ mounted() {
   .course-buy-page {
     padding: 5px 16px 68px;
 
+    /deep/.van-field__error-message {
+      text-align: right;
+    }
+
     .buy-user-info {
       width: 343px;
       background: #ffffff;
@@ -106,7 +97,8 @@ mounted() {
       /deep/.van-cell {
         padding: 5px 0;
       }
-      /deep/.van-field__label{
+
+      /deep/.van-field__label {
         color: #333;
       }
 
