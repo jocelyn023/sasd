@@ -83,6 +83,13 @@ const routes = [
       hideNavBar: true
     }
   }, {
+    name: 'channel',
+    component: () => import('./view/user/channel'),
+    meta: {
+      title: '我的渠道',
+      hideNavBar: true
+    }
+  }, {
     name: 'wallet',
     component: () => import('./view/user/wallet'),
     meta: {

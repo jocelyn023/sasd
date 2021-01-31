@@ -20,7 +20,7 @@
 
       <!-- 代理商 -->
       <div class="agent-box flex" v-if="userInfo.ifAgent == 1">
-        <div class="item">我的渠道</div>
+        <div class="item" @click="pushRouter('/channel')">我的渠道</div>
         <div class="item">渠道报表</div>
       </div>
     </div>
@@ -85,7 +85,9 @@ export default {
       } else {
         this.$router.push("/applyResult")
       }
-      
+    },
+    pushRouter (url) {
+      this.$router.push(url)
     }
   }
 }
