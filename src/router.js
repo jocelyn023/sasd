@@ -90,6 +90,13 @@ const routes = [
       hideNavBar: true
     }
   }, {
+    name: 'channelTab',
+    component: () => import('./view/user/channelTab'),
+    meta: {
+      title: '渠道报表',
+      hideNavBar: true
+    }
+  }, {
     name: 'wallet',
     component: () => import('./view/user/wallet'),
     meta: {

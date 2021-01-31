@@ -1,11 +1,11 @@
 <template>
   <div>
-    <van-nav-bar
+    <!-- <van-nav-bar
       safe-area-inset-top
       :title="title"
       left-arrow
       @click-left="onClickLeft"
-    />
+    /> -->
 
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <van-list
