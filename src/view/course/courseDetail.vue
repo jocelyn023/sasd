@@ -1,12 +1,8 @@
 <template>
   <div class="course-detail-page">
-    <div class="course-video-block">
-      <video
-        :src="videoPath"
-        :poster="courseInfo.thumbnail">
-      </video>
-      <i class="icon_play"></i>
-
+    <div class="course-video-block" @click="playVideo">
+      <video :src="videoPath" ref="j_video" :poster="courseInfo.thumbnail" type="video/mp4"></video>
+      <i v-if="!isPlay" class="icon_play" @click.stop="playVideo"></i>
     </div>
     <div class="course-main-con">
       <p class="course-title">{{courseInfo.name}}</p>
@@ -23,7 +19,7 @@
       <van-tabs v-model="active">
         <van-tab title="课程详情">
           <div class="tab-course-info">
-            {{courseInfo.intro}}
+            <div v-html="courseInfo.intro"></div>
           </div>
         </van-tab>
         <van-tab title="课程目录">
@@ -34,13 +30,17 @@
       </van-tabs>
     </div>
     <div class="b-btn-box">
-      <van-button v-if="type == 1" type="theme" class="btn" @click="buyCourse">去购买</van-button>
-      <van-button v-else-if="type == 2" type="theme" class="btn">立即学习</van-button>
-      <van-button v-else-if="type == 3" type="theme disabled" class="btn">参加考试</van-button>
-      <van-button v-else-if="type == 4" type="theme" class="btn">参加考试</van-button>
-      <van-button v-else-if="type == 5" type="theme" class="btn">查看成绩</van-button>
+      <van-button
+        v-if="!courseInfo.coursePurchaseInfo || (courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.status=='PAYING') "
+        type="theme" class="btn" @click="buyCourse">去购买</van-button>
+      <!-- <van-button v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNING'" type="theme" class="btn" to="/studyList">立即学习</van-button> -->
+      <van-button v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNING'"
+        type="theme disabled" class="btn">参加考试</van-button>
+      <van-button
+        v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNED' && courseInfo.coursePurchaseInfo.status=='PAYED'"
+        type="theme" class="btn" @click="toExam">参加考试</van-button>
+      <van-button v-else type="theme" class="btn" to="/scoreList">查看成绩</van-button>
     </div>
-
   </div>
 </template>
 
@@ -50,16 +50,23 @@
     getCourseCatalogList,
     getVedioAddress
   } from '@/api/course'
+  import {
+    toExam
+  } from '@/api/exam'
   import cardCourse from "@/components/cardCourse";
+  import examMixin from "@/mixins/exam";
   export default {
+    mixins: [examMixin],
     components: {
       cardCourse
     },
     data() {
       return {
+        activeVideoIndex: -1,
         active: 1,
         type: this.$route.query.type,
         videoPath: "",
+        isPlay: false,
         courseInfo: {
           // cityId: "110102"
           // cityNamePath: "北京,北京市,西城区"
@@ -93,18 +100,58 @@
     },
     mounted() {
       this.getCourseDetailInfo();
-      this.getCourseCatalogList(); 
-      this.getVedioAddress("1352456149848788993"); 
     },
 
     methods: {
-      getVedioAddress(id) {
-        getVedioAddress({vedioId:id}).then(res => {
-          this.videoPath = res.data
+      toExam() {
+        toExam({
+          purchaseId: 1 //this.courseInfo.id
+        }).then(res => {
+          console.log(res)
+          //if (res.code == 200) {
+          this.purchaseId = 1;
+          this.getStep();
+          // }
         })
       },
-      playVideo(item){
-        this.getVedioAddress(item.vedioId)
+      getVedioAddress(id) {
+        getVedioAddress({
+          vedioId: id
+        }).then(res => {
+          if (res.code == 200) {
+            this.videoPath = res.data
+            let video = this.$refs.j_video;
+            video.src = res.data;
+            setTimeout(() => {
+              video.play();
+              this.isPlay = true;
+            }, 150)
+          }else{
+            console.log(res.returnMsg)
+          }
+        })
+      },
+      pauseVideo() {
+        this.isPlay = false;
+      },
+      playVideo(item) {
+        if (this.isPlay) {
+          this.$refs.j_video.pause();
+          this.isPlay = false
+        } else {
+          if (item) {
+            this.activeVideoIndex = item.vedioId;
+            this.getVedioAddress(item.vedioId)
+          } else {
+            if (this.activeVideoIndex == -1) {
+              if (this.courseCatalogList.length > 0) {
+                this.getVedioAddress(this.courseCatalogList[0].vedioId);
+              }
+            } else {
+              this.$refs.j_video.play();
+            }
+          }
+        }
       },
       buyCourse() {
         this.$router.push({
@@ -120,6 +167,12 @@
         }
 
         getCourseCatalogList(params).then(res => {
+          // TODO
+          res.data.forEach(item => {
+            item.learnStatus = "LEARNING";
+            item.isPay = this.courseInfo.coursePurchaseInfo && this.courseInfo.coursePurchaseInfo.status !=
+              'PAYING';
+          })
           this.courseCatalogList = res.data
         })
       },
@@ -130,6 +183,7 @@
 
         getCourseDetailInfo(params).then(res => {
           this.courseInfo = res.data
+          this.getCourseCatalogList();
         })
       },
     }
@@ -218,8 +272,12 @@
       }
     }
 
-    .tab-course-info {
+    /deep/.tab-course-info {
       padding: 0 16px;
+
+      img {
+        max-width: 100%;
+      }
     }
 
     .b-btn-box {

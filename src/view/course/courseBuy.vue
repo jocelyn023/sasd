@@ -4,9 +4,9 @@
       <div class="buy-user-info">
         <h3>基础信息填写</h3>
         <div>
-          <van-field v-model="userInfo.name" label="姓名" :rules="[{ required: true, message: '请填写姓名' }]"
+          <van-field v-model="purchaseInfo.purchaserName" label="姓名" :rules="[{ required: true, message: '请填写姓名' }]"
             placeholder="请输入" />
-          <van-field v-model="userInfo.tel" type="tel" name="pattern" label="联系方式" :rules="[{ pattern, required: true, message: '请填写联系方式' }]"
+          <van-field v-model="purchaseInfo.tel" type="tel" name="pattern" label="联系方式" :rules="[{ pattern, required: true, message: '请填写联系方式' }]"
             placeholder="请输入" />
         </div>
       </div>
@@ -26,6 +26,9 @@
   import {
     getCourseDetailInfo,
   } from '@/api/course'
+   import {
+    getCookie, setCookie
+  } from '@/utils/utils'
   import commonCover from "@/components/commonCover";
   export default {
     components: {
@@ -35,8 +38,8 @@
       return {
         pattern: /^1[3|4|5|8|7][0-9]\d{8}$/,
         courseInfo: {},
-        userInfo: {
-          name: "",
+        purchaseInfo: {
+          purchaserName: "",
           tel: ""
         }
       };
@@ -45,6 +48,11 @@
       this.getCourseDetailInfo();
     },
     methods: {
+      clearAgentNo(){
+        if(getCookie("agentId")){
+          setCookie("agentId","",-1)
+        }
+      },
       handlePay(values) {
         console.log(values);
       },
@@ -55,18 +63,11 @@
 
         getCourseDetailInfo(params).then(res => {
           this.courseInfo = res.data
+          if(this.courseInfo.coursePurchaseInfo){
+            this.purchaseInfo = this.courseInfo.coursePurchaseInfo
+          }
         })
-      },
-      onSelect(item) {
-        console.log(item);
-        this.sexShow = false;
-        this.userInfo.sex = item.name;
-      },
-      onSelectType(item) {
-        console.log(item);
-        this.typeShow = false;
-        this.userInfo.type = item.name;
-      },
+      }
     }
   };
 </script>

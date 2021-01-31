@@ -1,34 +1,51 @@
 <template>
-  <div class="examstep_3-page">
+  <div class="examstep_3-page" v-if="examInfo.purchaseId">
     <template v-if="status != 5">
-      <template v-if="!offLine">
+      <template v-if="examInfo.teachingType == 'ON'">
         <div>
           <h5 class="exam-requirements-title">请上传考试视频</h5>
           <p class="exam-requirements no-indent"><span>*</span>考评要求： </p>
-          <p class="exam-requirements">1.横屏录制，无特效、无遮挡（带口罩的一律无成绩）</p>
-          <p class="exam-requirements">2.五个片段，方向正确，不抢拍，不早进，完整。</p>
-          <p class="exam-requirements">3.五个片段都是独立核算，（80分以上通过）。</p>
-          <p class="exam-requirements">4.视频大小限制在30M</p>
-        </div>
-        <div v-for="n in 5" :key="n">
-          <p>视频片段{{n}}：</p>
-          <div class="video-upload-list">
-            <div v-if="fileList[n-1]" class="video-box">
-              <video :src="fileList[n-1].url" :poster="fileList[n-1].poster">
-              </video>
-              <i class="icon_play"></i>
+          <template v-if="examInfo.dancyLevel == 'lv4'">
+            <p class="exam-requirements">1.横屏录制，无特效、无遮挡（带口罩的一律无成绩）</p>
+            <p class="exam-requirements">2.五个片段，方向正确，不抢拍，不早进，完整。</p>
+            <p class="exam-requirements">3.五个片段都是独立核算，（80分以上通过）。</p>
+            <p class="exam-requirements">4.视频大小限制在30M</p>
+            <div v-for="(v,index) in videoObj.lv4" :key="index">
+              <p>{{v.text}}：</p>
+              <div class="video-upload-list">
+                <div v-if="examInfo[v.key]" class="video-box">
+                  <video :src="examInfo[v.key]"></video>
+                  <i class="icon_play"></i>
+                </div>
+                <upload v-if="examInfo.status != 'OVER_EXAM'" @success="url=>getVideoPath(url,v.key)"></upload>
+              </div>
             </div>
-            <van-uploader v-else :after-read="afterRead">
-            </van-uploader>
-          </div>
+          </template>
+          <template v-else>
+            <p class="exam-requirements"> 1.ROUTINE(完成度/片段错误（或失误）/乐感）</p>
+            <p class="exam-requirements">2.SOLO时长不低于60秒(元素展示（含元素变化）/ 技巧/乐感或者变形2-3个）</p>
+            <p class="exam-requirements"> 3.教学讲解时长3分钟内（正确示范、节拍清晰、互 动、气氛）</p>
+            <p class="exam-requirements"> 4.视频大小限制在30M</p>
+            <div v-for="(v,index) in videoObj.other" :key="index">
+              <p>{{v.text}}：</p>
+              <div class="video-upload-list">
+                <div v-if="examInfo[v.key]" class="video-box">
+                  <video :src="examInfo[v.key]"></video>
+                  <i class="icon_play"></i>
+                </div>
+                <upload v-if="examInfo.status != 'OVER_EXAM'" @success="url=>getVideoPath(url,v.key)"></upload>
+              </div>
+            </div>
+          </template>
         </div>
-        <p v-if="status == 2" class="tc">
+
+        <p v-if="examInfo.status == 'OVER_EXAM'" class="tc">
           <van-icon name="checked" color="#07c160" style="position: relative; top: 2px;" />
           提交成功, 请耐心等待老师评分！
         </p>
       </template>
       <template v-else>
-        <div v-if="status == 2" class="exam-in-review">
+        <div class="exam-in-review">
           <div>
             <img src="../../assets/exam/icon_success.png" />
           </div>
@@ -36,52 +53,37 @@
         </div>
       </template>
 
-      <div v-if="status == 3" class="result-table-block">
-        <p>视频成绩合格，具体得分如下：</p>
-        <!-- <p>视频成绩不合格，具体得分如下：</p> -->
-        <div v-if="scoreType == 1" class="table-box flex txt-c">
-          <div class="item">文化理论（20分）</div>
-          <div class="item">10分</div>
-
-          <div class="item">文化理论（20分）</div>
-          <div class="item">10分</div>
-
-          <div class="item">文化理论（20分）</div>
-          <div class="item">10分</div>
-
-          <div class="item">文化理论（20分）</div>
-          <div class="item">10分</div>
-
-          <div class="item">文化理论（20分）</div>
-          <div class="item">10分</div>
-
-          <div class="item">文化理论（20分）</div>
-          <div class="item">10分</div>
-        </div>
+      <div v-if="examInfo.status == 'PASS' || examInfo.status == 'NO_PASS'" class="result-table-block">
+        <p  v-if="examInfo.status == 1">视频成绩合格，具体得分如下：</p>
+        <p  v-else>视频成绩不合格，具体得分如下：</p>
         <div v-if="scoreType == 2" class="table-box col-3-table flex txt-c">
           <div class="item w50">文化理论（20分）</div>
-          <div class="item">10分</div>
+          <div class="item">{{examInfo.writtenExamScore}}分</div>
           <div class="item green-color">合格</div>
+          <template v-if="examInfo.dancyLevel == 'lv4'">
+            <template v-for="(v,index) in videoObj.lv4">
+              <div :key="index+'score'" class="item w50">{{v.text}}</div>
+              <div :key="index+'score'" class="item">{{examInfo[v.key+'Score']}}分</div>
+              <div v-if="examInfo[v.key+'Status'] == 1" :key="index+'score'" class="item green-color">合格</div>
+              <div v-else :key="index+'score'" class="item red-color">不合格</div>
+            </template>
+          </template>
+          <template v-else>
+            <template v-for="(v,index) in videoObj.other">
+              <div :key="index+'score'" class="item w50">{{v.text}}</div>
+              <div :key="index+'score'" class="item">{{examInfo['vedioScore'+sKey]}}分</div>
+              <div v-if="examInfo['vedioStatus'+v.key] == 1" :key="index+'score'" class="item green-color">合格</div>
+              <div :key="index+'score'" class="item red-color">不合格</div>
+            </template>
+          </template>
+          <div class="item w50">总得分</div>
+          <div class="item">{{examInfo.vedioScoreTotal}}分</div>
+          <div class="item green-color"></div>
 
-          <div class="item w50">文化理论（20分）</div>
-          <div class="item">10分</div>
-          <div class="item green-color">合格</div>
-
-          <div class="item w50">文化理论（20分）</div>
-          <div class="item">10分</div>
-          <div class="item green-color">合格</div>
-
-          <div class="item w50">文化理论（20分）</div>
-          <div class="item">10分</div>
-          <div class="item green-color">合格</div>
-
-          <div class="item w50">文化理论（20分）</div>
-          <div class="item">10分</div>
-          <div class="item green-color">合格</div>
-
-          <div class="item w50">文化理论（20分）</div>
-          <div class="item">10分</div>
-          <div class="item red-color">不合格</div>
+          <div class="item w50">最终结果</div>
+          <div class="item"></div>
+          <div class="item green-color" v-if="examInfo.status == 1">合格</div>
+          <div class="item red-color" v-else>不合格</div>
         </div>
       </div>
     </template>
@@ -94,56 +96,186 @@
           <van-field name="checkboxGroup">
             <template #input>
               <van-checkbox-group v-model="checkboxGroup">
-                <van-checkbox name="1" shape="square">北体大证书 <span class="red-color">+300</span>元</van-checkbox>
-                <van-checkbox name="2" shape="square">儿青会证书 <span class="red-color"> +120</span>元</van-checkbox>
+                <van-checkbox name="ifBtd" shape="square">北体大证书 <span class="red-color">+300</span>元</van-checkbox>
+                <van-checkbox name="ifEqh" shape="square">儿青会证书 <span class="red-color"> +120</span>元</van-checkbox>
               </van-checkbox-group>
             </template>
           </van-field>
         </div>
       </div>
-
     </template>
     <div class="step-btn-group">
-      <van-button v-if="status != 2 && status != 5" type="theme" plain class="btn" to="/examStep_2">上一步</van-button>
-      <van-button v-if="status == 1" type="theme" class="btn">上传视频</van-button>
-      <van-button v-if="status == 2" type="theme" class="btn mr15 disabled">上一步</van-button>
-      <van-button v-if="status == 2 " type="theme" class="btn disabled">下一步</van-button>
-      <van-button v-if="status == 3" type="theme" class="btn" to="/examStep_3">缴费补考</van-button>
-      <!-- 免费补考 -->
-      <!-- 重新报名该课程 -->
-      <van-button v-if="status == 4" type="theme" class="btn" to="/examStep_4">下一步</van-button>
-      <van-button v-if="status == 5" type="theme" plain class="btn mr15" to="/examStep_4">不换证,下一步</van-button>
-      <van-button v-if="status == 5" type="theme" class="btn" to="/examStep_4">缴费换证</van-button>
+       <template v-if="status == 5">
+        <van-button v-if="status == 5" type="theme" plain class="btn mr15" @click="changeCertificate(1)">不换证,下一步
+        </van-button>
+        <van-button v-if="status == 5" type="theme" class="btn" @click="changeCertificate(2)">缴费换证</van-button>
+      </template>
+      <template v-else-if="examInfo.status == 'OVER_EXAM'">
+        <van-button type="theme" class="btn mr15 disabled">上一步</van-button>
+        <van-button type="theme" class="btn disabled">下一步</van-button>
+      </template>
+      <template v-else-if="examInfo.status == 'PASS'">
+        <van-button type="theme" plain class="btn" @click="nextStep(2)">上一步</van-button>
+        <van-button type="theme" class="btn" @click="status = 5">下一步</van-button>
+      </template>
+      <template v-else-if="examInfo.status == 'NO_PASS'">
+        <!-- TODO -->
+        <van-button type="theme" plain class="btn">返回课程</van-button>
+        <van-button type="theme" class="btn" @click="makeUpFree">免费补考</van-button>
+        <!-- examInfo.mkExamStatus -->
+        <!-- <van-button type="theme" class="btn" @click="makeUpPay">缴费补考</van-button> -->
+        <!-- <van-button type="theme" class="btn" @click="makeUpPay">重新报名该课程</van-button> -->
+      </template>
+      <template v-else>
+        <van-button type="theme" plain class="btn" @click="nextStep(2)">上一步</van-button>
+        <van-button type="theme" class="btn" @click="saveVideo">上传视频</van-button>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+  import examMixin from "@/mixins/exam";
+  import upload from "@/components/uploadVideo";
+  import {
+    Toast
+  } from 'vant';
+  import {
+    saveVideo,
+    changeNoSave,
+    changeSave,
+    makeUpFree
+  } from '@/api/exam'
   export default {
+    mixins: [examMixin],
+    components: {
+      upload
+    },
 
     data() {
       return {
+        //dancyLevel lv4 
+        //teachingType： NO 线上 UNDER线下
+        // OVER_EXAM 审核中
         checkboxGroup: [],
         scoreType: 1,
         offLine: false, //线下
-        status: 5, //1上传视频 2审核中3不合格4合格5加持证书
+        status: 1, //1上传视频 2审核中 3不合格4合格5加持证书
         currentRate: 0,
-        fileList: [{
-          url: "",
-          poster: "https://img.yzcdn.cn/vant/leaf.jpg"
-        }]
+        videoObj: {
+          lv4: [{
+            key: "vedio1",
+            text: "视频片段1"
+          }, {
+            key: "vedio2",
+            text: "视频片段2"
+          }, {
+            key: "vedio3",
+            text: "视频片段3"
+          }, {
+            key: "vedio4",
+            text: "视频片段4"
+          }, {
+            key: "vedio5",
+            text: "视频片段5"
+          }],
+          other: [{
+            key: "vedioJx",
+            text: "ROUTINE",
+            sKey: "Jx"
+          }, {
+            key: "vedioSolo",
+            text: "SOLO",
+            sKey: "Solo"
+          }, {
+            key: "vedioRontiue",
+            text: "教学讲解",
+            sKey: "Rontiue"
+          }]
+        },
       };
     },
-    computed: {
-      text() {
-        return this.currentRate.toFixed(0) + '%';
-      },
+    created() {
+      this.getExamInfo();
     },
     methods: {
-      afterRead(file) {
-        // 此时可以自行将文件上传至服务器
-        console.log(file);
+      saveVideo() {
+        let params = {};
+        if (this.examInfo.dancyLevel == 'lv4') {
+          params = {
+            id: this.purchaseId,
+            vedio1: this.examInfo.vedio1,
+            vedio1: this.examInfo.vedio1,
+            vedio3: this.examInfo.vedio3,
+            vedio4: this.examInfo.vedio4,
+            vedio5: this.examInfo.vedio5,
+          }
+        } else {
+          params = {
+            id: this.purchaseId,
+            vedioJx: this.examInfo.vedioJx,
+            vedioSolo: this.examInfo.vedioSolo,
+            vedioRontiue: this.examInfo.vedioRontiue,
+          }
+        }
+        let required = true;
+        for (let key in params) {
+          if (!params[key]) {
+            required = false
+          }
+        }
+        if (required) {
+          saveVideo(params).then(res => {
+            console.log("上传视频")
+            //this.nextStep(2)
+            this.examInfo.status = 'OVER_EXAM'
+          })
+        } else {
+          Toast('请上传全部视频');
+        }
       },
+      getVideoPath(url, key) {
+        this.examInfo[key] = url
+        console.log(url, key)
+      },
+      makeUpFree(){
+        //TODO 
+        makeUpFree({id: this.purchaseId}).then(res => {
+            //this.nextStep(4)
+        })
+      },
+      makeUpPay(){
+        //TODO 缴费补考
+        // makeUpFree({id: this.purchaseId}).then(res => {
+        //     //this.nextStep(4)
+        // })
+      },
+      changeCertificate(type) {
+        //1 不换 2 换
+        let params = {
+          id: this.purchaseId,
+          ifChange: 0 // 0:不换证,1：换证
+        }
+        if (type == 1) {
+          params.ifChange = 0;
+          changeNoSave(params).then(res => {
+            this.nextStep(4)
+          })
+        } else {
+          if(this.checkboxGroup.length>0){
+            params.ifChange = 1;
+            this.checkboxGroup.forEach(key=>{
+              params[key] = 1;
+            })
+            changeSave(params).then(res => {
+              this.nextStep(4)
+            })
+          }else{
+            Toast('请选择要加持的证书');
+          }
+          
+        }
+      }
     }
   };
 </script>
