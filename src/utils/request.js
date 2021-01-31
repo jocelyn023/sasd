@@ -94,7 +94,7 @@ axios.interceptors.request.use(
  */
 export function get (url, params) {
   return new Promise((resolve, reject) => {
-    axios.get(url, {
+    axios.get('/sasd' + url, {
       params: params
     }).then(res => {
       resolve(res.data)
@@ -110,7 +110,7 @@ export function get (url, params) {
  */
 export function post (url, params) {
   return new Promise((resolve, reject) => {
-    axios.post(url, params)
+    axios.post('/sasd' + url, params)
       .then(res => {
         resolve(res.data)
       })
