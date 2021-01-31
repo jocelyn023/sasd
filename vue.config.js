@@ -1,6 +1,6 @@
 module.exports = {
   outputDir: 'dist',
-  publicPath: process.env.NODE_ENV === 'production' ? '/vant-demo/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? './' : './',
   devServer: {
     host: "0.0.0.0",
     port: 8080, // 端口号

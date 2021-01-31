@@ -1,9 +1,9 @@
 import Vue from 'vue'
-
 import Router from 'vue-router'
 
 Vue.use(Router)
 
+const redirect_uri = ''
 const routes = [
   {
     name: 'demo',
@@ -225,19 +225,41 @@ const router = new Router({
   routes
 })
 
-const VueRouterPush = Router.prototype.push
-Router.prototype.push = function push (to) {
-  return VueRouterPush.call(this, to).catch(err => err)
-}
+// const VuerouterPush = router.prototype.push
+// router.prototype.push = function push (to) {
+//   return VuerouterPush.call(this, to).catch(err => err)
+// }
 
 router.beforeEach((to, from, next) => {
   const title = to.meta && to.meta.title
   if (title) {
     document.title = title
   }
+  let token = localStorage.getItem("token");
   next()
+  // if (typeof token == "undefined" || token == null || token == "") {
+  //   const reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+  //   const r = window.location.search.substr(1).match(reg);
+
+  //   if(r!=null) {
+  //     token = unescape(r[2])
+  //   } else {
+  //     token = null
+  //   }
+
+  //   if (!(typeof token == "undefined" || token == null || token == "")) { // 如果获取到openId,放到localStorage中
+  //     localStorage.setItem("token", token);
+  //     next()
+  //   } else { // 如果没有获取到openId，去微信授权
+  //     let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + process.env.VUE_APP_APPID
+  //     url = url + '&redirect_uri=' + process.env.VUE_APP_REDIRECT_URI
+  //     url = url + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect'
+
+  //     window.location.href = url
+  //   }
+  // } else {
+  //   next()
+  // }
 })
 
-export {
-  router
-}
+export default router

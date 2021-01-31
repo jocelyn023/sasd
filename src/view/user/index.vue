@@ -24,10 +24,10 @@
         <div class="item">渠道报表</div>
       </div>
     </div>
-    
 
     <van-cell-group>
       <van-cell v-if="userInfo.ifAgent == 0" title="申请成为推广员" to="/applyPromoter" is-link />
+      <van-cell v-if="userInfo.ifAgent == 0" title="申请结果" to="/applyResult" is-link />
       <van-cell title="消息中心" to="/msgCenter" is-link />
       <van-cell title="我的订单" :to="{path: '/orderList', query: {type: 1}}" is-link />
       <van-cell title="成绩查询" :to="{path: '/scoreList', query: {type: 2}}" is-link />
