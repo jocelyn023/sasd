@@ -1,50 +1,72 @@
 <template>
-  <div class="examstep_2-page">
-    <template v-if="status == 1 || status == 2">
+  <div class="examstep_2-page" v-if="examInfo.purchaseId">
+    <template v-if="!examInfo.writtenExamScore">
       <div class="exam_icon"></div>
       <p>
         课程考核分为：笔试部分和视频部分，共两部分。 现去进行笔试考试。
       </p>
-      <a v-if="status == 1" class="exam-link-btn" href="javascript:;">去笔试</a>
-      <a v-else class="exam-link-btn" href="javascript:;">完成笔试</a>
+      <a v-if="status == 1" class="exam-link-btn" :url="wExamPath">去笔试</a>
+      <a v-else class="exam-link-btn" href="javascript:;" @click="saveWritten">完成笔试</a>
     </template>
     <template v-else>
       <div class="circle-block">
-        <van-circle v-model="currentRate" :rate="90" :speed="100" :stroke-width="60" size="105px" :text="text"
-          layer-color="rgba(160,25,31,0.5)" color="#a0191f" />
+        <van-circle v-model="currentRate" :rate="examInfo.writtenExamScore" :speed="100" :stroke-width="60" size="105px"
+          :text="text" layer-color="rgba(160,25,31,0.5)" color="#a0191f" />
       </div>
       <p>
-        答对90题，答错10题，共计90分，成绩合格
+        答对90题，答错10题，共计{{examInfo.writtenExamScore}}分，成绩{{examInfo.writtenExamStatus=="pass" ? "合格": "不合格"}}
       </p>
     </template>
-
     <div class="step-btn-group">
-      <van-button type="theme" plain class="btn" to="/examStep_1">上一步</van-button>
-      <van-button v-if="status == 1" type="theme" class="btn disabled">下一步</van-button>
-      <van-button v-else-if="status == 2" type="theme" class="btn">查看笔试成绩</van-button>
-      <van-button v-else-if="status == 3" type="theme" class="btn">重新答题</van-button>
-      <!-- <van-button v-else-if="status == 3" type="theme" class="btn">缴费补考</van-button> -->
-      <van-button v-else-if="status == 4" type="theme" class="btn" to="/examStep_3">下一步</van-button>
+      <van-button type="theme" plain class="btn mr15" @click="nextStep(1)">上一步</van-button>
+      <van-button v-if="status == 2" type="theme" class="btn" @click="saveWritten">查看笔试成绩</van-button>
+      <van-button v-else-if="!examInfo.writtenExamScore" type="theme" class="btn disabled">下一步</van-button>
+      <template v-else>
+        <van-button v-if="examInfo.writtenExamStatus=='pass'" type="theme" class="btn" @click="nextStep(3)">下一步</van-button>
+        <van-button v-else type="theme" :url="wExamPath" class="btn"> 重新答题 </van-button>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+  import examMixin from "@/mixins/exam";
+  import {
+    saveWritten
+  } from '@/api/exam'
   export default {
+    mixins: [examMixin],
 
     data() {
       return {
-        status: 4, // 1去考试 2考试完成 3 考试不合格 4考试合格
+        wExamPath: "https://jinshuju.net/f/WaXIoy",
+        status: 1, // 1去考试 2考试完成 3成绩
         currentRate: 0
       };
     },
     computed: {
       text() {
-        return this.currentRate.toFixed(0) + '%';
+        return this.currentRate.toFixed(0) + '分';
       },
     },
+    created() {
+      this.getExamInfo();
+    },
     methods: {
-
+      saveWritten() {
+        let score = 80
+        let wStatus = 1
+        let params = {
+          id: this.purchaseId,
+          writtenExamScore: score,
+          writtenExamStatus: wStatus //1:合格，0不合格,
+        }
+        saveWritten(params).then(res => {
+          this.status = 3
+          this.examInfo.writtenExamScore = score
+          this.examInfo.writtenExamStatus = wStatus == 1 ? "pass" : "nopass"
+        })
+      }
     }
   };
 </script>

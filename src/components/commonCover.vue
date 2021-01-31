@@ -1,6 +1,6 @@
 <template>
   <div class="cover-block">
-    <p class="online-status" :class="info.courseStatus=='teaching'?'green_bg':'red_bg'">
+    <p class="online-status" v-if="info.courseStatus" :class="info.courseStatus=='teaching'?'green_bg':'red_bg'">
       <span>{{info.courseStatusValue}}</span></p>
     <div class="pic-box">
       <van-image :width="width" :height="height" fit="cover" :src="info.thumbnail" />
