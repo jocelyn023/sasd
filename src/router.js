@@ -11,24 +11,28 @@ const routes = [
     meta: {
       title: '示例'
     }
-  },
-  {
+  }, {
     name: '/',
     component: () => import('./view/index'),
     meta: {
       title: '首页',
       hideNavBar: true
     }
-  },
-  {
+  }, {
+    name: 'NotFound',
+    component: () => import('./view/NotFound'),
+    meta: {
+      title: 'NotFound',
+      hideNavBar: true
+    }
+  }, {
     name: 'newsList',
     component: () => import('./view/index/newsList'),
     meta: {
       title: '新闻列表',
       hideNavBar: true
     }
-  },
-  {
+  }, {
     name: 'newsDetails',
     component: () => import('./view/index/newsDetails'),
     meta: {
@@ -203,10 +207,11 @@ const routes = [
         stepActive: 3
       }
     }]
-  },
-  {
+  }, {
     path: '*',
-    redirect: '/404'
+    redirect: {
+      name: 'NotFound'
+    }
   }
 ]
 
@@ -222,6 +227,7 @@ routes.forEach(route => {
 
 const router = new Router({
   mode: 'history',
+  // base: '/dist',
   routes
 })
 
