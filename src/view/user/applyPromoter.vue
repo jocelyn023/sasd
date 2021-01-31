@@ -17,11 +17,11 @@
         <div class="label" v-if="form.applyType == 'TEACHING_CAMP'">
           <div class="f12 tips"><span class="col-theme">*</span> 请选择师资营所在地区</div>
           <van-field
-            v-model="form.cityId"
+            v-model="form.cityName"
             placeholder="请选择"
             is-link
             readonly
-            @click="showPicker('applytype')"
+            @click="isShowPicker = true"
             :rules="rules.cityId"
           />
         </div>
@@ -117,6 +117,11 @@
         @cancel="pickerConfig.show = false"
       />
     </van-popup>
+
+    <van-popup v-model="isShowPicker" round position="bottom" :style="{ height: '40%' }">
+      <van-area title="选择城市" :area-list="cityObj" :columns-num="2" value="110101"
+        @cancel="isShowPicker = false" @confirm="onConfirmArea" />
+    </van-popup>
   </div>
 </template>
 
@@ -126,13 +131,19 @@ import {
   getToken,
   uploadFileToQiniu
 } from '@/api/common'
+import city from "@/mixins/city"
 
 import { agentApply } from '@/api/user'
+import { Toast } from 'vant'
 
 export default {
   components: {},
+  mixins: [city],
   data () {
     return {
+      // 选择地区
+      isShowPicker: false,
+      cityObj: [],
       domin: process.env.VUE_APP_QINIU_DOMIN,
       pickerType: '',
       pickerConfig: {
@@ -148,6 +159,7 @@ export default {
         applyType: '', 
         applyName: '',
         cityId: '',
+        cityName: '',
         teachingCampName: '',
         fullName: '',
         idenType: '',
@@ -159,7 +171,7 @@ export default {
       fileList: [],
       rules: {
         applyName: [{ required: false, message: '请选择认证类型' }],
-        cityId: [{ required: false, message: '请选择认证类型' }],
+        cityId: [{ required: false, message: '请选择认证地区' }],
         teachingCampName: [{ required: true, message: '请填写师资营名称' }],
         fullName: [{ required: true, message: '请填写用户名' }],
         idenName: [{ required: false, message: '请选择证件类型' }],
@@ -181,29 +193,41 @@ export default {
       serchByKeyGroup('CARD_TYPE').then(res => {
         this.idenColumns = res.data
       })
+
+      let agentResult = localStorage.getItem('agentResult');
+
+      if (agentResult != null) {
+        agentResult = JSON.parse(agentResult)
+        this.form = agentResult
+      }
+      console.log(this.form)
     },
     onSubmit() {
-      // this.$router.push({path: ''})
       let params = {
         applyType: this.form.applyType,
+        fullName: this.form.fullName,
+        cardType: this.form.idenType,
+        cardNo: this.form.cardNo,
+        telNo: this.form.telNo,
+        applyReason: this.form.applyReason
+      }
+      if (this.form.id) {
+        params.id = this.form.id
       }
       if (this.fileList && this.fileList.length < 2) {
         return;
       }
+      params.idChardFontPhoto = this.fileList[0].url
+      params.idChardBackPhoto = this.fileList[1].url
 
       if (params.applyType == 'TEACHING_CAMP') {
         params.teachingCampName = this.form.teachingCampName
-        params.cityId = '500106'
-      }
+        params.cityId = this.form.cityId
 
-      params = {
-        fullName: this.form.fullName,
-        cardType: this.form.cardType,
-        cardNo: this.form.cardNo,
-        telNo: this.form.telNo,
-        idChardFontPhoto: this.fileList[0].url,
-        idChardBackPhoto: this.fileList[1].url,
-        applyReason: this.form.applyReason,
+        if (params.cityId == '') {
+          Toast('请选择地区')
+          return
+        }
       }
 
       agentApply(params).then(res => {
@@ -262,6 +286,12 @@ export default {
         this.form.idenName = val.value
         this.form.idenType = val.keyName
       }
+    },
+    onConfirmArea(val) {
+      this.isShowPicker = false
+      console.log(val)
+      this.form.cityId = val[1].code
+      this.form.cityName = val[1].name
     },
     closePicker() {
       this.pickerConfig.show = false

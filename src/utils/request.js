@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = process.env.VUE_APP_PROXY_API_URL
+axios.defaults.baseURL = process.env.NODE_ENV == "development" ? process.env.VUE_APP_PROXY_API_URL : process.env.VUE_APP_BASE_API_URL
 axios.defaults.timeout = 10000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8;multipart/form-data'
 // // 请求拦截器
@@ -94,7 +94,7 @@ axios.interceptors.request.use(
  */
 export function get (url, params) {
   return new Promise((resolve, reject) => {
-    axios.get(url, {
+    axios.get('/sasd' + url, {
       params: params
     }).then(res => {
       resolve(res.data)
@@ -110,7 +110,7 @@ export function get (url, params) {
  */
 export function post (url, params) {
   return new Promise((resolve, reject) => {
-    axios.post(url, params)
+    axios.post('/sasd' + url, params)
       .then(res => {
         resolve(res.data)
       })

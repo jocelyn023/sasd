@@ -1,9 +1,9 @@
 import Vue from 'vue'
-
 import Router from 'vue-router'
 
 Vue.use(Router)
 
+const redirect_uri = ''
 const routes = [
   {
     name: 'demo',
@@ -11,24 +11,28 @@ const routes = [
     meta: {
       title: '示例'
     }
-  },
-  {
+  }, {
     name: '/',
     component: () => import('./view/index'),
     meta: {
       title: '首页',
       hideNavBar: true
     }
-  },
-  {
+  }, {
+    name: 'NotFound',
+    component: () => import('./view/NotFound'),
+    meta: {
+      title: 'NotFound',
+      hideNavBar: true
+    }
+  }, {
     name: 'newsList',
     component: () => import('./view/index/newsList'),
     meta: {
       title: '新闻列表',
       hideNavBar: true
     }
-  },
-  {
+  }, {
     name: 'newsDetails',
     component: () => import('./view/index/newsDetails'),
     meta: {
@@ -76,6 +80,13 @@ const routes = [
     component: () => import('./view/user/index'),
     meta: {
       title: '我的',
+      hideNavBar: true
+    }
+  }, {
+    name: 'channel',
+    component: () => import('./view/user/channel'),
+    meta: {
+      title: '我的渠道',
       hideNavBar: true
     }
   }, {
@@ -203,10 +214,11 @@ const routes = [
         stepActive: 3
       }
     }]
-  },
-  {
+  }, {
     path: '*',
-    redirect: '/404'
+    redirect: {
+      name: 'NotFound'
+    }
   }
 ]
 
@@ -222,22 +234,45 @@ routes.forEach(route => {
 
 const router = new Router({
   mode: 'history',
+  // base: '/dist',
   routes
 })
 
-const VueRouterPush = Router.prototype.push
-Router.prototype.push = function push (to) {
-  return VueRouterPush.call(this, to).catch(err => err)
-}
+// const VuerouterPush = router.prototype.push
+// router.prototype.push = function push (to) {
+//   return VuerouterPush.call(this, to).catch(err => err)
+// }
 
 router.beforeEach((to, from, next) => {
   const title = to.meta && to.meta.title
   if (title) {
     document.title = title
   }
+  let token = localStorage.getItem("token");
   next()
+  // if (typeof token == "undefined" || token == null || token == "") {
+  //   const reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+  //   const r = window.location.search.substr(1).match(reg);
+
+  //   if(r!=null) {
+  //     token = unescape(r[2])
+  //   } else {
+  //     token = null
+  //   }
+
+  //   if (!(typeof token == "undefined" || token == null || token == "")) { // 如果获取到openId,放到localStorage中
+  //     localStorage.setItem("token", token);
+  //     next()
+  //   } else { // 如果没有获取到openId，去微信授权
+  //     let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + process.env.VUE_APP_APPID
+  //     url = url + '&redirect_uri=' + process.env.VUE_APP_REDIRECT_URI
+  //     url = url + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect'
+
+  //     window.location.href = url
+  //   }
+  // } else {
+  //   next()
+  // }
 })
 
-export {
-  router
-}
+export default router

@@ -20,14 +20,13 @@
 
       <!-- 代理商 -->
       <div class="agent-box flex" v-if="userInfo.ifAgent == 1">
-        <div class="item">我的渠道</div>
+        <div class="item" @click="pushRouter('/channel')">我的渠道</div>
         <div class="item">渠道报表</div>
       </div>
     </div>
-    
 
     <van-cell-group>
-      <van-cell v-if="userInfo.ifAgent == 0" title="申请成为推广员" to="/applyPromoter" is-link />
+      <van-cell v-if="userInfo.ifAgent == 0" title="申请成为推广员" @click="jumpAgent" is-link />
       <van-cell title="消息中心" to="/msgCenter" is-link />
       <van-cell title="我的订单" :to="{path: '/orderList', query: {type: 1}}" is-link />
       <van-cell title="成绩查询" :to="{path: '/scoreList', query: {type: 2}}" is-link />
@@ -41,7 +40,7 @@
 
 <script>
 import CommonFt from '@/components/commonFt'
-import { getMyPersonalInfo } from '@/api/user'
+import { getMyPersonalInfo, getAgentStatus } from '@/api/user'
 
 export default {
   components: { CommonFt },
@@ -57,7 +56,8 @@ export default {
         id: 123456789,
         erCode: 'https://img.yzcdn.cn/vant/cat.jpeg'
       },
-      userInfo: {}
+      userInfo: {},
+      agentResult: {}
     }
   },
   created () {
@@ -68,7 +68,26 @@ export default {
       getMyPersonalInfo().then(res => {
         this.userInfo = res.data
         localStorage.setItem('userInfo', JSON.stringify(res.data));
+
+        if (res.data.ifAgent == 0) {
+          this.getAgentResult()
+        }
       })
+    },
+    getAgentResult () {
+      getAgentStatus().then(res => {
+        this.agentResult = res.data
+      })
+    },
+    jumpAgent () {
+      if (this.agentResult == null) {
+        this.$router.push("/applyPromoter")
+      } else {
+        this.$router.push("/applyResult")
+      }
+    },
+    pushRouter (url) {
+      this.$router.push(url)
     }
   }
 }

@@ -1,78 +1,122 @@
 <template>
   <div>
-    <van-list
-      class="container"
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
-    >
-      <template v-for="item in list">
-        <div class="item" :key="item.id">
-          <img :src="item.img" alt="" srcset="" />
-          <div class="info txt-c">
-            <div class="col-white f16 title">课程1</div>
-            <div class="col-theme price">200</div>
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-list
+        class="container"
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <template v-for="item in list">
+          <div class="item" :key="item.courseId">
+            <img :src="item.thumbnail" alt="" srcset="" />
+            <div class="info txt-c">
+              <div class="col-white f16 title">{{ item.name }}</div>
+              <div class="col-theme price">¥{{ item.price }}</div>
+            </div>
+            <div class="button-box txt-r">
+              <van-button class="f12 button" :type="(type == 1 && item.status != 'PAYING') ? 'theme' : 'primary'" @click="pushRouter(item.courseId, item.status)">
+                {{ type == 1 ? item.status == 'PAYING' ? '待缴费' : '缴费成功' : '查看成绩' }}
+              </van-button>
+            </div>
           </div>
-          <div class="button-box txt-r">
-            <van-button class="f12 button" :type="type == 1 && item.isPay ? 'theme' : 'primary'" @click="pushRouter(item.id, item.isPay)">
-              {{ type == 1 ? item.isPay ? '缴费成功' : '待缴费' : '成绩查询' }}
-            </van-button>
-          </div>
-        </div>
-      </template>
-    </van-list>
+        </template>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
+import { getOrderList, getScoreList } from '@/api/user'
+import { Toast } from 'vant';
+
 export default {
   data() {
     return {
-      type: this.$route.query.type, //1 我的订单， 2成绩查询
       loading: false,
       finished: false,
-      list: [{
-        id: 1,
-        isPay: false,
-        price: '200',
-        img: 'https://img.yzcdn.cn/vant/cat.jpeg'
-      }, {
-        id: 2,
-        isPay: true,
-        price: '200',
-        img: 'https://img.yzcdn.cn/vant/cat.jpeg'
-      }]
+      refreshing: false,
+      list: [],
+      params: {
+        rows: 10,
+        page: 1
+      },
+      type: this.$route.query.type, //1 我的订单， 2成绩查询
     }
   },
   methods:{
     onLoad() {
-      this.loading = true
-      this.finished = true
-    },
-    pushRouter(id, isPay) {
-      let routerParams = {
-        path: '/msgDetails',
-        query: {
-          id: id
-        }
+      if (this.refreshing) {
+        this.list = [];
+        this.refreshing = false;
+        this.params.page = 1;
       }
 
       if (this.type == 1) {
+        getOrderList(this.params).then(res => {
+          this.loading = false;
+          this.params.total = res.data.total;
+          if (this.params.page < res.data.total) {
+            this.params.page = this.params.page + 1
+          } else {
+            this.finished = true;
+          }
+          res.data.records.forEach(item => {
+            this.list.push(item)
+          })
+        })
+      } else {
+        getScoreList(this.params).then(res => {
+          this.loading = false;
+          this.params.total = res.data.total;
+          if (this.params.page < res.data.total) {
+            this.params.page = this.params.page + 1
+          } else {
+            this.finished = true;
+          }
+          res.data.records.forEach(item => {
+            this.list.push(item)
+          })
+        })
+      }
+    },
+    onRefresh () {
+      // 清空列表数据
+      this.finished = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      this.loading = true;
+      this.onLoad();
+    },
+    pushRouter(id, isPay) {
+      let routerParams = {}
+
+      if (this.type == 1) {
         // 订单
-
-        if (isPay) {
+        if (isPay != 'PAYING') {
           // 已支付
-
+          routerParams = {
+            path: '/courseDetail',
+            query: {
+              id: id,
+              type: 2
+            }
+          }
         } else {
           // 未支付
+          Toast("支付页面")
         }
       } else {
         // 成绩查询
-        routerParams.path = '/myScore'
+        routerParams = {
+          path: '/myScore',
+          query: {
+            id: id
+          }
+        }
       }
-      console.log(routerParams);
-
       this.$router.push(routerParams)
     }
   }

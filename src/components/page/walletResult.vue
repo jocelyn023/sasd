@@ -46,7 +46,13 @@ export default {
   methods: {
     init () {
       cashoutResult().then(res => {
-        this.result = res.data
+        if (res.code == 200) {
+          if (res.data == null) {
+            this.result = {
+              approvalResult: 'APPROVING'
+            }
+          }
+        }
       })
     },
     submitAgain () {},
