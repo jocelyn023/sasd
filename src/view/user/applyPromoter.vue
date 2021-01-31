@@ -193,15 +193,26 @@ export default {
       serchByKeyGroup('CARD_TYPE').then(res => {
         this.idenColumns = res.data
       })
+
+      let agentResult = localStorage.getItem('agentResult');
+
+      if (agentResult != null) {
+        agentResult = JSON.parse(agentResult)
+        this.form = agentResult
+      }
+      console.log(this.form)
     },
     onSubmit() {
       let params = {
         applyType: this.form.applyType,
         fullName: this.form.fullName,
-        cardType: this.form.cardType,
+        cardType: this.form.idenType,
         cardNo: this.form.cardNo,
         telNo: this.form.telNo,
         applyReason: this.form.applyReason
+      }
+      if (this.form.id) {
+        params.id = this.form.id
       }
       if (this.fileList && this.fileList.length < 2) {
         return;

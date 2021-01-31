@@ -36,9 +36,10 @@
           </div>
         </template>
       </div>
-      <div class="btn-submit-box txt-c" v-if="result.status != 'APPROVING'">
-        <van-button v-if="result.status == 'REJECT'" class="btn-submit" type="theme" @click="submitAgain">重新提交</van-button>
-        <van-button v-if="result.status == 'APPROVED'" class="btn-submit" type="theme" @click="pay">缴纳押金</van-button>
+      <div class="btn-submit-box txt-c">
+        <van-button v-if="result.status == 'REJECT'" class="btn-submit m-b-10" type="theme" @click="submitAgain">重新提交</van-button>
+        <van-button v-if="result.status == 'APPROVED'" class="btn-submit m-b-10" type="theme" @click="pay">缴纳押金</van-button>
+        <van-button class="btn-submit" type="theme" @click="pushRouter">回到个人中心</van-button>
       </div>
     </template>
 
@@ -78,6 +79,7 @@ export default {
     init () {
       getAgentStatus().then(res => {
         this.result = res.data
+        localStorage.setItem('agentResult', JSON.stringify(res.data));
       })
     },
     submitAgain () {
@@ -163,6 +165,7 @@ export default {
     width: 244px;
 
     .btn-submit {
+      margin-bottom: 10px;
       width: 100%;
       height: 40px;
       line-height: 40px;
