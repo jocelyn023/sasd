@@ -11,9 +11,9 @@
       <div class="van-ellipsis m-b-10 course-title">{{ item.name }}</div>
       <div class="flex">
         <span class="col-gray-9 f12">{{ item.duration }}</span>
-        <van-button v-if="item.ifTry == 1" type="info" plain hairline @click="handeClick">试看</van-button>
-        <van-button v-if="item.status == 2" type="info" plain hairline>学习中</van-button>
-        <span class="col-gray-9 f12" v-if="item.status == 3">已学习</span>
+        <van-button v-if="item.ifTry == 1 && !item.isPay" type="info" plain hairline @click="handeClick">试看</van-button>
+        <van-button v-else-if="item.learnStatus == 'LEARNING'" type="info" plain hairline @click="handeClick">学习中</van-button>
+        <span class="col-gray-9 f12"v-else-if="item.learnStatus == 'LEARNED'">已学习</span>
       </div>
     </div>
   </div>

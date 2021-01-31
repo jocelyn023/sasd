@@ -30,8 +30,6 @@
             <commonCover :info="item"></commonCover>
           </div>
         </van-list>
-
-
       </div>
     </div>
     <van-popup v-model="showPicker" round position="bottom" :style="{ height: '40%' }">
@@ -52,7 +50,7 @@
     serchByKeyGroup,
   } from '@/api/common'
   import {
-    filterJson
+    filterJson, setCookie
   } from '@/utils/utils'
   import commonCover from "@/components/commonCover";
   import city from "@/mixins/city";
@@ -95,6 +93,9 @@
       };
     },
     mounted() {
+      if(this.$route.query.agentNo){
+        setCookie("agentId",this.$route.query.agentNo)
+      }
       this.getDanceTypeList();
       this.getModeList();
       this.getTeachingStatusList();

@@ -1,46 +1,62 @@
 <template>
   <div class="examstep_4-page">
-    <div class="info-form-block">
-      <h3>邮寄地址</h3>
-      <div v-if="status== 1">
-        <van-field v-model="userInfo.name" label="收件人姓名" placeholder="请输入" />
-        <van-field v-model="userInfo.name" label="收件人电话" placeholder="请输入" />
-        <van-field v-model="userInfo.name" rows="1" autosize label="收件人详细地址" placeholder="请输入" type="textarea" />
+    <van-form @submit="saveAddress" v-if="examInfo.purchaseId">
+      <div class="info-form-block">
+        <h3>邮寄地址</h3>
+        <div v-if="examInfo.status == 'EDIT_INFO'">
+          <van-field v-model="examInfo.recevier" label="收件人姓名" placeholder="请输入" readonly />
+          <van-field v-model="examInfo.tel" label="收件人电话" placeholder="请输入" readonly />
+          <van-field v-model="examInfo.address" rows="1" autosize label="收件人详细地址" placeholder="请输入" type="textarea"
+            readonly />
+        </div>
+        <div v-if="examInfo.status == 'EDIT_ADDR'">
+          <van-field v-model="examInfo.recevier" :rules="[{ required: true, message: '请输入收件人姓名' }]" label="收件人姓名" placeholder="请输入" />
+          <van-field v-model="examInfo.tel" :rules="[{ required: true, message: '请输入收件人电话' }]" label="收件人电话" placeholder="请输入" />
+          <van-field v-model="examInfo.address" :rules="[{ required: true, message: '请输入收件人详细地址' }]" rows="1" autosize label="收件人详细地址" placeholder="请输入" type="textarea" />
+        </div>
       </div>
-      <div v-else>
-        <van-field v-model="userInfo.name" label="收件人姓名" placeholder="请输入" readonly />
-        <van-field v-model="userInfo.name" label="收件人电话" placeholder="请输入" readonly />
-        <van-field v-model="userInfo.name" rows="1" autosize label="收件人详细地址" placeholder="请输入" type="textarea"
-          readonly />
+      <div class="info-form-block" v-if="examInfo.status == 'EDIT_INFO'">
+        <h3>邮寄信息</h3>
+        <div>
+          <van-field v-if="examInfo.status == 'EDIT_INFO'"  label="邮寄编码" placeholder="等待邮寄中..." readonly />
+          <van-field v-else label="邮寄编码" placeholder="" v-model="examInfo.postCode" readonly />
+        </div>
       </div>
-    </div>
-
-    <div class="info-form-block" v-if="status != 1">
-      <h3>邮寄信息</h3>
-      <div>
-        <van-field v-if="status == 2" label="邮寄编码" placeholder="等待邮寄中..." readonly />
-        <van-field v-else label="邮寄编码" placeholder="0123455788999" readonly />
+      <div class="step-btn-group" :class="examInfo.status == 'EDIT_INFO' ?'pt40':''">
+        <van-button v-if="examInfo.status == 'EDIT_INFO'" type="theme" class="btn">返回课程</van-button>
+        <van-button v-else native-type="submit" type="theme" class="btn">完成</van-button>
       </div>
-    </div>
-
-
-    <div class="step-btn-group" :class="status != 1 ?'pt40':''">
-      <van-button v-if="status == 1" type="theme" class="btn">完成</van-button>
-      <van-button v-else type="theme" class="btn">返回课程</van-button>
-    </div>
+    </van-form>
   </div>
 </template>
 
 <script>
+  import examMixin from "@/mixins/exam";
+  import {
+    saveAddress
+  } from '@/api/exam'
   export default {
+    mixins: [examMixin],
     data() {
       return {
-        status: 1,
         userInfo: {}
       };
     },
+    created() {
+      this.getExamInfo();
+    },
     methods: {
-
+      saveAddress() {
+        let params = {
+          id: this.purchaseId,
+          recevier: this.examInfo.recevier,
+          tel: this.examInfo.tel,
+          address: this.examInfo.address
+        }
+        saveAddress(params).then(res => {
+          this.examInfo.status = 'EDIT_INFO'
+        })
+      }
     }
   };
 </script>

@@ -12,7 +12,7 @@ axios.interceptors.request.use(
     // token && (config.headers.Authorization = token)
     if (config.url.indexOf("openId") === -1) {
       config.url += config.url.indexOf("?") === -1 ? "?" : "&";
-      config.url += "openId=1";
+      config.url += "openId=o83Fs6WlfxZhEZoWyV2elPUGshcU";
     }
     return config
   },
