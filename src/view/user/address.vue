@@ -21,7 +21,7 @@
 
 <script>
   import {
-    listMyPostAddress,
+    getMyPostAddress,
     saveMyPostAddress
   } from '@/api/user'
   export default {
@@ -33,30 +33,29 @@
           name: ""
         },
         addressInfo: {
-          // "recevier": "刘巧燕2",
-          // "tel": "18888888888",
-          // "address": "北京市西城区XXXXXX高档小区",
+          "recevier": "",
+          "tel": "",
+          "address": "",
           // "postCode": "1000000"
         },
       }
     },
     mounted() {
-      this.listMyPostAddress()
+      this.getMyPostAddress()
     },
     methods: {
-      listMyPostAddress() {
-        listMyPostAddress({}).then(res => {
+      getMyPostAddress() {
+        getMyPostAddress({}).then(res => {
           this.addressList = res.data
-          if (res.data && res.data.length > 0) {
-            this.addressInfo = res.data[0]
+          if (res.data) {
+            this.addressInfo = res.data
           }
         })
       },
       saveMyPostAddress(values) {
-        console.log(values);
         let params = this.addressInfo;
         saveMyPostAddress(params).then(res => {
-          console.log(res);
+          this.getMyPostAddress();
         })
       }
     }

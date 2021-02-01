@@ -1,10 +1,13 @@
 import {
   getExamInfo
 } from '@/api/exam'
+import {
+  getCookie
+} from '@/utils/utils'
 export default {
   data() {
     return {
-      purchaseId: this.$route.query.id,
+      purchaseId: this.$route.query.id || getCookie("purchaseId"),
       examInfo: {}
     };
   },

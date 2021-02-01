@@ -14,7 +14,7 @@
           :text="text" layer-color="rgba(160,25,31,0.5)" color="#a0191f" />
       </div>
       <p>
-        答对90题，答错10题，共计{{examInfo.writtenExamScore}}分，成绩{{examInfo.writtenExamStatus=="pass" ? "合格": "不合格"}}
+        答对90题，答错10题，共计{{examInfo.writtenExamScore}}分，成绩{{examInfo.writtenExamStatus=="1" ? "合格": "不合格"}}
       </p>
     </template>
     <div class="step-btn-group">
@@ -22,7 +22,7 @@
       <van-button v-if="status == 2" type="theme" class="btn" @click="saveWritten">查看笔试成绩</van-button>
       <van-button v-else-if="!examInfo.writtenExamScore" type="theme" class="btn disabled">下一步</van-button>
       <template v-else>
-        <van-button v-if="examInfo.writtenExamStatus=='pass'" type="theme" class="btn" @click="nextStep(3)">下一步</van-button>
+        <van-button v-if="examInfo.writtenExamStatus=='1'" type="theme" class="btn" @click="nextStep(3)">下一步</van-button>
         <van-button v-else type="theme" :url="wExamPath" class="btn"> 重新答题 </van-button>
       </template>
     </div>
@@ -50,6 +50,9 @@
       },
     },
     created() {
+      if(!this.$route.query.id){
+        this.status = 2
+      }
       this.getExamInfo();
     },
     methods: {
@@ -64,7 +67,7 @@
         saveWritten(params).then(res => {
           this.status = 3
           this.examInfo.writtenExamScore = score
-          this.examInfo.writtenExamStatus = wStatus == 1 ? "pass" : "nopass"
+          this.examInfo.writtenExamStatus = wStatus == 1 ? "1" : "0"
         })
       }
     }
@@ -125,6 +128,7 @@
         &.van-button--plain {
           color: #000;
           margin-right: 15px;
+          background-color: #fff;
         }
       }
     }

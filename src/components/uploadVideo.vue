@@ -1,5 +1,5 @@
 <template>
-  <van-uploader :max-size="maxUploadSize" accept="video/*" :before-read="beforeRead" :after-read="afterRead" @oversize="onOversize">
+  <van-uploader v-model="fileList" :max-size="maxUploadSize" accept="video/*" :before-read="beforeRead" :after-read="afterRead" @oversize="onOversize">
   </van-uploader>
 </template>
 
@@ -12,6 +12,7 @@ export default {
   name: "uploadVideo",
   data() {
     return {
+      fileList:[],
       progressVal: 0,
       uploadParams: {},
       maxUploadSize: 1024 * 1024 * 10000,
@@ -43,6 +44,7 @@ export default {
           //     percent: parseInt((event.loaded / event.total) * 100)
           // });
         }).then(res => {
+          this.fileList = [];
           file.url = process.env.VUE_APP_QINIU_DOMIN + this.uploadParams.key
           _this.$emit("success",file.url)
           file.status = 'complete'

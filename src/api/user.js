@@ -42,8 +42,8 @@ export const getUserIncomeCashoutTotal = params => get('/wx/api/personal/getUser
 // 收支明细
 export const getIncomeCashoutDetail = params => post('/wx/api/personal/getIncomeCashoutDetail', params)
 
-//获取邮寄地址列表
-export const listMyPostAddress = params => get('/wx/api/personal/listMyPostAddress', params)
+//获取邮寄地址
+export const getMyPostAddress = params => get('/wx/api/personal/getMyPostAddress', params)
 
 //保存邮寄地址
 export const saveMyPostAddress = params => post('/wx/api/personal/saveMyPostAddress', params)

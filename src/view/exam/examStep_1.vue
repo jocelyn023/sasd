@@ -274,6 +274,7 @@
         &.van-button--plain {
           color: #000;
           margin-right: 15px;
+          background-color: #fff;
         }
       }
     }

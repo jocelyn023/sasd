@@ -70,7 +70,7 @@
           </template>
           <template v-else>
             <template v-for="(v,index) in videoObj.other">
-              <div :key="index+'score'" class="item w50">{{v.text}}</div>
+              <div :key="index+'score'" class="item w50">{{v.text}}（{{v.score}}）</div>
               <div :key="index+'score'" class="item">{{examInfo['vedioScore'+sKey]}}分</div>
               <div v-if="examInfo['vedioStatus'+v.key] == 1" :key="index+'score'" class="item green-color">合格</div>
               <div :key="index+'score'" class="item red-color">不合格</div>
@@ -95,6 +95,7 @@
           <p>选择加持其他证书：</p>
           <van-field name="checkboxGroup">
             <template #input>
+              <!-- TODO this.examInfo.dancyLevel == 'lv4' -->
               <van-checkbox-group v-model="checkboxGroup">
                 <van-checkbox name="ifBtd" shape="square">北体大证书 <span class="red-color">+300</span>元</van-checkbox>
                 <van-checkbox name="ifEqh" shape="square">儿青会证书 <span class="red-color"> +120</span>元</van-checkbox>
@@ -182,15 +183,18 @@
           other: [{
             key: "vedioJx",
             text: "ROUTINE",
-            sKey: "Jx"
+            sKey: "Jx",
+            score: "20分"
           }, {
             key: "vedioSolo",
             text: "SOLO",
-            sKey: "Solo"
+            sKey: "Solo",
+            score: "20分"
           }, {
             key: "vedioRontiue",
             text: "教学讲解",
-            sKey: "Rontiue"
+            sKey: "Rontiue",
+            score: "20分"
           }]
         },
       };
@@ -227,7 +231,6 @@
         if (required) {
           saveVideo(params).then(res => {
             console.log("上传视频")
-            //this.nextStep(2)
             this.examInfo.status = 'OVER_EXAM'
           })
         } else {
@@ -465,6 +468,7 @@
         &.van-button--plain {
           color: #000;
           margin-right: 15px;
+          background-color: #fff;
         }
       }
     }
