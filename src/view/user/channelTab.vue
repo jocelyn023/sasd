@@ -30,19 +30,19 @@
 
     <div class="tab-list txt-c f12">
       <div class="tab-item flex col-theme f14">
-        <div class="item van-ellipsis username">姓名</div>
-        <div class="item van-ellipsis tel">联系方式</div>
-        <div class="item van-ellipsis name">课程名字</div>
-        <div class="item van-ellipsis status">支付状态</div>
-        <div class="item van-ellipsis date">报课日期</div>
+        <div class="item van-multi-ellipsis--l2 username">姓名</div>
+        <div class="item van-multi-ellipsis--l2 tel">联系方式</div>
+        <div class="item van-multi-ellipsis--l2 name">课程名字</div>
+        <div class="item van-multi-ellipsis--l2 status">支付状态</div>
+        <div class="item van-multi-ellipsis--l2 date">报课日期</div>
       </div>
 
       <div class="tab-item flex">
-        <div class="item van-ellipsis username">哈哈哈哈</div>
-        <div class="item van-ellipsis tel">13800000000</div>
-        <div class="item van-ellipsis name">具体课程名称</div>
-        <div class="item van-ellipsis status">待支付</div>
-        <div class="item van-ellipsis date">2020.03.19</div>
+        <div class="item van-multi-ellipsis--l2 username">哈哈哈哈</div>
+        <div class="item van-multi-ellipsis--l2 tel">13800000000</div>
+        <div class="item van-multi-ellipsis--l2 name">具体课程名称</div>
+        <div class="item van-multi-ellipsis--l2 status">待支付</div>
+        <div class="item van-multi-ellipsis--l2 date">2020.03.19</div>
       </div>
     </div>
 
@@ -158,7 +158,7 @@ export default {
     .tab-item {
       .item {
         height: 45px;
-        line-height: 45px;
+        line-height: 20px;
         border-right: 1px solid #000;
         border-bottom: 1px solid #000;
         flex-shrink: 0;

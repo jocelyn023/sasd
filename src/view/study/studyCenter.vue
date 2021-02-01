@@ -4,22 +4,27 @@
     <van-tabs v-model="active" @change="onChange">
       <van-tab title="学习中">
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-          <van-list
-            v-model="loading"
-            :finished="finished"
-            finished-text="没有更多了"
-            @load="onLoad"
-          >
-            <!-- <template v-for="(item, index) in list">
-              <cardProgress :key="index"></cardProgress>
-            </template> -->
-          </van-list>
+          <template v-if="list && list.length > 0">
+            <cardProgress
+              v-for="(item, index) in list"
+              :key="index"
+              :item="item"
+              @emitClick="clickItem"
+            ></cardProgress>
+          </template>
+          <template v-else>
+            <div class="empty-study-center">
+              
+            </div>
+          </template>
         </van-pull-refresh>
       </van-tab>
 
       <van-tab title="已学完">
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-          <p>刷新次数: 1</p>
+          <template v-for="(item, index) in list">
+            <cardProgress :key="index"></cardProgress>
+          </template>
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
@@ -55,6 +60,9 @@ export default {
   methods: {
     onChange () {
       this.onRefresh()
+    },
+    clickItem(val) {
+
     },
     onRefresh () {
       // 清空列表数据

@@ -7,6 +7,7 @@
           round
           fit="cover"
           :src="userInfo.icon"
+          @click="$router.push('/editUser')"
         >
         </van-image>
         <div class="user-other">

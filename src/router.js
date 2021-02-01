@@ -90,6 +90,12 @@ const routes = [
       hideNavBar: true
     }
   }, {
+    name: 'editUser',
+    component: () => import('./view/user/editUser'),
+    meta: {
+      title: '个人信息设置'
+    }
+  }, {
     name: 'channelTab',
     component: () => import('./view/user/channelTab'),
     meta: {

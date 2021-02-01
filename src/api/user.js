@@ -4,6 +4,9 @@ import { get, post } from '@/utils/request'
 // 个人信息
 export const getMyPersonalInfo = params => get('/wx/api/personal/getMyPersonalInfo', params)
 
+// 更新个人信息
+export const updateMyPersonalInfo = params => post('/wx/api/personal/updateMyPersonalInfo', params)
+
 // 消息
 // 消息中心
 export const messageCenter = params => get('/wx/api/personal/messageCenter', params)
