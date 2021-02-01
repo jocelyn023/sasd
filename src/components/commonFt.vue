@@ -16,8 +16,11 @@
 export default {
   name: "commonFt",
   watch: {
-    active(val){
-      this.activeIndex = val
+    active: {
+      immediate: true,
+      handler (val) {
+        this.activeIndex = parseInt(val)
+      }
     }
   },
   props: {

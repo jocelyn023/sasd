@@ -12,3 +12,8 @@ export const getVedioAddress = params => get('/wx/api/course/getVedioAddress', p
 // 分页查询课程信息
 export const queryCourseInfoPage = params => post('/wx/api/course/queryCourseInfoPage', params)
 
+// 分页查询学习中课程信息
+export const getLearnList = params => post('/wx/api/learn/ing/list', params)
+
+// 分页查询学习中课程信息
+export const getLearnFinishList = params => post('/wx/api/learn/finish/list', params)

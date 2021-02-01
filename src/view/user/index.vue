@@ -7,13 +7,17 @@
           round
           fit="cover"
           :src="userInfo.icon"
+          @click="$router.push('/editUser')"
         >
         </van-image>
         <div class="user-other">
           <div class="f16 col-white" :class="{'m-b-10': userInfo.ifAgent}">{{ userInfo.nickName }}</div>
           <template v-if="userInfo.ifAgent == 1">
             <div class="f12 col-white m-b-10">代理商编码：{{ userInfo.agentNo }}</div>
-            <div class="badge f12">申请成为代理</div>
+            <div class="badge f12">
+              <span v-if="userInfo.agentType == 'TEACHING_CAMP'">师资营</span>
+              <span v-else>推广员</span>
+            </div>
           </template>
         </div>
       </div>
@@ -21,7 +25,7 @@
       <!-- 代理商 -->
       <div class="agent-box flex" v-if="userInfo.ifAgent == 1">
         <div class="item" @click="pushRouter('/channel')">我的渠道</div>
-        <div class="item">渠道报表</div>
+        <div class="item" @click="pushRouter('/channelTab')">渠道报表</div>
       </div>
     </div>
 
@@ -137,6 +141,8 @@ export default {
     width: 200px;
   }
   .badge {
+    padding-left: 26px;
+    padding-top: 2px;
     width: 77px;
     height: 23px;
     background: url(../../assets/user/bg_badge.png) no-repeat center;

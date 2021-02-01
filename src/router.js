@@ -90,6 +90,19 @@ const routes = [
       hideNavBar: true
     }
   }, {
+    name: 'editUser',
+    component: () => import('./view/user/editUser'),
+    meta: {
+      title: '个人信息设置'
+    }
+  }, {
+    name: 'channelTab',
+    component: () => import('./view/user/channelTab'),
+    meta: {
+      title: '渠道报表',
+      hideNavBar: true
+    }
+  }, {
     name: 'wallet',
     component: () => import('./view/user/wallet'),
     meta: {
