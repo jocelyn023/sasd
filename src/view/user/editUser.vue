@@ -21,7 +21,6 @@
               class="avatar"
               :src="fileList[0].url"
             />
-            <!-- <img v-if="fileList.length > 0" :src="fileList[0].url" class="img-avatar" /> -->
           </van-uploader>
         </template>
       </van-cell>
