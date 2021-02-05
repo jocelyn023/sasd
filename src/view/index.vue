@@ -13,7 +13,7 @@
       </router-link>
     </div>
 
-    <van-tabs type="card" class="m-b-10">
+    <van-tabs type="card" class="m-b-10" v-model="danceActive" @change="changeTab">
       <van-tab v-for="(item, index) in typeList" :key="index" :title="item"></van-tab>
     </van-tabs>
     
@@ -24,7 +24,7 @@
       </div>
 
       <div class="list">
-        <template v-for="(item, index) in list">
+        <template v-for="(item, index) in courseList">
           <div :key="index" @click="pushRouter({path: '/courseDetail', query: {id: item.id}})">
             <commonCover :info="item"></commonCover>
           </div>
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { getBanner, getIndexNews } from '@/api/index'
+import { getBanner, getIndexNews, getIndexCourseList } from '@/api/index'
 import swiper from '@/components/swiper'
 import commonCover from '@/components/commonCover'
 import cardNews from '@/components/cardNews'
@@ -72,6 +72,9 @@ export default {
     return {
       bannerList: [],
       noticeList: [],
+      danceActive: 0,
+      danceType: 'POPPING',
+      courseList: [],
       typeList: ['POPPING', 'BREKING', 'JAZZ', 'HIP-HOP', 'LOCKING', 'POPPING2'],
       list: [{
         id: 1,
@@ -89,13 +92,23 @@ export default {
   created () {
     this.getBanner()
     this.getIndexNews()
+    this.getIndexCourseList()
   },
   methods: {
     pushRouter(path) {
       this.$router.push(path)
     },
+    changeTab(val) {
+      this.danceType = this.typeList[val]
+      this.getIndexCourseList ()
+    },
+    getIndexCourseList () {
+      getIndexCourseList({'danceType': this.danceType}).then(res => {
+        this.courseList = res.data;
+      })
+    },
     getBanner () {
-      getBanner({ position: "index" }).then(res => {
+      getBanner({ 'position': "index" }).then(res => {
         this.bannerList = res.data;
       })
     },

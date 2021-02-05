@@ -12,4 +12,5 @@ export const getIndexNews = params => get('/wx/api/index/getIndexNews', params)
 // 首页通知公告列表
 export const getIndexNewsList = params => post('/wx/api/index/getNewsPageByType', params)
 
-
+// 获取首页课程信息
+export const getIndexCourseList = params => get('/wx/api/index/getIndexTopCourse', params)

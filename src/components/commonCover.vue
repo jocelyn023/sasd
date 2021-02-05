@@ -3,7 +3,7 @@
     <p class="online-status" v-if="info.courseStatus" :class="info.courseStatus=='teaching'?'green_bg':'red_bg'">
       <span>{{info.courseStatusValue}}</span></p>
     <div class="pic-box">
-      <van-image :width="width" :height="height" fit="cover" :src="info.thumbnail" />
+      <van-image class="img" fit="cover" :src="info.thumbnail" />
     </div>
     <div class="cover-item">
       <p class="van-ellipsis">{{info.name}}</p>
@@ -90,6 +90,11 @@
       width: 100%;
       overflow: hidden;
       border-radius: 10px;
+
+      .img {
+        width: 343px;
+        height: 130px;
+      }
     }
 
     .cover-item {

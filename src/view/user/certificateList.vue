@@ -1,0 +1,82 @@
+<template>
+  <div>
+    我的证书
+  </div>
+</template>
+
+<script>
+import { getCertificateList } from '@/api/user'
+
+export default {
+  data () {
+    return {
+      loading: true,
+      certificateList: []
+    }
+  },
+  created () {
+    this.getCertificateList()
+  },
+  methods: {
+    getCertificateList() {
+      getCertificateList({'certificateType': 'student'}).then(res => {
+        this.certificateList = res.data
+      })
+    }
+  }
+}
+</script>
+
+<style lang="less">
+.user-head {
+  position: relative;
+
+  .agent-box {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 40px;
+
+    .item {
+      width: 50%;
+      height: 18px;
+      line-height: 18px;
+      text-align: center;
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .item:first-child {
+      border-right: 1px solid #fff;
+      box-sizing: border-box;
+    }
+  }
+}
+.user-info {
+  padding-left: 18px;
+  width: 100%;
+  height: 214px;
+  background: url(../../assets/user/bg_user.jpg) no-repeat center;
+  background-size: 100%;
+  justify-content: flex-start;
+
+  .img-box {
+    width: 100px;
+    height: 100px;
+  }
+
+  .user-other {
+    width: 200px;
+  }
+  .badge {
+    padding-left: 26px;
+    padding-top: 2px;
+    width: 77px;
+    height: 23px;
+    background: url(../../assets/user/bg_badge.png) no-repeat center;
+    background-size: contain;
+  }
+}
+</style>

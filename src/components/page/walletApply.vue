@@ -67,7 +67,7 @@
 
 <script>
 import { Toast } from 'vant';
-import { getCashoutApplyInfo, cashoutApply } from '@/api/user'
+import { getCashoutApplyInfo, cashoutApply, getMyPersonalInfo } from '@/api/user'
 
 export default {
   components: {},
@@ -117,12 +117,20 @@ export default {
         telNo: this.form.telNo,
         amount: this.form.amount
       }
+      if (this.form.amount == 0) {
+        Toast('提现金额需大于0')
+        return
+      }
       cashoutApply(params).then(res => {
         if (res.code == 200) {
           this.$parent.showApply = false
         } else {
           Toast.fail(res.returnMsg)
         }
+      }).then(() => {
+        getMyPersonalInfo().then(res => {
+          localStorage.setItem('userInfo', JSON.stringify(res.data));
+        })
       })
     },
     onFailed (errorInfo) {
@@ -130,8 +138,8 @@ export default {
     },
     init () {
       getCashoutApplyInfo().then(res => {
-        let data = res.data
-        data.amount = ''
+        let data = res.data || {}
+        data['amount'] = ''
         this.form = data
       })
     }

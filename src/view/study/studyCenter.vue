@@ -13,8 +13,9 @@
             ></cardProgress>
           </template>
           <template v-else>
-            <div class="empty-study-center">
-              
+            <van-empty class="custom-image" description="暂无" />
+            <div class="txt-c p-t-10">
+              <van-button type="theme" @click="pushRouter('courseList')">去购买</van-button>
             </div>
           </template>
         </van-pull-refresh>
@@ -22,8 +23,16 @@
 
       <van-tab title="已学完">
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-          <template v-for="(item, index) in list">
-            <cardProgress :key="index"></cardProgress>
+          <template v-if="list && list.length > 0">
+            <template v-for="(item, index) in list">
+              <cardProgress :key="index"></cardProgress>
+            </template>
+          </template>
+          <template v-else>
+            <van-empty class="custom-image" description="暂无" />
+            <div class="txt-c p-t-10">
+              <van-button type="theme" @click="pushRouter('courseList')">去购买</van-button>
+            </div>
           </template>
         </van-pull-refresh>
       </van-tab>
@@ -44,20 +53,18 @@ export default {
       loading: false,
       finished: false,
       refreshing: false,
-      params: {
-        rows: 10,
-        page: 1,
-        queryConditions:{
-          messageType: this.$route.query.type
-        }
-      },
       list: [{
         id: 1,
       }]
     };
   },
-
+  mounted() {
+    this.onLoad()
+  },
   methods: {
+    pushRouter(page) {
+      this.$router.push(page)
+    },
     onChange () {
       this.onRefresh()
     },
@@ -77,28 +84,19 @@ export default {
       if (this.refreshing) {
         this.list = [];
         this.refreshing = false;
-        this.params.page = 1;
       }
 
       if (this.active == 0) {
         getLearnList().then(res => {
           this.loading = false;
-          this.params.total = res.data.total;
-          if (this.params.page < res.data.total) {
-            this.params.page = this.params.page + 1
-          } else {
-            this.finished = true;
-          }
+          this.finished = true;
+          this.list = res.data
         })
       } else {
         getLearnFinishList().then(res => {
           this.loading = false;
-          this.params.total = res.data.total;
-          if (this.params.page < res.data.total) {
-            this.params.page = this.params.page + 1
-          } else {
-            this.finished = true;
-          }
+          this.finished = true;
+          this.list = res.data
         })
       }
     },

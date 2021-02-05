@@ -65,6 +65,5 @@ export const getOrderList = params => post('/wx/api/personal/getCoursePurchaseOr
 // 成绩列表
 export const getScoreList = params => post('/wx/api/personal/getCourseScorePage', params)
 
-
-
-
+// 我的证书
+export const getCertificateList = params => get('/wx/api/personal/getMyCertificateList', params)

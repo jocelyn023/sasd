@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <van-nav-bar
+    <!-- <van-nav-bar
       v-if="!hideNavBar"
       safe-area-inset-top
       :title="navTitle"
       left-arrow
       @click-left="onClickLeft"
-    />
+    /> -->
     <router-view />
     <van-number-keyboard safe-area-inset-bottom />
   </div>

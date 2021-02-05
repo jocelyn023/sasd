@@ -1,11 +1,11 @@
 <template>
   <div class="apply-promoter">
-    <van-nav-bar
+    <!-- <van-nav-bar
       safe-area-inset-top
       :title="showApply ? '提现申请' : '审批结果'"
       left-arrow
       @click-left="onClickLeft"
-    />
+    /> -->
 
     <walletApply v-if="!loading && showApply"></walletApply>
     <walletResult ref="walletResult" v-if="!loading && !showApply"></walletResult>
@@ -35,10 +35,12 @@ export default {
   methods: {
     init () {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-
+      this.loading = false
       if (userInfo.cashoutStatus != null) {
         this.loading = false
         this.showApply = false
+      } else {
+        this.showApply = true
       }
     },
     onClickLeft () {
