@@ -7,6 +7,9 @@ export const serchByKeyGroup = params => get('/wx/oapi/baseinfo/findDictionarysB
 // 获取城市
 export const listAllCitys = params => get('/wx/oapi/baseinfo/listAllCitys', params)
 
+// 获取城市
+export const wxPay = params => post('/pay/order/creatWxReparyOrder?payOrderId=' + params)
+
 // 图片上传
 export const getToken = params => post('/upload/getToken', params)
 /**

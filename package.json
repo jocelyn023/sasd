@@ -23,7 +23,8 @@
     "vant": "^2.12.4",
     "vue": "^2.6.10",
     "vue-qr": "^2.3.0",
-    "vue-router": "^3.0.5"
+    "vue-router": "^3.0.5",
+    "weixin-js-sdk": "^1.6.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.1",

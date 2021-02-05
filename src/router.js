@@ -262,7 +262,7 @@ router.beforeEach((to, from, next) => {
     document.title = title
   }
   let token = localStorage.getItem("token");
-  // next()
+  
   if (typeof token == "undefined" || token == null || token == "") {
     const reg = new RegExp("(^|&)token=([^&]*)(&|$)");
     const r = window.location.search.substr(1).match(reg);

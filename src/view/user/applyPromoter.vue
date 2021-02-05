@@ -188,19 +188,47 @@ export default {
     init () {
       serchByKeyGroup('AGENT_TYPE').then(res => {
         this.typeColumns = res.data
+      }).then(() => {
+        let agentResult = localStorage.getItem('agentResult');
+
+        if (agentResult != null) {
+          agentResult = JSON.parse(agentResult)
+          // 认证类型
+          let arrApplyType = this.typeColumns.filter(item => {
+            return item.keyName == agentResult.applyType
+          })
+          if (arrApplyType && arrApplyType.length > 0) {
+            agentResult.applyName = arrApplyType[0].value
+          }
+          agentResult.idenName = ''
+          this.form = agentResult
+
+          this.fileList = []
+          this.fileList.push({
+            status: "complete",
+            url: this.form.idChardFontPhoto || ''
+          })
+
+          this.fileList.push({
+            status: "complete",
+            url: this.form.idChardBackPhoto || ''
+          })
+        }
       })
 
       serchByKeyGroup('CARD_TYPE').then(res => {
         this.idenColumns = res.data
+      }).then(() => {
+        // 证件类型
+        let agentResult = this.form
+        let arrIdenType = this.idenColumns.filter(item => {
+          return item.keyName == agentResult.cardType
+        })
+        if (arrIdenType && arrIdenType.length > 0) {
+          this.form.idenName = arrIdenType[0].value
+        }
+        
       })
-
-      let agentResult = localStorage.getItem('agentResult');
-
-      if (agentResult != null) {
-        agentResult = JSON.parse(agentResult)
-        this.form = agentResult
-      }
-      console.log(this.form)
     },
     onSubmit() {
       let params = {
@@ -264,6 +292,7 @@ export default {
         file.url = this.domin + this.uploadParams.key
         file.status = 'complete'
         file.message = ''
+        console.log(this.fileList)
       })
     },
     showPicker(type) {

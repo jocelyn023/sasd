@@ -1,5 +1,5 @@
 <template>
-  <div class="apply-result">
+  <div class="apply-result" v-if="!loading">
     <template v-if="showPayResult">
       <div class="wrapper">
         <template v-if="result.status == 'REJECT'">
@@ -62,14 +62,18 @@
 </template>
 
 <script>
-import { getAgentStatus } from '@/api/user'
+import wx from 'weixin-js-sdk'
+import { getAgentStatus, createApplyOrder } from '@/api/user'
+import { wxPay } from '@/api/common'
 
 export default {
   components: {},
   data () {
     return {
+      loading: true,
       showPayResult: true,
-      result: {}
+      result: {},
+      payId: ''
     }
   },
   created () {
@@ -79,6 +83,7 @@ export default {
     init () {
       getAgentStatus().then(res => {
         this.result = res.data
+        this.loading = false
         localStorage.setItem('agentResult', JSON.stringify(res.data));
       })
     },
@@ -86,7 +91,41 @@ export default {
       this.$router.push('applyPromoter')
     },
     pay () {
-      this.showPayResult = false
+      let _this = this
+      console.log(this.result)
+      createApplyOrder(this.result.id).then(res => {
+        if (res.code == 200) {
+          this.payId = res.data
+        }
+        this.showPayResult = false
+      }).then(() => {
+        wxPay(this.payId).then(res => {
+          let data = res.data
+            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+            let params = {
+              appId: data.appId,
+              timestamp: data.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+              nonceStr: data.nonceStr, // 支付签名随机串，不长于 32 位
+              package: data.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+              signType: data.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              paySign: data.paySign, // 支付签名
+              success: function (res) {
+                // 支付成功后的回调函数
+                console.log(res)
+              }
+            }
+
+            _this.wxPayFn(params)
+        })
+      })
+    },
+    wxPayFn (params) {
+      WeixinJSBridge.invoke('getBrandWCPayRequest', params, function(res) {
+        if (res.err_msg == "get_brand_wcpay_request:ok") {
+          // alert(callBackMessage);
+              // window.location.href = callBackUrl;
+        } // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回 ok，但并不保证它绝对可靠。
+      });
     },
     pushRouter() {
       this.$router.push('me')
