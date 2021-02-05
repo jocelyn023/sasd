@@ -24,6 +24,9 @@ export const agentApply = params => post('/wx/api/personal/agentApply', params)
 
 // 代理商申请状态
 export const getAgentStatus = params => get('/wx/api/personal/getAgentApplyResult', params)
+// 获取我的渠道报表
+export const getChannelTabList = params => post('/wx/api/personal/getCoursePurchaseReportPage', params)
+
 
 
 // 我的钱包

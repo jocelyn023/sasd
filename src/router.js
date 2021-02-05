@@ -262,30 +262,30 @@ router.beforeEach((to, from, next) => {
     document.title = title
   }
   let token = localStorage.getItem("token");
-  next()
-  // if (typeof token == "undefined" || token == null || token == "") {
-  //   const reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-  //   const r = window.location.search.substr(1).match(reg);
+  // next()
+  if (typeof token == "undefined" || token == null || token == "") {
+    const reg = new RegExp("(^|&)token=([^&]*)(&|$)");
+    const r = window.location.search.substr(1).match(reg);
+    if(r!=null) {
+      token = unescape(r[2])
+    } else {
+      token = null
+    }
 
-  //   if(r!=null) {
-  //     token = unescape(r[2])
-  //   } else {
-  //     token = null
-  //   }
+    if (!(typeof token == "undefined" || token == null || token == "")) { // 如果获取到openId,放到localStorage中
+      localStorage.setItem("token", token);
+      next()
+    } else { // 如果没有获取到openId，去微信授权
+      let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + process.env.VUE_APP_APPID
+      // url = url + '&redirect_uri=' + process.env.VUE_APP_REDIRECT_URI
+      url = url + '&redirect_uri=http://www.4a4d.cn/sasd/wx/auth/wx243d0d1e7eef715a/greetUser'
+      url = url + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect'
 
-  //   if (!(typeof token == "undefined" || token == null || token == "")) { // 如果获取到openId,放到localStorage中
-  //     localStorage.setItem("token", token);
-  //     next()
-  //   } else { // 如果没有获取到openId，去微信授权
-  //     let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + process.env.VUE_APP_APPID
-  //     url = url + '&redirect_uri=' + process.env.VUE_APP_REDIRECT_URI
-  //     url = url + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect'
-
-  //     window.location.href = url
-  //   }
-  // } else {
-  //   next()
-  // }
+      window.location.href = url
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
