@@ -68,7 +68,6 @@ export default {
       margin: 0 auto;
       width: 190px;
       height: 190px;
-      background: #333
     }
   }
   .desc {

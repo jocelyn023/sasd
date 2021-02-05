@@ -81,7 +81,16 @@
       >
       </van-date-picker>
 
-      
+      <van-date-picker
+        v-if=" showPickerType == 'status'"
+        show-toolbar
+        v-model="date"
+        title="选择时间段"
+        :max-date="maxDate"
+        @cancel="showPicker = false"
+        @confirm="onConfirmDate"
+      >
+      </van-date-picker>
     </van-popup>
   </div>
 </template>
@@ -119,8 +128,8 @@ export default {
   created() {},
   methods: {
     showPopup(type) {
-      this.
       this.showPicker = true;
+      this.showPickerType = type
     },
     onConfirmDate(val) {
       this.params.queryConditions.startDate = val[0] + '-' + val[1] + '-' + val[2]
