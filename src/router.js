@@ -38,6 +38,12 @@ const routes = [
     meta: {
       title: '新闻详情'
     }
+  }, {
+    name: 'bannerDetail',
+    component: () => import('./view/index/bannerDetail'),
+    meta: {
+      title: '新闻详情'
+    }
   },
   {
     name: 'studyCenter',
