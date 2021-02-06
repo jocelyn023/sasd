@@ -27,3 +27,8 @@ export const saveVideo = params => post('/wx/api/exam/video/save', params)
 // 完成笔试
 export const saveWritten = params => post('/wx/api/exam/written/save', params)
 
+export const getCertificateAddPayOrder = params => post('/pay/order/getCertificateAddPayOrder?purchaseId='+params)
+export const getCourseMakeupExamOrder = params => post('/pay/order/getCourseMakeupExamOrder?purchaseId='+params)
+
+
+

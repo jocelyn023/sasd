@@ -5,7 +5,7 @@
       <p>
         课程考核分为：笔试部分和视频部分，共两部分。 现去进行笔试考试。
       </p>
-      <a v-if="status == 1" class="exam-link-btn" :url="wExamPath">去笔试</a>
+      <a v-if="status == 1" class="exam-link-btn" :url="examInfo.writtenExamUrl">去笔试</a>
       <a v-else class="exam-link-btn" href="javascript:;" @click="saveWritten">完成笔试</a>
     </template>
     <template v-else>
@@ -23,7 +23,7 @@
       <van-button v-else-if="!examInfo.writtenExamScore" type="theme" class="btn disabled">下一步</van-button>
       <template v-else>
         <van-button v-if="examInfo.writtenExamStatus=='1'" type="theme" class="btn" @click="nextStep(3)">下一步</van-button>
-        <van-button v-else type="theme" :url="wExamPath" class="btn"> 重新答题 </van-button>
+        <van-button v-else type="theme" :url="examInfo.writtenExamUrl" class="btn"> 重新答题 </van-button>
       </template>
     </div>
   </div>

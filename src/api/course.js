@@ -15,5 +15,10 @@ export const queryCourseInfoPage = params => post('/wx/api/course/queryCourseInf
 // 分页查询学习中课程信息
 export const getLearnList = params => post('/wx/api/learn/ing/list', params)
 
+export const saveCoursePurchaseInfo = params => post('/wx/api/course/saveCoursePurchaseInfo', params)
+
 // 分页查询学习中课程信息
 export const getLearnFinishList = params => post('/wx/api/learn/finish/list', params)
+
+// 购买课程
+export const getCoursePurchaseOrder = params => post('/pay/order/getCoursePurchaseOrder?purchaseId='+params)
