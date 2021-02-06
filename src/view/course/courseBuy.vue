@@ -6,8 +6,8 @@
         <div>
           <van-field v-model="purchaseInfo.purchaserName" label="姓名" :rules="[{ required: true, message: '请填写姓名' }]"
             placeholder="请输入" />
-          <van-field v-model="purchaseInfo.tel" type="tel" name="pattern" label="联系方式" :rules="[{ pattern, required: true, message: '请填写联系方式' }]"
-            placeholder="请输入" />
+          <van-field v-model="purchaseInfo.contractInfo" type="tel" name="pattern" label="联系方式"
+            :rules="[{ pattern, required: true, message: '请填写联系方式' }]" placeholder="请输入" />
         </div>
       </div>
       <div class="buy-course-info">
@@ -25,10 +25,20 @@
 <script>
   import {
     getCourseDetailInfo,
+    getCoursePurchaseOrder,
+    saveCoursePurchaseInfo
   } from '@/api/course'
-   import {
-    getCookie, setCookie
+  import {
+    getMyPostAddress,
+    saveMyPostAddress
+  } from '@/api/user'
+  import {
+    getCookie,
+    setCookie
   } from '@/utils/utils'
+  import {
+    wxPay
+  } from '@/api/common'
   import commonCover from "@/components/commonCover";
   export default {
     components: {
@@ -39,22 +49,88 @@
         pattern: /^1[3|4|5|8|7][0-9]\d{8}$/,
         courseInfo: {},
         purchaseInfo: {
-          purchaserName: "",
-          tel: ""
-        }
+          "purchaserName": "",
+          "contractInfo": "",
+        },
+        purchaseId: -1
       };
     },
     mounted() {
+      //this.getMyPostAddress();
       this.getCourseDetailInfo();
     },
     methods: {
-      clearAgentNo(){
-        if(getCookie("agentId")){
-          setCookie("agentId","",-1)
+      async saveCoursePurchaseInfo() {
+        let params = {
+          "courseId": this.courseInfo.id,
+          "purchaserName": this.purchaseInfo.purchaserName,
+          "contractInfo": this.purchaseInfo.contractInfo,
+        }
+        if (getCookie("agentId")) {
+          params.agentId = getCookie("agentId");
+        }
+        await saveCoursePurchaseInfo(params).then(res => {
+          if (res.code == 200) {
+            this.purchaseId = res.data
+          }
+        })
+      },
+      getMyPostAddress() {
+        getMyPostAddress({}).then(res => {
+          this.addressList = res.data
+          if (res.data) {
+            this.purchaseInfo = res.data
+          }
+        })
+      },
+      saveMyPostAddress(values) {
+        let params = this.purchaseInfo;
+        saveMyPostAddress(params).then(res => {
+          this.getMyPostAddress();
+        })
+      },
+      clearAgentNo() {
+        if (getCookie("agentId")) {
+          setCookie("agentId", "", -1)
         }
       },
-      handlePay(values) {
-        console.log(values);
+      async handlePay(values) {
+        await this.saveCoursePurchaseInfo();
+        let _this = this;
+        getCoursePurchaseOrder(this.purchaseId).then(res => {
+          if (res.code == 200) {
+            this.payId = res.data
+          }
+        }).then(() => {
+          wxPay(_this.payId).then(ret => {
+            alert(ret.code)
+            let data = ret.data
+            let params = {
+              appId: data.appId,
+              timeStamp: data
+                .timeStamp,
+              nonceStr: data.nonceStr,
+              package: data.packageValue,
+              signType: data.signType,
+              paySign: data.paySign
+            }
+            _this.wxPayFn(params)
+          })
+        })
+      },
+      wxPayFn(params) {
+        let _this = this
+        WeixinJSBridge.invoke('getBrandWCPayRequest', params, function (res) {
+          if (res.err_msg == "get_brand_wcpay_request:ok") {
+            _this.$router.push({
+              path: "/courseDetail",
+              query: {
+                id: _this.courseInfo.id
+              }
+            })
+            _this.clearAgentNo();
+          }
+        })
       },
       getCourseDetailInfo() {
         let params = {
@@ -63,9 +139,11 @@
 
         getCourseDetailInfo(params).then(res => {
           this.courseInfo = res.data
-          if(this.courseInfo.coursePurchaseInfo){
-            this.purchaseInfo = this.courseInfo.coursePurchaseInfo
+          if (res.data.coursePurchaseInfo) {
+            this.purchaseInfo = res.data.coursePurchaseInfo;
+            this.purchaseId = this.purchaseInfo.id
           }
+
         })
       }
     }

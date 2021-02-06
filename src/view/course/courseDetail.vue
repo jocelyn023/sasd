@@ -1,6 +1,10 @@
 <template>
   <div class="course-detail-page">
     <div class="course-video-block" @click="playVideo(-1)">
+      <p class="online-status green_bg">
+        <span>{{courseInfo.teachingTypeValue}}</span>
+      </p>
+
       <video :src="videoPath" ref="j_video" :poster="courseInfo.thumbnail" type="video/mp4"></video>
       <i v-if="!isPlay" class="icon_play" @click.stop="playVideo(-1)"></i>
     </div>
@@ -24,7 +28,7 @@
         </van-tab>
         <van-tab title="课程目录">
           <template v-for="(item, index) in courseCatalogList">
-            <cardCourse @handleClick="playVideo" :key="index" :item="item"></cardCourse>
+            <cardCourse @handleClick="handleClick" :key="index" :item="item"></cardCourse>
           </template>
         </van-tab>
       </van-tabs>
@@ -33,9 +37,8 @@
       <van-button
         v-if="!courseInfo.coursePurchaseInfo || (courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.status=='PAYING') "
         type="theme" class="btn" @click="buyCourse">去购买</van-button>
-      <!-- <van-button v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNING'" type="theme" class="btn" to="/studyList">立即学习</van-button> -->
       <van-button v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNING'"
-        type="theme disabled" class="btn"  @click="toExam">参加考试</van-button>
+        type="theme disabled" class="btn" @click="toExam">参加考试</van-button>
       <van-button
         v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNED' && courseInfo.coursePurchaseInfo.status=='PAYED'"
         type="theme" class="btn">参加考试</van-button>
@@ -56,6 +59,9 @@
   import {
     toExam
   } from "@/api/exam";
+  import {
+    Toast
+  } from 'vant';
   import cardCourse from "@/components/cardCourse";
   import examMixin from "@/mixins/exam";
   export default {
@@ -112,10 +118,10 @@
           purchaseId: this.purchaseId
         }).then(res => {
           console.log(res);
-          //if (res.code == 200) {
-          setCookie("purchaseId", this.purchaseId);
-          this.getStep();
-          // }
+          if (res.code == 200) {
+            setCookie("purchaseId", this.purchaseId);
+            this.getStep();
+          }
         });
       },
       getVedioAddress(id) {
@@ -128,6 +134,13 @@
             video.src = res.data;
             setTimeout(() => {
               video.play();
+              video.addEventListener("timeupdate", () => {
+                var timeDisplay;
+                var duration;
+                timeDisplay = Math.floor(video.currentTime);
+                duration = Math.floor(video.duration);
+                this.pauseVideo(timeDisplay, 1)
+              }, false);
               this.isPlay = true;
             }, 150);
           } else {
@@ -135,9 +148,34 @@
           }
         });
       },
-      pauseVideo() {
-        this.isPlay = false;
+      pauseVideo(timeDisplay, type) {
+        if (!this.courseInfo.coursePurchaseInfo ||
+          (this.courseInfo.coursePurchaseInfo &&
+            courseInfo.coursePurchaseInfo.status == 'PAYING')) {
+          if (timeDisplay >= this.activeVideoIndex) {
+            this.$refs.j_video.pause();
+            this.isPlay = false;
+            Toast("试看时间已到");
+          } else {
+            if (type != 1) {
+              this.$refs.j_video.play();
+              this.isPlay = true;
+            }
+          }
+        } else {
+          if (type != 1) {
+            this.$refs.j_video.play();
+            this.isPlay = true;
+          }
+        }
+        //console.log(this.isPlay,timeDisplay,this.activeVideoIndex);
       },
+      handleClick(item) {
+        if (item.ifTry == 1 || item.learnStatus == 'LEARNING') {
+          this.playVideo(item)
+        }
+      },
+
       playVideo(item) {
         if (item == -1) {
           if (this.isPlay) {
@@ -146,16 +184,18 @@
           } else {
             if (this.activeVideoIndex == -1) {
               if (this.courseCatalogList.length > 0) {
+                let list = this.courseCatalogList.filter(item => {
+                  return item.ifTry == 1
+                })
                 this.getVedioAddress(this.courseCatalogList[0].vedioId);
-                this.activeVideoIndex = this.courseCatalogList[0].vedioId;
+                this.activeVideoIndex = this.courseCatalogList[0].tryDuration;
               }
             } else {
-              this.$refs.j_video.play();
-              this.isPlay = true;
+              this.pauseVideo(this.$refs.j_video.currentTime);
             }
           }
         } else {
-          this.activeVideoIndex = item.vedioId;
+          this.activeVideoIndex = item.tryDuration;
           this.getVedioAddress(item.vedioId);
         }
       },
@@ -173,13 +213,6 @@
         };
 
         getCourseCatalogList(params).then(res => {
-          // TODO
-          res.data.forEach(item => {
-            item.learnStatus = "LEARNING";
-            item.isPay =
-              this.courseInfo.coursePurchaseInfo &&
-              this.courseInfo.coursePurchaseInfo.status != "PAYING";
-          });
           this.courseCatalogList = res.data;
         });
       },
@@ -205,6 +238,44 @@
       position: relative;
       height: 178px;
       overflow: hidden;
+
+      .online-status {
+        color: #fff;
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+
+        &.red_bg {
+          &:after {
+            border-color: transparent transparent #a0191f;
+          }
+        }
+
+        span {
+          position: relative;
+          z-index: 2;
+          transform: rotate(45deg);
+          display: block;
+          padding-left: 27px;
+          margin-right: -5px;
+          font-size: 13px;
+        }
+
+        &:after {
+          content: "";
+          position: absolute;
+          top: -38px;
+          right: -38px;
+          z-index: 1;
+          transform: rotate(45deg);
+          width: 0;
+          height: 0;
+          border: 37.5px solid;
+          border-color: transparent transparent #31ad37;
+        }
+
+      }
 
       video {
         width: 100%;

@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="step-btn-group" :class="examInfo.status == 'EDIT_INFO' ?'pt40':''">
-        <van-button v-if="examInfo.status == 'EDIT_INFO'" type="theme" class="btn">返回课程</van-button>
+        <van-button v-if="examInfo.status == 'EDIT_INFO'" type="theme" class="btn" @click="backCourse">返回课程</van-button>
         <van-button v-else native-type="submit" type="theme" class="btn">完成</van-button>
       </div>
     </van-form>
@@ -55,6 +55,14 @@
         }
         saveAddress(params).then(res => {
           this.examInfo.status = 'EDIT_INFO'
+        })
+      },
+      backCourse(){
+        this.$router.push({
+          path: "/courseDetail",
+          query: {
+            id: this.examInfo.courseId
+          }
         })
       }
     }

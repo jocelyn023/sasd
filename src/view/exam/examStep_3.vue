@@ -54,8 +54,8 @@
       </template>
 
       <div v-if="examInfo.status == 'PASS' || examInfo.status == 'NO_PASS'" class="result-table-block">
-        <p  v-if="examInfo.status == 1">视频成绩合格，具体得分如下：</p>
-        <p  v-else>视频成绩不合格，具体得分如下：</p>
+        <p v-if="examInfo.status == 1">视频成绩合格，具体得分如下：</p>
+        <p v-else>视频成绩不合格，具体得分如下：</p>
         <div v-if="scoreType == 2" class="table-box col-3-table flex txt-c">
           <div class="item w50">文化理论（20分）</div>
           <div class="item">{{examInfo.writtenExamScore}}分</div>
@@ -106,7 +106,7 @@
       </div>
     </template>
     <div class="step-btn-group">
-       <template v-if="status == 5">
+      <template v-if="status == 5">
         <van-button v-if="status == 5" type="theme" plain class="btn mr15" @click="changeCertificate(1)">不换证,下一步
         </van-button>
         <van-button v-if="status == 5" type="theme" class="btn" @click="changeCertificate(2)">缴费换证</van-button>
@@ -121,7 +121,7 @@
       </template>
       <template v-else-if="examInfo.status == 'NO_PASS'">
         <!-- TODO -->
-        <van-button type="theme" plain class="btn">返回课程</van-button>
+        <van-button type="theme" plain class="btn" @click="backCourse">返回课程</van-button>
         <van-button type="theme" class="btn" @click="makeUpFree">免费补考</van-button>
         <!-- examInfo.mkExamStatus -->
         <!-- <van-button type="theme" class="btn" @click="makeUpPay">缴费补考</van-button> -->
@@ -145,8 +145,13 @@
     saveVideo,
     changeNoSave,
     changeSave,
-    makeUpFree
+    makeUpFree,
+    getCourseMakeupExamOrder,
+    getCertificateAddPayOrder
   } from '@/api/exam'
+  import {
+    wxPay
+  } from '@/api/common'
   export default {
     mixins: [examMixin],
     components: {
@@ -241,17 +246,71 @@
         this.examInfo[key] = url
         console.log(url, key)
       },
-      makeUpFree(){
-        //TODO 
-        makeUpFree({id: this.purchaseId}).then(res => {
-            //this.nextStep(4)
+      makeUpFree() {
+        //TODO 免费补考
+        makeUpFree({
+          id: this.purchaseId
+        }).then(res => {
+          //this.nextStep(4)
         })
       },
-      makeUpPay(){
+      makeUpPay() {
         //TODO 缴费补考
-        // makeUpFree({id: this.purchaseId}).then(res => {
-        //     //this.nextStep(4)
-        // })
+        let _this = this
+        getCourseMakeupExamOrder(this.purchaseId).then(res => {
+          if (res.code == 200) {
+            this.payId = res.data
+          }
+        }).then(() => {
+          wxPay(_this.payId).then(ret => {
+            let data = ret.data
+            let params = {
+              appId: data.appId,
+              timeStamp: data
+                .timeStamp,
+              nonceStr: data.nonceStr,
+              package: data.packageValue,
+              signType: data.signType,
+              paySign: data.paySign
+            }
+            _this.wxPayFn(params, 1)
+          })
+        })
+      },
+      wxPayFn(params, type) {
+        let _this = this
+        WeixinJSBridge.invoke('getBrandWCPayRequest', params, function (res) {
+          if (res.err_msg == "get_brand_wcpay_request:ok") {
+            if (type == 2) {
+              // _this.changeCertificate(2);
+              _this.nextStep(4)
+            } else {
+              _this.getExamInfo();
+            }
+          }
+        })
+      },
+      getCertificateAddPayOrder() {
+        let _this = this
+        getCertificateAddPayOrder(this.purchaseId).then(res => {
+          if (res.code == 200) {
+            this.payId = res.data
+          }
+        }).then(() => {
+          wxPay(_this.payId).then(ret => {
+            let data = ret.data
+            let params = {
+              appId: data.appId,
+              timeStamp: data
+                .timeStamp,
+              nonceStr: data.nonceStr,
+              package: data.packageValue,
+              signType: data.signType,
+              paySign: data.paySign
+            }
+            _this.wxPayFn(params, 2)
+          })
+        })
       },
       changeCertificate(type) {
         //1 不换 2 换
@@ -265,19 +324,26 @@
             this.nextStep(4)
           })
         } else {
-          if(this.checkboxGroup.length>0){
+          if (this.checkboxGroup.length > 0) {
             params.ifChange = 1;
-            this.checkboxGroup.forEach(key=>{
+            this.checkboxGroup.forEach(key => {
               params[key] = 1;
             })
             changeSave(params).then(res => {
-              this.nextStep(4)
+              this.getCertificateAddPayOrder(2);
             })
-          }else{
+          } else {
             Toast('请选择要加持的证书');
           }
-          
         }
+      },
+      backCourse() {
+        this.$router.push({
+          path: "/courseDetail",
+          query: {
+            id: this.examInfo.courseId
+          }
+        })
       }
     }
   };
