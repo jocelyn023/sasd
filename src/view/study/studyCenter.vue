@@ -63,9 +63,7 @@ export default {
       loading: false,
       finished: false,
       refreshing: false,
-      list: [{
-        id: 1,
-      }]
+      list: []
     };
   },
   mounted() {

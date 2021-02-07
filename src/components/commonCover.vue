@@ -11,7 +11,7 @@
     </div>
     <div class="cover-item gray-color">
       <p class="mr10">课程方式：{{info.teachingTypeValue}}</p>
-      <p class="van-ellipsis">地区：{{info.cityNamePath}}</p>
+      <p class="van-ellipsis" v-if="info.teachingType != 'ON'">地区：{{info.cityNamePath}}</p>
     </div>
   </div>
 </template>

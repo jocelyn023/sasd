@@ -75,18 +75,7 @@ export default {
       danceActive: 0,
       danceType: 'POPPING',
       courseList: [],
-      typeList: ['POPPING', 'BREKING', 'JAZZ', 'HIP-HOP', 'LOCKING', 'POPPING2'],
-      list: [{
-        id: 1,
-        path: "https://img.yzcdn.cn/vant/cat.jpeg",
-        desc: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        price: "132"
-      },{
-        id: 2,
-        path: "https://img.yzcdn.cn/vant/cat.jpeg",
-        desc: "这是一段1最多显示一行的文这是一段最多显示一行的文字，多余的内容会被省略",
-        price: "132"
-      }]
+      typeList: ['POPPING', 'BREKING', 'JAZZ', 'HIP-HOP', 'LOCKING', 'POPPING2']
     };
   },
   created () {

@@ -1,4 +1,4 @@
-import { get, post } from '@/utils/request'
+import { get, post, deletePost } from '@/utils/request'
 
 // 个人中心
 // 个人信息
@@ -60,6 +60,9 @@ export const saveMyPostAddress = params => post('/wx/api/personal/saveMyPostAddr
 // 订单列表
 export const getOrderList = params => post('/wx/api/personal/getCoursePurchaseOrderPage', params)
 
+// 删除课程订单
+export const delOrderCourse = params => deletePost('/wx/api/personal/deleteCoursePurchaseOrder', params)
+
 
 // 我的成绩
 // 成绩列表
@@ -67,3 +70,4 @@ export const getScoreList = params => post('/wx/api/personal/getCourseScorePage'
 
 // 我的证书
 export const getCertificateList = params => get('/wx/api/personal/getMyCertificateList', params)
+

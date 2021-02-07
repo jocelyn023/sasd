@@ -16,8 +16,21 @@
               <div class="col-theme price">¥{{ item.price }}</div>
             </div>
             <div class="button-box txt-r">
-              <van-button class="f12 button" :type="(type == 1 && item.status != 'PAYING') ? 'theme' : 'primary'" @click="pushRouter(item.courseId, item.status)">
+              <van-button
+                class="f12 button"
+                :type="(type == 1 && item.status != 'PAYING') ? 'primary' : 'theme'"
+                @click="pushRouter(item.courseId, item.status, item)"
+              >
                 {{ type == 1 ? item.status == 'PAYING' ? '待缴费' : '缴费成功' : '查看成绩' }}
+              </van-button>
+
+              <van-button
+                v-if="type == 1 && item.status == 'PAYING'"
+                class="f12 button m-l-10"
+                type="theme"
+                @click="delOrder(item)"
+              >
+                删除
               </van-button>
             </div>
           </div>
@@ -28,7 +41,9 @@
 </template>
 
 <script>
-import { getOrderList, getScoreList } from '@/api/user'
+import { getOrderList, getScoreList, delOrderCourse } from '@/api/user'
+import { getCoursePurchaseOrder } from '@/api/course'
+import { wxPay } from '@/api/common'
 import { Toast } from 'vant';
 
 export default {
@@ -43,9 +58,20 @@ export default {
         page: 1
       },
       type: this.$route.query.type, //1 我的订单， 2成绩查询
+      payId: ''
     }
   },
   methods:{
+    delOrder (item) {
+      delOrderCourse({purchaseId: item.purchaseId}).then(res => {
+        if (res.code == 200) {
+          this.onRefresh()
+          Toast('删除成功')
+        } else {
+          Toast(res.returnMsg)
+        }
+      })
+    },
     onLoad() {
       if (this.refreshing) {
         this.list = [];
@@ -57,7 +83,7 @@ export default {
         getOrderList(this.params).then(res => {
           this.loading = false;
           this.params.total = res.data.total;
-          if (this.params.page < res.data.total) {
+          if (this.params.page < res.data.pages) {
             this.params.page = this.params.page + 1
           } else {
             this.finished = true;
@@ -83,6 +109,7 @@ export default {
     },
     onRefresh () {
       // 清空列表数据
+      this.list = []
       this.finished = false;
 
       // 重新加载数据
@@ -90,8 +117,9 @@ export default {
       this.loading = true;
       this.onLoad();
     },
-    pushRouter(id, isPay) {
+    pushRouter(id, isPay, item) {
       let routerParams = {}
+      let _this = this
 
       if (this.type == 1) {
         // 订单
@@ -106,7 +134,25 @@ export default {
           }
         } else {
           // 未支付
-          Toast("支付页面")
+          getCoursePurchaseOrder(item.purchaseId).then(res => {
+            if (res.code == 200) {
+              this.payId = res.data
+            }
+          }).then(() => {
+            wxPay(_this.payId).then(ret => {
+              alert(ret.code)
+              let data = ret.data
+              let params = {
+                appId: data.appId,
+                timeStamp: data.timeStamp,
+                nonceStr: data.nonceStr,
+                package: data.packageValue,
+                signType: data.signType,
+                paySign: data.paySign
+              }
+              _this.wxPayFn(params)
+            })
+          })
         }
       } else {
         // 成绩查询
@@ -118,7 +164,15 @@ export default {
         }
       }
       this.$router.push(routerParams)
-    }
+    },
+    wxPayFn(params) {
+      let _this = this
+      WeixinJSBridge.invoke('getBrandWCPayRequest', params, function (res) {
+        if (res.err_msg == "get_brand_wcpay_request:ok") {
+          _this.onRefresh()
+        }
+      })
+    },
   }
 };
 </script>
@@ -171,6 +225,9 @@ export default {
       .button {
         height: 22px;
         line-height: 22px;
+      }
+      .button.m-l-10 {
+        margin-left: 10px
       }
     }
   }
