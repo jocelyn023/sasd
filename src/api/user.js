@@ -29,6 +29,9 @@ export const getChannelTabList = params => post('/wx/api/personal/getCoursePurch
 // 生成代理商支付订单
 export const createApplyOrder = params => post('/pay/order/getAgentDepositPayOrder?applyId=' + params)
 
+// 获取我的师资营初始化结果
+export const getTeachingCampInitInfo = params => get('/wx/api/personal/getTeachingCampInitInfo', params)
+
 
 // 我的钱包
 // 账户余额

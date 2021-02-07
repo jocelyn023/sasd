@@ -141,6 +141,7 @@ export default {
   mixins: [city],
   data () {
     return {
+      toastObj: null,
       // 选择地区
       isShowPicker: false,
       cityObj: [],
@@ -259,15 +260,24 @@ export default {
       }
 
       agentApply(params).then(res => {
-        this.$router.push({
-          path: '/applyResult'
-        })
+        if (res.code == 200) {
+          this.$router.push({
+            path: '/applyResult'
+          })
+        } else {
+          Toast.fail(res.returnMsg)
+        }
+        
       })
     },
     onOversize(file) {
       Toast('文件大小不能超过' + this.maxUploadSize/ 1024 / 1024);
     },
     async beforeRead (file) {
+      this.toastObj = Toast.loading({
+        duration: 0,
+        text: '加载中。。。'
+      })
       await getToken({}).then(res => {
         const fileName = file.name
         this.uploadParams = {
@@ -289,6 +299,8 @@ export default {
         //     percent: parseInt((event.loaded / event.total) * 100)
         // });
       }).then(res => {
+        this.toastObj.clear()
+        this.toastObj = null
         file.url = this.domin + this.uploadParams.key
         file.status = 'complete'
         file.message = ''
