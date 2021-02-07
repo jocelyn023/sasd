@@ -5,13 +5,29 @@
       <van-tab title="学习中">
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
           <template v-if="list && list.length > 0">
-            <cardProgress
-              v-for="(item, index) in list"
-              :key="index"
-              :item="item"
-              @emitClick="clickItem"
-            ></cardProgress>
+            <p class="title">最近学习</p>
+            <template v-for="(item, index) in list">
+              <cardProgress
+                v-if="index == 0"
+                :key="index"
+                :item="item"
+                @emitClick="clickItem"
+              ></cardProgress>
+            </template>
           </template>
+
+          <template v-else-if="list && list.length > 1">
+            <p class="title">更早</p>
+            <template v-for="(item, index) in list">
+              <cardProgress
+                v-if="index > 0"
+                :key="index"
+                :item="item"
+                @emitClick="clickItem"
+              ></cardProgress>
+            </template>
+          </template>
+          
           <template v-else>
             <div class="empty-box">
               <p class="txt-c">暂无学习记录</p>
@@ -120,14 +136,40 @@ export default {
 
 <style lang="less">
 .study-center {
-  .test {
-    width: 750px;
-    height: 750px;
-    background: #333
+  .van-tabs__wrap {
+    padding-left: 15px;
+
+    .van-tabs__nav {
+      padding-bottom: 10px
+    }
+    .van-tab {
+      -webkit-box-flex: none;
+      -webkit-flex: none;
+      flex: none;
+      font-size: 13px;
+    }
+    .van-tab--active {
+      font-size: 16px;
+    }
+    .van-tabs__line {
+      width: 20px;
+      border-radius: 8px;
+      background-color: #a0191f
+    }
   }
   .van-pull-refresh {
     padding-top: 10px;
     padding-bottom: 10px;
+  }
+  .title {
+    padding-left: 15px;
+    height: 17px;
+    font-family: MicrosoftYaHei;
+    font-size: 16px;
+    font-weight: bold;
+    font-stretch: normal;
+    letter-spacing: 0px;
+    color: #333333;
   }
   .empty-box {
     padding-top: 232px;

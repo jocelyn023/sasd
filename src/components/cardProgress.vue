@@ -1,11 +1,17 @@
 <template>
   <div class="card-progress-wrap">
     <div class="card-progress flex m-b-20">
-      <van-image
-        class="m-r-15 thumbnail"
-        fit="cover"
-        :src="item.thumbnail"
-      />
+      <div class="thumbnail-box m-r-15">
+        <van-image
+          class="thumbnail"
+          fit="cover"
+          :src="item.thumbnail"
+        />
+
+        <p class="online-status" v-if="item.teachingType" :class="item.teachingType == 'ON'?'green_bg':'red_bg'">
+          <span>{{ item.teachingType == 'ON' ? '线上':'线下'}}</span>
+        </p>
+      </div>
       <div class="flex-auto">
         <div class="van-ellipsis m-b-10 course-title">{{ item.courseName }}</div>
         <div class="col-gray-9 f12 course-num">
@@ -68,7 +74,45 @@ export default {
   box-sizing: border-box;
   box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
 
+  .online-status {
+      color: #fff;
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      &.red_bg{
+         &:after{
+           border-color: transparent transparent #a0191f;
+         }
+      }
+
+      span {
+        position: relative;
+        z-index: 2;
+        transform: rotate(45deg);
+        display: block;
+        padding-left: 16px;
+        margin-right: -4px;
+        font-size: 9px;
+      }
+
+      &:after {
+        content: "";
+        position: absolute;
+        top: -22px;
+        right: -22px;
+        z-index: 1;
+        transform: rotate(45deg);
+        width: 0;
+        height: 0;
+        border: 22px solid;
+        border-color: transparent transparent #31ad37;
+      }
+  }
   .card-progress {
+    .thumbnail-box {
+      position: relative;
+    }
     .thumbnail {
       width: 90px;
       height: 64px;

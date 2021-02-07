@@ -16,7 +16,7 @@
             <div class="f12 col-white m-b-10">代理商编码：{{ userInfo.agentNo }}</div>
             <div class="badge f12">
               <span v-if="userInfo.agentType == 'TEACHING_CAMP'">师资营</span>
-              <span v-else>推广员</span>
+              <span v-else>思爱思帝推广员</span>
             </div>
           </template>
         </div>
@@ -141,12 +141,21 @@ export default {
     width: 200px;
   }
   .badge {
+    position: relative;
     padding-left: 26px;
     padding-top: 2px;
-    width: 77px;
-    height: 23px;
+    width: 90px;
+    height: 30px;
     background: url(../../assets/user/bg_badge.png) no-repeat center;
     background-size: contain;
+
+    span {
+      position: absolute;
+      left: 12px;
+      top: 6px;
+      width: 90px;
+      transform: scale(0.7);
+    }
   }
 }
 </style>

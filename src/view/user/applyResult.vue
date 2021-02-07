@@ -46,9 +46,17 @@
     <template v-else>
       <div class="wrapper pay">
         <div class="title txt-c">缴费成功</div>
-        <div class="col-theme f12 m-b-20">恭喜您，缴费成功，成为思爱思帝课程推广员。</div>
-        <div class="m-b-20" v-if="userInfo">推广员编码：{{ userInfo.agentNo }}</div>
-        <div class="m-b-10">推广员专属二维码：</div>
+        <div class="col-theme f12 m-b-20" v-if="result.applyType == 'AGENT'">恭喜您，缴费成功，成为课程推广员。</div>
+        <div class="col-theme f12 m-b-20" v-if="result.applyType == 'TEACHING_CAMP'">恭喜您，缴费成功，成为csda师资营。</div>
+
+        <div class="m-b-20" v-if="result.applyType == 'AGENT'">推广员编码：{{ userInfo.agentNo }}</div>
+        <div class="m-b-10" v-if="result.applyType == 'TEACHING_CAMP'">师资营名称：{{ result.teachingCampName }}</div>
+        <div class="m-b-10" v-if="result.applyType == 'TEACHING_CAMP'">师资营编码：{{ userInfo.agentNo }}</div>
+        <div class="m-b-10" v-if="result.applyType == 'TEACHING_CAMP'">师资营后台账号：{{ result.telNo }}</div>
+        <div class="m-b-20" v-if="result.applyType == 'TEACHING_CAMP'">后台初始密码：{{ agentPsw }}</div>
+
+        <div class="m-b-10" v-if="result.applyType == 'AGENT'">推广员专属二维码：</div>
+        <div class="m-b-10" v-if="result.applyType == 'TEACHING_CAMP'">师资营专属二维码：</div>
         <div class="ercode">
           <vue-qr class="bicode" :text="codeValue" :margin="20" :dotScale="1"></vue-qr>
         </div>
@@ -63,7 +71,7 @@
 
 <script>
 import vueQr from 'vue-qr'
-import { getAgentStatus, createApplyOrder, getMyPersonalInfo } from '@/api/user'
+import { getAgentStatus, createApplyOrder, getMyPersonalInfo, getTeachingCampInitInfo } from '@/api/user'
 import { wxPay } from '@/api/common'
 
 export default {
@@ -75,7 +83,8 @@ export default {
       showPayResult: true,
       result: {},
       userInfo: {},
-      payId: ''
+      payId: '',
+      agentPsw:''
     }
   },
   created () {
@@ -92,6 +101,10 @@ export default {
           getMyPersonalInfo().then(ret => {
             this.userInfo = ret.data
             localStorage.setItem('agentResult', JSON.stringify(res.data));
+          })
+
+          getTeachingCampInitInfo().then(ret => {
+            this.agentPsw = ret.data.initPassword
           })
         }
         localStorage.setItem('agentResult', JSON.stringify(res.data));
@@ -139,7 +152,7 @@ export default {
 
 <style lang="less" scoped>
 .apply-result {
-  padding: 100px 33px 0;
+  padding: 20px 33px 0;
   width: 100%;
 
   .wrapper {
