@@ -9,7 +9,7 @@
         @search="onRefresh"
       >
         <template #action>
-          <div class="col-gray-9" @click="onRefresh">搜索</div>
+          <div class="col-gray-9" @click="cancelSearch">取消</div>
         </template>
       </van-search>
     </div>
@@ -54,11 +54,11 @@
 
             <template v-for="(item, index) in list">
               <div class="tab-item flex" :key="index">
-                <div class="item van-multi-ellipsis--l2 username">哈哈哈哈</div>
-                <div class="item van-multi-ellipsis--l2 tel">13800000000</div>
-                <div class="item van-multi-ellipsis--l2 name">具体课程名称</div>
-                <div class="item van-multi-ellipsis--l2 status">待支付</div>
-                <div class="item van-multi-ellipsis--l2 date">2020.03.19</div>
+                <div class="item van-multi-ellipsis--l2 username">{{ item.purchaserName }}</div>
+                <div class="item van-multi-ellipsis--l2 tel">{{ item.contractInfo }}</div>
+                <div class="item van-multi-ellipsis--l2 name">{{ item.name }}</div>
+                <div class="item van-multi-ellipsis--l2 status">{{ item.statusVaule }}</div>
+                <div class="item van-multi-ellipsis--l2 date">{{ item.createDate }}</div>
               </div>
             </template>
           </div>
@@ -80,17 +80,15 @@
         @confirm="onConfirmDate"
       >
       </van-date-picker>
-
-      <van-date-picker
+      <van-picker
+        title="支付状态"
         v-if=" showPickerType == 'status'"
         show-toolbar
-        v-model="date"
-        title="选择时间段"
-        :max-date="maxDate"
+        value-key="value"
+        :columns="columns"
+        @confirm="onConfirm"
         @cancel="showPicker = false"
-        @confirm="onConfirmDate"
-      >
-      </van-date-picker>
+      />
     </van-popup>
   </div>
 </template>
@@ -122,14 +120,40 @@ export default {
       showPicker: false,
       showPickerType: '',
       date: new Date(),
-      maxDate: new Date()
+      maxDate: new Date(),
+      columns: [{
+        key: 'PAYED',
+        value: '已支付'
+      }, {
+        key: 'PAYING',
+        value: '待支付'
+      }]
     };
   },
   created() {},
   methods: {
+    cancelSearch() {
+      this.params = {
+        page: 1,
+        rows: 10,
+        queryConditions: {
+          keyWords: '',
+          payStatus: '', // PAYED;PAYING
+          startDate: '', //"2021-01-01
+          endDate: ''
+        }
+      }
+      this.onRefresh()
+    },
     showPopup(type) {
       this.showPicker = true;
       this.showPickerType = type
+    },
+    onConfirm (val) {
+      this.showPicker = false;
+      console.log(val)
+      this.params.queryConditions.payStatus = val.key
+      this.onRefresh()
     },
     onConfirmDate(val) {
       this.params.queryConditions.startDate = val[0] + '-' + val[1] + '-' + val[2]
@@ -146,7 +170,7 @@ export default {
       getChannelTabList(this.params).then(res => {
         this.loading = false;
         this.params.total = res.data.total;
-        if (this.params.page < res.data.total) {
+        if (this.params.page < res.data.pages) {
           this.params.page = this.params.page + 1
         } else {
           this.finished = true;
@@ -159,7 +183,7 @@ export default {
     onRefresh () {
       // 清空列表数据
       this.finished = false;
-
+      this.refreshing = true;
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       this.loading = true;

@@ -96,7 +96,7 @@ export default {
         getScoreList(this.params).then(res => {
           this.loading = false;
           this.params.total = res.data.total;
-          if (this.params.page < res.data.total) {
+          if (this.params.page < res.data.pages) {
             this.params.page = this.params.page + 1
           } else {
             this.finished = true;

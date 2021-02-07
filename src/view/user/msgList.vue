@@ -64,7 +64,7 @@ export default {
       getMessagePageByType(this.params).then(res => {
         this.loading = false;
         this.params.total = res.data.total;
-        if (this.params.page < res.data.total) {
+        if (this.params.page < res.data.pages) {
           this.params.page = this.params.page + 1
         } else {
           this.finished = true;
@@ -77,7 +77,7 @@ export default {
     onRefresh () {
       // 清空列表数据
       this.finished = false;
-
+      this.refreshing = true;
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       this.loading = true;

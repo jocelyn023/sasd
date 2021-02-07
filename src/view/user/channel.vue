@@ -36,7 +36,8 @@ export default {
         this.$router.push('/me')
       }
       userInfo = JSON.parse(userInfo)
-      this.codeValue = window.location.host + '/courseList?agentId=' + userInfo.openId
+      // this.codeValue ='http://www.4a4d.cn/courseList?agentNo=' + userInfo.openId
+      this.codeValue = window.location.protocol + '//' + window.location.host + '/courseList?agentNo=' + userInfo.openId
     }
   }
 }
