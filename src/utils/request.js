@@ -12,12 +12,6 @@ axios.interceptors.request.use(
     config.headers['token'] = token
     config.headers['Authorization'] = token
     config.headers['X-Requested-With'] = 'XMLHttpRequest'
-    
-    // token && (config.headers.Authorization = token)
-    // if (config.url.indexOf("openId") === -1) {
-    //   config.url += config.url.indexOf("?") === -1 ? "?" : "&";
-    //   config.url += "openId=o83Fs6WlfxZhEZoWyV2elPUGshcU";
-    // }
     return config
   },
   error => {

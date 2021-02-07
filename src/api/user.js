@@ -67,6 +67,8 @@ export const delOrderCourse = params => deletePost('/wx/api/personal/deleteCours
 // 我的成绩
 // 成绩列表
 export const getScoreList = params => post('/wx/api/personal/getCourseScorePage', params)
+// 获取考试成绩
+export const getScoreInfo = params => get('/wx/api/personal/getCourseScoreInfo', params)
 
 // 我的证书
 export const getCertificateList = params => get('/wx/api/personal/getMyCertificateList', params)

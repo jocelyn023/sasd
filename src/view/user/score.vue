@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { getScoreInfo } from '@/api/user'
+
 export default {
   data() {
     return {
@@ -35,8 +37,9 @@ export default {
   },
   methods:{
     init () {
-      this.loading = true
-      this.finished = true
+      getScoreInfo().then(res => {
+        this.loading = true
+      })
     }
   }
 };

@@ -1,18 +1,25 @@
 <template>
   <div>
-    我的证书
+    <van-cell-group>
+      <van-cell
+        v-for="item in certificateTypeList"
+        :key="item.keyName"
+        :title="item.value"
+        :to="{path: '/certificateList', query: {type: item.keyName}}"
+        is-link
+      />
+    </van-cell-group>
   </div>
 </template>
 
 <script>
-import { getCertificateList } from '@/api/user'
+import { serchByKeyGroup } from '@/api/common'
 
 export default {
   data () {
     return {
-      type: this.$route.query.type,
       loading: true,
-      certificateList: []
+      certificateTypeList: []
     }
   },
   created () {
@@ -20,8 +27,8 @@ export default {
   },
   methods: {
     init() {
-      getCertificateList({'certificateType': this.type}).then(res => {
-        this.certificateList = res.data
+      serchByKeyGroup('CERTIFICATE_TYPE').then(res => {
+        this.certificateTypeList = res.data
       })
     }
   }

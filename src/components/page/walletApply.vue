@@ -123,7 +123,7 @@ export default {
       }
       cashoutApply(params).then(res => {
         if (res.code == 200) {
-          this.$parent.showApply = false
+          this.$emit('applyAgain', 'ok')
         } else {
           Toast.fail(res.returnMsg)
         }

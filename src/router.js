@@ -163,15 +163,19 @@ const routes = [
     meta: {
       title: '消息中心'
     }
-  },
-  {
+  },{
+    name: 'certificateType',
+    component: () => import('./view/user/certificateTypeList'),
+    meta: {
+      title: '我的证书'
+    }
+  }, {
     name: 'certificateList',
     component: () => import('./view/user/certificateList'),
     meta: {
       title: '我的证书'
     }
-  },
-  {
+  }, {
     name: 'msgList',
     component: () => import('./view/user/msgList'),
     meta: {

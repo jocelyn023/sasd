@@ -34,7 +34,7 @@
       <van-cell title="消息中心" to="/msgCenter" is-link />
       <van-cell title="我的订单" :to="{path: '/orderList', query: {type: 1}}" is-link />
       <van-cell title="成绩查询" :to="{path: '/scoreList', query: {type: 2}}" is-link />
-      <van-cell title="我的证书" to="/certificateList" is-link />
+      <van-cell title="我的证书" to="/certificateType" is-link />
       <van-cell title="邮寄地址" to="/address" is-link />
       <van-cell title="我的钱包" to="/wallet" is-link />
     </van-cell-group>

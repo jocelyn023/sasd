@@ -35,32 +35,28 @@
 </template>
 
 <script>
-import { cashoutResult } from '@/api/user'
+// import { cashoutResult } from '@/api/user'
 
 export default {
   components: {},
+  watch: {
+    resultObj: {
+      immediate: true,
+      handler(val) {
+        this.result = val
+      }
+    }
+  },
+  props: {
+    resultObj: {}
+  },
   data () {
     return {
       result: {}
     }
   },
-  created () {
-    this.init()
-  },
+  created () {},
   methods: {
-    init () {
-      cashoutResult().then(res => {
-        if (res.code == 200) {
-          if (res.data == null) {
-            this.result = {
-              approvalResult: 'APPROVING'
-            }
-          } else {
-            this.result = res.data
-          }
-        }
-      })
-    },
     submitAgain () {},
     pushRouter(url) {
       this.$parent.showApply = true

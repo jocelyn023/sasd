@@ -7,15 +7,15 @@
       @click-left="onClickLeft"
     /> -->
 
-    <walletApply v-if="!loading && showApply"></walletApply>
-    <walletResult ref="walletResult" v-if="!loading && !showApply"></walletResult>
+    <walletApply v-if="!loading && showApply" @applyAgain="applyAgain"></walletApply>
+    <walletResult ref="walletResult" :resultObj="result" v-if="!loading && !showApply"></walletResult>
   </div>
 </template>
 
 <script>
-import { Toast } from 'vant';
 import walletApply from '@/components/page/walletApply'
 import walletResult from '@/components/page/walletResult'
+import { getMyPersonalInfo, cashoutResult } from '@/api/user'
 
 export default {
   components: {
@@ -23,25 +23,45 @@ export default {
     walletResult
   },
   data () {
-    let self = this;
     return {
       loading: true,
-      showApply: true
+      showApply: true,
+      result: {}
     }
   },
   created () {
     this.init()
   },
   methods: {
-    init () {
-      const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-      this.loading = false
-      if (userInfo.cashoutStatus != null) {
-        this.loading = false
-        this.showApply = false
-      } else {
-        this.showApply = true
+    applyAgain(val) {
+      if (val == 'ok') {
+        this.init()
       }
+    },
+    init () {
+      getMyPersonalInfo().then(res => {
+        localStorage.setItem('userInfo', JSON.stringify(res.data))
+        const userInfo = res.data
+        this.loading = false
+        if (userInfo.cashoutStatus == null || userInfo.cashoutStatus == 'APPROVING') {
+          this.showApply = false
+          this.result = {
+            approvalResult: 'APPROVING'
+          }
+        } else {
+          this.cashoutResult()
+        }
+      })
+    },
+    cashoutResult () {
+      cashoutResult().then(res => {
+        if (res.code == 200) {
+          this.result = res.data
+          if (res.data.approvalResult != 'PASS') {
+            this.showApply = false
+          }
+        }
+      })
     },
     onClickLeft () {
       this.$router.go(-1)
