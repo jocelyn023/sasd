@@ -13,9 +13,12 @@
             ></cardProgress>
           </template>
           <template v-else>
-            <van-empty class="custom-image" description="暂无" />
-            <div class="txt-c p-t-10">
-              <van-button type="theme" @click="pushRouter('courseList')">去购买</van-button>
+            <div class="empty-box">
+              <p class="txt-c">暂无学习记录</p>
+              <p class="txt-c f12 col-gray-9">赶紧去选择您感兴趣的课程吧</p>
+              <div class="txt-c p-t-10">
+                <van-button type="theme" @click="pushRouter('courseList')">去找课程</van-button>
+              </div>
             </div>
           </template>
         </van-pull-refresh>
@@ -25,13 +28,20 @@
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
           <template v-if="list && list.length > 0">
             <template v-for="(item, index) in list">
-              <cardProgress :key="index"></cardProgress>
+              <cardProgress
+                :key="index"
+                :item="item"
+                @emitClick="clickItem"
+              ></cardProgress>
             </template>
           </template>
           <template v-else>
-            <van-empty class="custom-image" description="暂无" />
-            <div class="txt-c p-t-10">
-              <van-button type="theme" @click="pushRouter('courseList')">去购买</van-button>
+            <div class="empty-box">
+              <p class="txt-c">暂无学习记录</p>
+              <p class="txt-c f12 col-gray-9">赶紧去选择您感兴趣的课程吧</p>
+              <div class="txt-c p-t-10">
+                <van-button type="theme" @click="pushRouter('courseList')">去找课程</van-button>
+              </div>
             </div>
           </template>
         </van-pull-refresh>
@@ -69,7 +79,13 @@ export default {
       this.onRefresh()
     },
     clickItem(val) {
-
+      this.$router.push({
+        path: 'courseDetail',
+        query: {
+          id: val.courseId,
+          type: 1
+        }
+      })
     },
     onRefresh () {
       // 清空列表数据
@@ -105,9 +121,22 @@ export default {
 </script>
 
 <style lang="less">
+.study-center {
   .test {
     width: 750px;
     height: 750px;
     background: #333
   }
+  .van-pull-refresh {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .empty-box {
+    padding-top: 232px;
+    width: 100%;
+    height: 404px;
+    background: url(../../assets/no_class.png) no-repeat center 90px;
+    background-size: 102px;
+  }
+}
 </style>

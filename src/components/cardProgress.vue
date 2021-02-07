@@ -2,17 +2,15 @@
   <div class="card-progress-wrap">
     <div class="card-progress flex m-b-20">
       <van-image
-        class="m-r-15"
-        width="90"
-        height="64"
-        fit="contain"
-        :src="item.img"
+        class="m-r-15 thumbnail"
+        fit="cover"
+        :src="item.thumbnail"
       />
       <div class="flex-auto">
-        <div class="van-ellipsis m-b-10 course-title">{{ item.title }}</div>
+        <div class="van-ellipsis m-b-10 course-title">{{ item.courseName }}</div>
         <div class="col-gray-9 f12 course-num">
-          <span>共{{ item.courseNum }}节</span>｜
-          <span>已学习{{ item.learned }}节</span>
+          <span>共{{ item.totalRecord }}节</span>｜
+          <span>已学习{{ item.finishRecord }}节</span>
         </div>
         <div>
           <div v-if="percentage != 100" class="col-gray-9 f12 txt-r">已学习{{ percentage }}%</div>
@@ -24,7 +22,7 @@
       </div>
     </div>
     <div class="txt-r">
-      <van-button type="theme" @click="emitClick">{{ item.status == 1 ? '去考试中心' : '继续学习' }}</van-button>
+      <van-button type="theme" @click="emitClick">{{ percentage == 100 ? '重新学习' : '继续学习' }}</van-button>
     </div>
   </div>
 </template>
@@ -36,7 +34,7 @@ export default {
     item: {
       immediate: true,
       handler(val) {
-        this.percentage = parseInt(val.learned/val.courseNum*100)
+        this.percentage = parseInt(val.finishRecord / val.totalRecord * 100)
       }
     }
   },
@@ -71,6 +69,10 @@ export default {
   box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
 
   .card-progress {
+    .thumbnail {
+      width: 90px;
+      height: 64px;
+    }
     .course-title {
       width: 213px;
       height: 16px;
