@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     init() {
-      serchByKeyGroup('CERTIFICATE_TYPE').then(res => {
+      serchByKeyGroup('EXAM_CATEGORY').then(res => {
         this.certificateTypeList = res.data
       })
     }
