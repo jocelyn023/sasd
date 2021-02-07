@@ -35,6 +35,13 @@ export default {
         } else {
           window.location.href = item.adDetailUrl + "&id = " + item.id
         }
+      } else {
+        this.$router.push({
+          path: '/bannerDetail',
+          query: {
+            id: item.id
+          }
+        })
       }
     }
   }

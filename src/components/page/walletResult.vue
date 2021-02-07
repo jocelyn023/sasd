@@ -9,13 +9,13 @@
         <div class="txt-c title-result" :class="result.approvalResult != 'REJECT' ? 'col-yellow-f39a35' : 'col-gray-3'">
           <span v-if="result.approvalResult == 'APPROVING'">申请已提交</span>
           <span v-if="result.approvalResult == 'REJECT'">申请未通过</span>
-          <span v-if="result.approvalResult == 'APPROVED'">申请通过</span>
+          <span v-if="result.approvalResult == 'PASS'">申请通过</span>
         </div>
         
         <div class="tips-result">
           <span class="result-wait" v-if="result.approvalResult != 'REJECT'">
             <span v-if="result.approvalResult == 'APPROVING'">您的提现申请已经提交，工作人员会在三个工作日内，进行处理，请耐心等待！</span>
-            <span v-if="result.approvalResult == 'APPROVED'">恭喜您，申请通过！请尽快缴纳推广员押金。</span>
+            <span v-if="result.approvalResult == 'PASS'">恭喜您，申请通过！</span>
           </span>
           
           <div v-else class="no-pass">
@@ -26,6 +26,10 @@
       </div>
       <div class="btn-submit-box txt-c" v-if="result.approvalResult != 'APPROVING'">
         <van-button v-if="result.approvalResult == 'REJECT'" class="btn-submit" type="theme" @click="pushRouter('/walletApply')">重新提交</van-button>
+      </div>
+
+      <div class="btn-submit-box txt-c" v-if="result.approvalResult == 'PASS'">
+        <van-button class="btn-submit" type="theme" @click="pushReplace('/wallet')">返回我的钱包</van-button>
       </div>
   </div>
 </template>
@@ -51,6 +55,8 @@ export default {
             this.result = {
               approvalResult: 'APPROVING'
             }
+          } else {
+            this.result = res.data
           }
         }
       })
@@ -58,6 +64,9 @@ export default {
     submitAgain () {},
     pushRouter(url) {
       this.$parent.showApply = true
+    },
+    pushReplace (url) {
+      this.$parent.$router.replace(url)
     }
   }
 }
