@@ -3,11 +3,17 @@
     <van-form @submit="handlePay">
       <div class="buy-user-info">
         <h3>基础信息填写</h3>
-        <div>
+        <div v-if="purchaseId == -1">
           <van-field v-model="purchaseInfo.purchaserName" label="姓名" :rules="[{ required: true, message: '请填写姓名' }]"
             placeholder="请输入" />
           <van-field v-model="purchaseInfo.contractInfo" type="tel" name="pattern" label="联系方式"
             :rules="[{ pattern, required: true, message: '请填写联系方式' }]" placeholder="请输入" />
+        </div>
+        <div v-else>
+          <van-field v-model="purchaseInfo.purchaserName" label="姓名" readonly
+            placeholder="请输入" />
+          <van-field v-model="purchaseInfo.contractInfo" type="tel" name="pattern" label="联系方式"
+            readonly placeholder="请输入" />
         </div>
       </div>
       <div class="buy-course-info">
@@ -95,7 +101,9 @@
         }
       },
       async handlePay(values) {
-        await this.saveCoursePurchaseInfo();
+        if(this.purchaseId == -1){
+          await this.saveCoursePurchaseInfo();
+        }
         let _this = this;
         getCoursePurchaseOrder(this.purchaseId).then(res => {
           if (res.code == 200) {
@@ -103,7 +111,6 @@
           }
         }).then(() => {
           wxPay(_this.payId).then(ret => {
-            alert(ret.code)
             let data = ret.data
             let params = {
               appId: data.appId,

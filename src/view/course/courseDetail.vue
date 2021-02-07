@@ -1,18 +1,18 @@
 <template>
   <div class="course-detail-page">
-    <div class="course-video-block" @click="playVideo(-1)">
+    <div class="course-video-block" @click="handleClickPlay(-1)">
       <p class="online-status green_bg">
         <span>{{courseInfo.teachingTypeValue}}</span>
       </p>
 
       <video :src="videoPath" ref="j_video" :poster="courseInfo.thumbnail" type="video/mp4"></video>
-      <i v-if="!isPlay" class="icon_play" @click.stop="playVideo(-1)"></i>
+      <i v-if="!isPlay" class="icon_play" @click.stop="handleClickPlay(-1)"></i>
     </div>
     <div class="course-main-con">
       <p class="course-title">{{courseInfo.name}}</p>
       <p class="course-num">舞种: {{courseInfo.dancyTypeValue}} <span
           class="level">等级：{{courseInfo.dancyLevelValue}}</span></p>
-      <p class="course-num">举办地区: {{courseInfo.cityNamePath}}</p>
+      <p v-if="courseInfo.teachingType !='ON'" class="course-num">举办地区: {{courseInfo.cityNamePath}}</p>
       <p class="course-num">课程方式: {{courseInfo.teachingTypeValue}}课程</p>
       <p class="course-num">课程结束时间: {{courseInfo.endDate}}</p>
       <p class="course-num">共{{courseInfo.courseLength}}课时</p>
@@ -51,7 +51,8 @@
   import {
     getCourseDetailInfo,
     getCourseCatalogList,
-    getVedioAddress
+    getVedioAddress,
+    catalog
   } from "@/api/course";
   import {
     setCookie
@@ -71,11 +72,13 @@
     },
     data() {
       return {
+        purchaseId: -1,
         activeVideoIndex: -1,
         active: 1,
         type: this.$route.query.type,
         videoPath: "",
         isPlay: false,
+        isBuy: false,
         courseInfo: {
           // cityId: "110102"
           // cityNamePath: "北京,北京市,西城区"
@@ -113,7 +116,6 @@
 
     methods: {
       toExam() {
-        this.purchaseId = this.courseInfo.coursePurchaseInfo.id;
         toExam({
           purchaseId: this.purchaseId
         }).then(res => {
@@ -123,6 +125,16 @@
             this.getStep();
           }
         });
+      },
+      catalog(item) {
+        if (this.isBuy) {
+          catalog({
+            purchaseId: this.purchaseId,
+            courseCatalogId: item.id
+          }).then(res => {
+            console.log(res)
+          })
+        }
       },
       getVedioAddress(id) {
         getVedioAddress({
@@ -149,34 +161,32 @@
         });
       },
       pauseVideo(timeDisplay, type) {
-        if (!this.courseInfo.coursePurchaseInfo ||
-          (this.courseInfo.coursePurchaseInfo &&
-            courseInfo.coursePurchaseInfo.status == 'PAYING')) {
+        if (!this.isBuy) {
           if (timeDisplay >= this.activeVideoIndex) {
             this.$refs.j_video.pause();
             this.isPlay = false;
             Toast("试看时间已到");
           } else {
-            if (type != 1) {
-              this.$refs.j_video.play();
-              this.isPlay = true;
-            }
+            this.playVideo(type);
           }
         } else {
-          if (type != 1) {
-            this.$refs.j_video.play();
-            this.isPlay = true;
-          }
+          this.playVideo(type);
         }
         //console.log(this.isPlay,timeDisplay,this.activeVideoIndex);
       },
+      playVideo(type) {
+        if (type != 1) {
+          this.$refs.j_video.play();
+          this.isPlay = true;
+        }
+      },
       handleClick(item) {
         if (item.ifTry == 1 || item.learnStatus == 'LEARNING') {
-          this.playVideo(item)
+          this.handleClickPlay(item)
         }
       },
 
-      playVideo(item) {
+      handleClickPlay(item) {
         if (item == -1) {
           if (this.isPlay) {
             this.$refs.j_video.pause();
@@ -184,17 +194,24 @@
           } else {
             if (this.activeVideoIndex == -1) {
               if (this.courseCatalogList.length > 0) {
-                let list = this.courseCatalogList.filter(item => {
-                  return item.ifTry == 1
-                })
-                this.getVedioAddress(this.courseCatalogList[0].vedioId);
-                this.activeVideoIndex = this.courseCatalogList[0].tryDuration;
+                let list = this.courseCatalogList
+                if (!this.isBuy) {
+                  list = this.courseCatalogList.filter(item => {
+                    return item.ifTry == 1
+                  })
+                }
+                if (list[0]) {
+                  this.catalog(list[0]);
+                  this.getVedioAddress(list[0].vedioId);
+                  this.activeVideoIndex = this.courseCatalogList[0].tryDuration;
+                }
               }
             } else {
               this.pauseVideo(this.$refs.j_video.currentTime);
             }
           }
         } else {
+          this.catalog(item);
           this.activeVideoIndex = item.tryDuration;
           this.getVedioAddress(item.vedioId);
         }
@@ -213,6 +230,9 @@
         };
 
         getCourseCatalogList(params).then(res => {
+          res.data.forEach(item => {
+            item.isBuy = this.isBuy
+          })
           this.courseCatalogList = res.data;
         });
       },
@@ -223,6 +243,13 @@
 
         getCourseDetailInfo(params).then(res => {
           this.courseInfo = res.data;
+          if (!this.courseInfo.coursePurchaseInfo || (this.courseInfo.coursePurchaseInfo && this.courseInfo
+              .coursePurchaseInfo.status == 'PAYING')) {
+            this.isBuy = false;
+          } else {
+            this.isBuy = true;
+            this.purchaseId = this.courseInfo.coursePurchaseInfo.id;
+          }
           this.getCourseCatalogList();
         });
       }
