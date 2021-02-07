@@ -24,3 +24,5 @@ export const getLearnFinishList = params => post('/wx/api/learn/finish/list', pa
 export const getCoursePurchaseOrder = params => post('/pay/order/getCoursePurchaseOrder?purchaseId='+params)
 
 export const catalog = params => post('/wx/api/learn/course/catalog', params)
+export const finishCatalog = params => post('/wx/api/learn/course/catalog/finish', params)
+export const saveCatalog = params => post('/wx/api/learn/course/catalog/save', params)

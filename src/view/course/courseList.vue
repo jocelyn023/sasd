@@ -172,8 +172,7 @@
         this.$router.push({
           path: "/courseDetail",
           query: {
-            id: item.id,
-            type: 1
+            id: item.id
           }
         })
       },
