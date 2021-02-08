@@ -159,7 +159,7 @@ export default {
         routerParams = {
           path: '/myScore',
           query: {
-            id: id
+            id: item.purchaseId
           }
         }
       }
