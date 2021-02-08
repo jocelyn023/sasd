@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { getIncomeCashoutDetail } from '@/api/user'
+import { getIncomeCashoutDetail, getMyMoney } from '@/api/user'
 
 export default {
   data() {
@@ -85,7 +85,15 @@ export default {
       list: []
     }
   },
+  mounted() {
+    this.getMyMoney()
+  },
   methods:{
+    getMyMoney () {
+      getMyMoney().then(res => {
+        this.cashoutTotal = res.data
+      })
+    },
     onConfirm(val) {
       this.pickerConfig.show = false
       this.params.queryConditions = {

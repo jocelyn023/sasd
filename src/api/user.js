@@ -34,7 +34,7 @@ export const getTeachingCampInitInfo = params => get('/wx/api/personal/getTeachi
 
 
 // 我的钱包
-// 账户余额
+// 收支总额
 export const getMyMoney = params => get('/wx/api/personal/getUserIncomeCashoutTotal', params)
 
 // 获取最近一次提现申请信息
@@ -45,9 +45,6 @@ export const cashoutApply = params => post('/wx/api/personal/cashoutApply', para
 
 // 提现结果
 export const cashoutResult = params => get('/wx/api/personal/getCashoutApplyResult', params)
-
-// 收支总额
-export const getUserIncomeCashoutTotal = params => get('/wx/api/personal/getUserIncomeCashoutTotal', params)
 
 // 收支明细
 export const getIncomeCashoutDetail = params => post('/wx/api/personal/getIncomeCashoutDetail', params)
