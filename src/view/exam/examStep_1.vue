@@ -77,7 +77,7 @@
       };
     },
     created() {
-      this.getExamInfo();
+      this.getExamInfo(1);
       this.getSexList();
     },
 
@@ -139,7 +139,7 @@
       },
       saveExamInfo() {
         let params = {
-          id: this.purchaseId,
+          id: this.examInfo.id,
           fullName: this.examInfo.fullName,
           sex: this.examInfo.sex,
           contract: this.examInfo.contract,
