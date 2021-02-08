@@ -294,8 +294,8 @@ router.beforeEach((to, from, next) => {
       next()
     } else { // 如果没有获取到openId，去微信授权
       let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + process.env.VUE_APP_APPID
-      // url = url + '&redirect_uri=' + process.env.VUE_APP_REDIRECT_URI
-      url = url + '&redirect_uri=http://www.4a4d.cn/sasd/wx/auth/wx243d0d1e7eef715a/greetUser'
+      url = url + '&redirect_uri='+ process.env.VUE_APP_BASE_API_URL +'/sasd/wx/auth/' + process.env.VUE_APP_APPID + '/greetUser'
+      url = url + '?callBackAction=' + to.fullPath
       url = url + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect'
 
       window.location.href = url

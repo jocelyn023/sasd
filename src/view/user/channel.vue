@@ -3,8 +3,7 @@
     <div class="channel-box">
       <div class="title txt-c m-b-10">我的推广员专属二维码</div>
       <div class="qrcode">
-        <!-- <vue-qr class="bicode" :logoMargin="5" :logoSrc="logoSrc" :logoScale="20" :text="codeValue" :margin="20" :dotScale="1"></vue-qr> -->
-        <vue-qr class="bicode" :text="codeValue" :margin="20" :dotScale="1"></vue-qr>
+        <vue-qr class="bicode" :text="codeValue" :margin="10" :dotScale="1"></vue-qr>
       </div>
 
     </div>
@@ -69,6 +68,10 @@ export default {
       margin: 0 auto;
       width: 190px;
       height: 190px;
+
+      .bicode {
+        width: 100%;
+      }
     }
   }
   .desc {
