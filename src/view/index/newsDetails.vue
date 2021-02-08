@@ -1,11 +1,10 @@
 <template>
   <div class="news-detail">
     <div class="m-b-10 f16 title">{{ detail.title }}</div>
-    <div class="m-b-10">
-      <span class="m-r-10">{{ detail.author }}</span>
-      <span>{{ detail.pubTime }}</span>
+    <div class="m-b-10 f12">
+      <span class="m-r-10">{{ detail.pubTime }}</span>
+      <span class="author">{{ detail.author }}</span>
     </div>
-
     <div class="content-news" v-html="detail.content"></div>
   </div>
 </template>
@@ -40,11 +39,29 @@ export default {
 .news-detail {
   margin: 0 auto;
   width: 340px;
+
+  .title {
+    color: #000;
+    font-weight: bold;
+  }
+  .author {
+    color: #0b65a7
+  }
   p {
+    margin-top: 0;
     margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 28px;
+    text-align: justify;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    overflow: hidden;
   }
   img {
-    padding-top: 10px;
+    /* padding-top: 10px; */
     max-width: 340px;
   }
 }

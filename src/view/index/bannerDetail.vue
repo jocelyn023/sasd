@@ -1,9 +1,9 @@
 <template>
   <div class="new-detail">
-    <div class="m-b-10 f16">{{ detail.adName }}</div>
-    <div class="m-b-10">
-      <span class="m-r-10">{{ detail.modifyBy }}</span>
-      <span>{{ detail.modifyDate }}</span>
+    <div class="m-b-10 f16 title">{{ detail.adName }}</div>
+    <div class="m-b-10 f12">
+      <span class="m-r-10">{{ detail.modifyDate }}</span>
+      <span class="author">{{ detail.modifyBy }}</span>
     </div>
 
     <div class="content-news" v-html="detail.content"></div>
@@ -39,63 +39,31 @@ export default {
 <style lang="less">
 .new-detail {
   margin: 0 auto;
-  width: 360px;
+  width: 340px;
+
+  .title {
+    color: #000;
+    font-weight: bold;
+  }
+  .author {
+    color: #0b65a7
+  }
+  p {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 28px;
+    text-align: justify;
+    word-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    overflow: hidden;
+  }
 
   img {
-    max-width: 360px;
+    max-width: 340px;
   }
 }
-</style>
-<style lang="less" scoped>
-  .buttons {
-    margin: 0 auto 20px;
-    width: 343px;
-    height: 75px;
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
-
-    .item {
-      width: 50%;
-      height: 100%;
-      justify-content: center;
-    }
-    .item:first-child {
-      border-right: 1px solid #c9c9c9;
-    }
-  }
-  .container {
-    padding: 0 16px;
-  }
-  .see-more {
-    // width: 100%;
-    height: 24px;
-    line-height: 24px;
-    text-align: right;
-  }
-
-  .notice-wrap {
-    margin: 0 auto;
-    width: 343px;
-    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-
-    .title {
-      padding-top: 14px;
-      padding-left: 10px;
-      padding-right: 10px;
-      height: 42px;
-    }
-
-    .item-new {
-      padding-left: 10px;
-      padding-right: 10px;
-      padding-bottom: 9px;
-      width: 100%;
-      border-bottom: 1px solid #ececec;
-    }
-    .item-new:last-child{
-      border: none;
-    }
-  }
 </style>
