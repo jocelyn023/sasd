@@ -63,16 +63,17 @@
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
+    <CommonFt :active="1"></CommonFt>
   </div>
 </template>
 
 <script>
 import cardProgress from '@/components/cardProgress'
-
+import CommonFt from '@/components/commonFt'
 import { getLearnList, getLearnFinishList } from '@/api/course'
 
 export default {
-  components: { cardProgress },
+  components: { cardProgress, CommonFt },
   data() {
     return {
       active: 0,

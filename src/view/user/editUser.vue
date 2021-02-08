@@ -112,7 +112,7 @@
 import { getToken, uploadFileToQiniu } from '@/api/common'
 import { updateMyPersonalInfo } from '@/api/user'
 import city from "@/mixins/city"
-import { Toast } from 'vant'
+import { Toast, Dialog } from 'vant'
 
 export default {
   mixins: [city],
@@ -171,10 +171,10 @@ export default {
       form.danceYear = this.form.danceYear
 
       updateMyPersonalInfo(form).then(res => {
-        console.log(res)
         this.loadingToast.clear()
         this.loadingToast = null
         localStorage.setItem('userInfo', JSON.stringify(res.data))
+        Toast.success('修改成功！');
       })
     },
     showPickerFn (type) {
@@ -235,9 +235,15 @@ export default {
       })
     },
     init () {
-      let userInfo = localStorage.getItem('userInfo')
+      let userInfo = localStorage.getItem('userInfo')  
       if (userInfo == null) {
-        this.$router.replace('/me')
+        Dialog.alert({
+          title: '提示',
+          message: '获取个人信息失败，请返回我的页面！',
+        }).then(() => {
+          this.$router.replace('/me')
+        });
+        return
       }
       userInfo = JSON.parse(userInfo)
       this.form = userInfo

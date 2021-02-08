@@ -11,7 +11,6 @@ let url = window.location.href
 // if(url.indexOf('from') != -1){
 //   url = window.location.href.split("?")[0];
 // }
-console.log(url + 'favicon.png');
 ShareImpl({
   shareTitle: document.title,
   shareDesc: document.title,

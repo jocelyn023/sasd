@@ -24,6 +24,8 @@
     getMyPostAddress,
     saveMyPostAddress
   } from '@/api/user'
+  import {Toast} from 'vant'
+  
   export default {
     data() {
       return {
@@ -55,6 +57,7 @@
       saveMyPostAddress(values) {
         let params = this.addressInfo;
         saveMyPostAddress(params).then(res => {
+          Toast('保存成功！')
           this.getMyPostAddress();
         })
       }

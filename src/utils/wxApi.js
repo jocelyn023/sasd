@@ -5,7 +5,6 @@ const getWxConfig = params => post('/wx/config/load', params)
 const ShareImpl = function (option) {
   //option是分享的配置内容*/
   const url = window.location.href.split("#")[0];
-  console.log(url)
   getWxConfig({ url: url }).then((response) => {
     wx.config({
       debug: false,

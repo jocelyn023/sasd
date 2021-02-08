@@ -1,11 +1,11 @@
 <template>
   <div class="news-list">
-    <van-nav-bar
+    <!-- <van-nav-bar
       safe-area-inset-top
       :title="title"
       left-arrow
       @click-left="onClickLeft"
-    />
+    /> -->
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <van-list
         v-model="loading"
@@ -66,6 +66,13 @@ export default {
         } else {
           window.location.href = item.contentUrl + "&id = " + item.id
         }
+      } else {
+        this.$router.push({
+          path: '/newsDetails',
+          query: {
+            id: item.id
+          }
+        })
       }
     },
     onRefresh () {
