@@ -36,7 +36,7 @@
     </div>
     <div class="b-btn-box">
       <van-button
-        v-if="!courseInfo.coursePurchaseInfo || (courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.status=='PAYING') "
+        v-if="!courseInfo.coursePurchaseInfo || (courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.status=='PAYING') || $route.query.rePurchase == 1"
         type="theme" class="btn" @click="buyCourse">去购买</van-button>
       <van-button v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNING'"
         type="theme disabled" class="btn">参加考试</van-button>
@@ -48,7 +48,8 @@
       <van-button v-else-if="courseInfo.coursePurchaseInfo
          && (courseInfo.coursePurchaseInfo.status!='PAYED' ||
           courseInfo.coursePurchaseInfo.status!='PAYING'|| 
-          courseInfo.coursePurchaseInfo.status!='FINISH')" type="theme" class="btn" @click="getStep()">参加考试</van-button>
+          courseInfo.coursePurchaseInfo.status!='FINISH')" type="theme" class="btn" @click="toExam(1)">参加考试
+      </van-button>
     </div>
   </div>
 </template>
@@ -125,18 +126,23 @@
     },
 
     methods: {
-      toExam() {
-        console.log(1111)
-        toExam({
-          purchaseId: this.purchaseId
-        }).then(res => {
-          console.log(res);
-          if (res.code == 200) {
-            setCookie("purchaseId", this.purchaseId);
-            this.getStep();
-          }
-        });
+      toExam(type) {
+        if (type == 1) {
+          setCookie("purchaseId", this.purchaseId);
+          this.getStep();
+        } else {
+          toExam({
+            purchaseId: this.purchaseId
+          }).then(res => {
+            console.log(res);
+            if (res.code == 200) {
+              setCookie("purchaseId", this.purchaseId);
+              this.getStep();
+            }
+          });
+        }
       },
+
       finishCatalog(curD, d) {
         if (this.isBuy) {
           let params = {

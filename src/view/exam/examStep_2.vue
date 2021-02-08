@@ -6,7 +6,7 @@
         课程考核分为：笔试部分和视频部分，共两部分。 现去进行笔试考试。
       </p>
       <a v-if="status == 1" class="exam-link-btn" :href="examInfo.writtenExamUrl">去笔试</a>
-      <a v-else class="exam-link-btn" href="javascript:;" @click="saveWritten">完成笔试</a>
+      <!-- <a v-else class="exam-link-btn" href="javascript:;" @click="saveWritten">完成笔试</a> -->
     </template>
     <template v-else>
       <div class="circle-block">
@@ -19,8 +19,8 @@
     </template>
     <div class="step-btn-group">
       <van-button type="theme" plain class="btn mr15" @click="nextStep(1)">上一步</van-button>
-      <van-button v-if="status == 2" type="theme" class="btn" @click="saveWritten">查看笔试成绩</van-button>
-      <van-button v-else-if="!examInfo.writtenExamScore" type="theme" class="btn disabled">下一步</van-button>
+      <!-- <van-button v-if="status == 2" type="theme" class="btn" @click="saveWritten">查看笔试成绩</van-button> -->
+      <van-button v-if="!examInfo.writtenExamScore" type="theme" class="btn disabled">下一步</van-button>
       <template v-else>
         <van-button v-if="examInfo.writtenExamStatus=='1'" type="theme" class="btn" @click="nextStep(3)">下一步</van-button>
         <van-button v-else type="theme" :url="examInfo.writtenExamUrl" class="btn"> 重新答题 </van-button>
@@ -53,14 +53,14 @@
       if(!this.$route.query.id){
         this.status = 2
       }
-      this.getExamInfo();
+      this.getExamInfo(1);
     },
     methods: {
       saveWritten() {
         let score = 80
         let wStatus = 1
         let params = {
-          id: this.purchaseId,
+          id: this.examInfo.id,
           writtenExamScore: score,
           writtenExamStatus: wStatus //1:合格，0不合格,
         }
