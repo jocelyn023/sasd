@@ -12,13 +12,14 @@ let url = window.location.href
 //   url = window.location.href.split("?")[0];
 // }
 // console.log(url + 'favicon.png');
+
 import Vconsole from 'vconsole';
 new Vconsole();
 ShareImpl({
   shareTitle: document.title,
   shareDesc: document.title,
   shareUrl: url,
-  shareImg: url + 'favicon.png',
+  shareImg: require("./assets/logo.png"),
 });
 
 Vue.use(Vant);
