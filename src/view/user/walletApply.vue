@@ -40,18 +40,20 @@ export default {
     },
     init () {
       getMyPersonalInfo().then(res => {
-        localStorage.setItem('userInfo', JSON.stringify(res.data))
         const userInfo = res.data
+        localStorage.setItem('userInfo', JSON.stringify(res.data))
+        
         this.loading = false
-        if (userInfo.cashoutStatus == null) {
-          if (userInfo.cashoutStatus == 'APPROVING') {
-            this.showApply = false
-            this.result = {
-              approvalResult: 'APPROVING'
-            }
+        
+        if (userInfo.cashoutStatus == 'APPROVING') {
+          this.showApply = false
+          this.result = {
+            approvalResult: 'APPROVING'
           }
         } else {
-          this.cashoutResult()
+          if (userInfo.cashoutStatus != null) {
+            this.cashoutResult()
+          }
         }
       })
     },

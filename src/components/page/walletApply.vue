@@ -137,11 +137,17 @@ export default {
       console.log('failed', errorInfo);
     },
     init () {
-      getCashoutApplyInfo().then(res => {
-        let data = res.data || {}
-        data['amount'] = ''
-        this.form = data
-      })
+      let userInfo = localStorage.getItem('userInfo') || {}
+      userInfo = JSON.parse(userInfo)
+      
+      if (userInfo.cashoutStatus != null) {
+        getCashoutApplyInfo().then(res => {
+          let data = res.data || {}
+          data['amount'] = ''
+          this.form = data
+        })
+      }
+      
     }
   }
 }
