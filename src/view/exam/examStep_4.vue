@@ -3,7 +3,7 @@
     <van-form @submit="saveAddress" v-if="examInfo.purchaseId">
       <div class="info-form-block">
         <h3>邮寄地址</h3>
-        <div v-if="examInfo.status == 'EDIT_INFO' || examInfo.status == 'PASS'">
+        <div v-if="examInfo.status == 'EDIT_INFO'">
           <van-field v-model="examInfo.recevier" label="收件人姓名" placeholder="请输入" readonly />
           <van-field v-model="examInfo.tel" label="收件人电话" placeholder="请输入" readonly />
           <van-field v-model="examInfo.address" rows="1" autosize label="收件人详细地址" placeholder="请输入" type="textarea"
@@ -15,10 +15,10 @@
           <van-field v-model="examInfo.address" :rules="[{ required: true, message: '请输入收件人详细地址' }]" rows="1" autosize label="收件人详细地址" placeholder="请输入" type="textarea" />
         </div>
       </div>
-      <div class="info-form-block" v-if="examInfo.status == 'EDIT_INFO' || examInfo.status == 'PASS'">
+      <div class="info-form-block" v-if="examInfo.status == 'EDIT_INFO'">
         <h3>邮寄信息</h3>
         <div>
-          <van-field v-if="examInfo.status == 'EDIT_INFO' || examInfo.status == 'PASS'"  label="邮寄编码" placeholder="等待邮寄中..." readonly />
+          <van-field v-if="examInfo.status == 'EDIT_INFO'"  label="邮寄编码" placeholder="等待邮寄中..." readonly />
           <van-field v-else label="邮寄编码" placeholder="" v-model="examInfo.postCode" readonly />
         </div>
       </div>
@@ -43,12 +43,12 @@
       };
     },
     created() {
-      this.getExamInfo();
+      this.getExamInfo(1);
     },
     methods: {
       saveAddress() {
         let params = {
-          id: this.purchaseId,
+          id: this.examInfo.id,
           recevier: this.examInfo.recevier,
           tel: this.examInfo.tel,
           address: this.examInfo.address
