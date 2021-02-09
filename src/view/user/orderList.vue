@@ -5,7 +5,7 @@
         class="container"
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        finished-text=""
         @load="onLoad"
       >
         <template v-for="item in list">
@@ -33,6 +33,12 @@
                 删除
               </van-button>
             </div>
+          </div>
+        </template>
+        <template v-if="list && list.length == 0">
+          <van-empty description="暂无记录" />
+          <div class="txt-c">
+            <van-button type="theme" @click="goCourseList">去找课程</van-button>
           </div>
         </template>
       </van-list>
@@ -116,6 +122,9 @@ export default {
       // 将 loading 设置为 true，表示处于加载状态
       this.loading = true;
       this.onLoad();
+    },
+    goCourseList() {
+      this.$router.push('courseList')
     },
     pushRouter(id, isPay, item) {
       let routerParams = {}

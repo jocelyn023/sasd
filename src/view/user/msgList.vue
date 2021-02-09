@@ -11,7 +11,7 @@
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        finished-text=""
         @load="onLoad"
       >
         <template v-for="(item, index) in list">
@@ -28,6 +28,9 @@
               <div class="subtitle van-multi-ellipsis--l2">{{ item.content }}</div>
             </div>
           </div>
+        </template>
+        <template v-if="list && list.length == 0">
+          <van-empty description="暂无消息" />
         </template>
       </van-list>
     </van-pull-refresh>

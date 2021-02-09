@@ -1,49 +1,5 @@
 <template>
   <div class="certificate-list f12">
-    <!-- <template v-if="type != 'RQH'">
-      <div
-        class="certificate-item bg_btd flex"
-        v-for="(item, index) in list"
-        :key="index+20"
-      >
-        <div class="card-left">
-          <div class="logo"></div>
-          <div class="certificate-type"></div>
-          <div class="label-box">
-            <div class="label-item dance-type">{{ item.danceTypeValue }}</div>
-            <div class="label-item grade">{{ item.certificateLevelValue }}</div>
-            <div class="qrcode">
-              <img src="../../assets/user/qr_code.png" alt="" srcset="" />
-              <div class="qrcode-tips"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-right">
-          <div class="txt-c m-b-10">
-            <img
-              class="avatar"
-              :src="item.registrationPhotos"
-              alt=""
-              srcset=""
-            />
-          </div>
-          <div class="label-item name">{{ item.certificateName }}</div>
-          <div class="label-item sex">{{ item.sexValue }}</div>
-          <div class="label-item cardNo f12">
-            <span>{{ item.idCard }}</span>
-          </div>
-          <div class="label-item cardid f12">
-            <span>{{ item.id }}</span>
-          </div>
-
-          <div class="label-item jigou"></div>
-          <div class="label-item time f12">
-            {{ item.issueYear }}年{{ item.issueMonth }}月{{ item.issueDay }}日
-          </div>
-        </div>
-      </div>
-    </template> -->
     <template v-if="type != 'RQH'">
       <div
         class="certificate-item"
@@ -96,6 +52,12 @@
           </div>
         </div>
       </div>
+      <div v-if="list && list.length == 0">
+        <van-empty description="暂无记录" />
+        <div class="txt-c">
+          <van-button type="theme" @click="goCourseList">去找课程</van-button>
+        </div>
+      </div>
     </template>
     <template v-else>
       <div class="certificate-item bg_eqh flex f12" v-for="(item, index) in list" :key="index">
@@ -137,6 +99,12 @@
           </div>
         </div>
       </div>
+      <div v-if="list && list.length == 0">
+        <van-empty description="暂无记录" />
+        <div class="txt-c">
+          <van-button type="theme" @click="goCourseList">去找课程</van-button>
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -161,6 +129,9 @@ export default {
         this.list = res.data;
       });
     },
+    goCourseList() {
+      this.$router.push('courseList')
+    }
   },
 };
 </script>

@@ -27,7 +27,7 @@
     </template>
 
     <div class="f12 col-gray-6 other">
-      <span class="m-r-10">{{ info.author }}</span>
+      <span v-if="info.author" class="m-r-10">{{ info.author }}</span>
       <span>{{ info.pubTime }}</span>
     </div>
   </div>
