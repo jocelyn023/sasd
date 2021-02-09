@@ -12,8 +12,8 @@
       <div class="flex">
         <span class="col-gray-9 f12">{{ item.duration }}</span>
         <span class="col-gray-9 f12" v-if="item.isBuy && item.learnStatus == 'LEARNED'">已学习</span>
-        <van-button  v-else-if="!item.isBuy && item.ifTry == 1" type="info" plain hairline>试看</van-button>
-        <van-button v-else-if="item.isBuy" type="info" plain hairline >学习中</van-button>
+        <van-button class="line" v-else-if="!item.isBuy && item.ifTry == 1" type="info" plain>试看</van-button>
+        <van-button class="line" v-else-if="item.isBuy" type="info" plain >学习中</van-button>
       </div>
     </div>
   </div>
@@ -61,7 +61,7 @@ export default {
     color: #333;
     overflow: hidden;
   }
-  .van-button--hairline::after {
+  .van-button.line {
     border-radius: 18px;
   }
 
