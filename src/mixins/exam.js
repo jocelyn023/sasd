@@ -2,7 +2,8 @@ import {
   getExamInfo
 } from '@/api/exam'
 import {
-  getCookie
+  getCookie,
+  setCookie
 } from '@/utils/utils'
 export default {
   data() {
@@ -31,6 +32,7 @@ export default {
     },
     nextStep(step) {
       let path = "/examStep_" + step
+      setCookie("__step", "examStep_" + step);
       this.$router.push({
         path: path,
         query: {
@@ -64,7 +66,7 @@ export default {
       }
 
       this.$router.push({
-        path: path,
+        path: getCookie("__step") ? getCookie("__step"): path,
         query: {
           id: this.purchaseId
         }

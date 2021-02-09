@@ -14,7 +14,7 @@
           :text="text" layer-color="rgba(160,25,31,0.5)" color="#a0191f" />
       </div>
       <p>
-        答对90题，答错10题，共计{{examInfo.writtenExamScore}}分，成绩{{examInfo.writtenExamStatus=="1" ? "合格": "不合格"}}
+        共计{{examInfo.writtenExamScore}}分，成绩{{examInfo.writtenExamStatus=="1" ? "合格": "不合格"}}
       </p>
     </template>
     <div class="step-btn-group">
