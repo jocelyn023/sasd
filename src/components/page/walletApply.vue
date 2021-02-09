@@ -123,9 +123,9 @@ export default {
       }
       cashoutApply(params).then(res => {
         if (res.code == 200) {
-          this.$emit('applyAgain', 'ok')
           getMyPersonalInfo().then(res => {
             localStorage.setItem('userInfo', JSON.stringify(res.data));
+            this.$emit('applyAgain', 'ok')
           })
         } else {
           Toast.fail(res.returnMsg)
