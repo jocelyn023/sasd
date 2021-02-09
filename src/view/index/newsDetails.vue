@@ -41,6 +41,7 @@ export default {
   width: 340px;
 
   .title {
+    padding-top: 10px;
     color: #000;
     font-weight: bold;
   }

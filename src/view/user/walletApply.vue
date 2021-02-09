@@ -43,10 +43,12 @@ export default {
         localStorage.setItem('userInfo', JSON.stringify(res.data))
         const userInfo = res.data
         this.loading = false
-        if (userInfo.cashoutStatus == null || userInfo.cashoutStatus == 'APPROVING') {
-          this.showApply = false
-          this.result = {
-            approvalResult: 'APPROVING'
+        if (userInfo.cashoutStatus == null) {
+          if (userInfo.cashoutStatus == 'APPROVING') {
+            this.showApply = false
+            this.result = {
+              approvalResult: 'APPROVING'
+            }
           }
         } else {
           this.cashoutResult()
@@ -57,7 +59,7 @@ export default {
       cashoutResult().then(res => {
         if (res.code == 200) {
           this.result = res.data
-          if (res.data.approvalResult != 'PASS') {
+          if ((res.data && res.data.approvalResult && res.data.approvalResult == 'PASS')) {
             this.showApply = false
           }
         }

@@ -1,16 +1,10 @@
 <template>
   <div class="news-list">
-    <!-- <van-nav-bar
-      safe-area-inset-top
-      :title="title"
-      left-arrow
-      @click-left="onClickLeft"
-    /> -->
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        finished-text=""
         @load="onLoad"
       >
         <div
@@ -20,6 +14,12 @@
           @click="clickBanner(item)"
         >
           <cardNews :info="item"></cardNews>
+        </div>
+        <div v-if="list && list.length == 0">
+          <van-empty description="暂无记录" />
+          <!-- <div class="txt-c">
+            <van-button type="theme" @click="goCourseList">去找课</van-button>
+          </div> -->
         </div>
       </van-list>
     </van-pull-refresh>

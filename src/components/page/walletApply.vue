@@ -57,7 +57,7 @@
           />
         </div>
 
-        <div class="txt-c">
+        <div class="txt-c p-t-10">
           <van-button class="btn-submit" type="theme" native-type="submit" @click="onSubmit">提交</van-button>
         </div>
       </van-form>
@@ -155,7 +155,7 @@ export default {
   .wrapper {
     width: 100%;
     margin-bottom: 28px;
-    padding: 0 20px 50px;
+    padding: 10px 20px 40px;
     box-shadow: 0px 0px 4px 0px 
     rgba(6, 0, 1, 0.15);
     

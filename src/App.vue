@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { ShareImpl } from '@/utils/wxApi.js'
+
 export default {
   watch: {
     '$route'(to) {
@@ -26,7 +28,15 @@ export default {
       navTitle: ''
     };
   },
-
+  mounted() {
+    let url = window.location.href
+    ShareImpl({
+      shareTitle: document.title,
+      shareDesc: document.title,
+      shareUrl: url,
+      shareImg: url + 'favicon.png',
+    });
+  },
   methods: {
     onClickLeft() {
       this.$router.go(-1)
