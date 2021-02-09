@@ -228,7 +228,7 @@
         }
       },
       handleClick(item) {
-        if (item.ifTry == 1 || item.learnStatus == 'LEARNING') {
+        if (item.ifTry == 1 || this.isBuy) {
           this.handleClickPlay(item)
         }
       },

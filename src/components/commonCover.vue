@@ -92,8 +92,8 @@
       border-radius: 10px;
 
       .img {
-        width: 343px;
-        height: 130px;
+        width: 100%;
+        height: 100%
       }
     }
 

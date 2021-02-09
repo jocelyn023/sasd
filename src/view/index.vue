@@ -111,6 +111,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .list /deep/.cover-block .pic-box{
+    width: 343px;
+    height: 130px;
+  }
   .col-yellow-fb9833 {
     color: #fb9833
   }

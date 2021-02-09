@@ -122,12 +122,11 @@
         <van-button type="theme" class="btn" @click="status = 5">下一步</van-button>
       </template>
       <template v-else-if="examInfo.status == 'NO_PASS'">
-        <!-- TODO -->
         <van-button type="theme" plain class="btn" @click="backCourse">返回课程</van-button>
         <van-button v-if="examInfo.mkExamStatus == 1" type="theme" class="btn" @click="makeUpFree">免费补考</van-button>
-        <van-button v-if="examInfo.mkExamStatus == 2 || examInfo.mkExamStatus == 3 " type="theme" class="btn"
-          @click="makeUpPay">缴费补考</van-button>
-        <van-button v-else type="theme" class="btn" @click="rePurchase">重新报名该课程</van-button>
+        <van-button v-else-if="examInfo.mkExamStatus == 2" type="theme" class="btn"
+          @click="makeUpPay">缴费补考</van-button>sss
+        <van-button v-else-if="examInfo.mkExamStatus == 3" type="theme" class="btn" @click="rePurchase">重新报名该课程</van-button>
       </template>
       <template v-else>
         <van-button type="theme" plain class="btn" @click="nextStep(2)">上一步</van-button>
