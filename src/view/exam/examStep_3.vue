@@ -79,7 +79,7 @@
           </template>
           <div class="item w50">总得分</div>
           <div class="item">{{examInfo.vedioScoreTotal}}分</div>
-          <div class="item green-color" v-if="examInfo.finalScore == 1">合格</div>
+          <div class="item green-color" v-if="examInfo.finalStatus == 1">合格</div>
           <div class="item red-color" v-else>不合格</div>
 
           <div class="item w50">最终结果</div>
@@ -97,7 +97,6 @@
           <p>选择加持其他证书：</p>
           <van-field name="checkboxGroup">
             <template #input>
-              <!-- TODO this.examInfo.dancyLevel == 'lv4' -->
               <van-checkbox-group v-model="checkboxGroup">
                 <van-checkbox v-if="examInfo.dancyLevel == 'lv3'" name="ifBtd" shape="square">北体大证书 <span
                     class="red-color">+300</span>元</van-checkbox>
@@ -313,7 +312,6 @@
         WeixinJSBridge.invoke('getBrandWCPayRequest', params, function (res) {
           if (res.err_msg == "get_brand_wcpay_request:ok") {
             if (type == 2) {
-              // _this.changeCertificate(2);
               _this.nextStep(4)
             } else {
               _this.backCourse();
@@ -381,7 +379,7 @@
           path: "/courseDetail",
           query: {
             id: this.examInfo.courseId,
-            isAgain: 1
+            rePurchase: 1
           }
         })
       }
