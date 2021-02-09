@@ -10,11 +10,10 @@
     <div class="flex-auto">
       <div class="van-ellipsis m-b-10 course-title">{{ item.name }}</div>
       <div class="flex">
-        <span class="col-gray-9 f12">{{ item.duration }} {{item.isBuy}}</span>
-      
+        <span class="col-gray-9 f12">{{ item.duration }}</span>
         <span class="col-gray-9 f12" v-if="item.isBuy && item.learnStatus == 'LEARNED'">已学习</span>
         <van-button  v-else-if="!item.isBuy && item.ifTry == 1" type="info" plain hairline>试看</van-button>
-          <van-button v-else type="info" plain hairline >学习中</van-button>
+        <van-button v-else-if="item.isBuy" type="info" plain hairline >学习中</van-button>
       </div>
     </div>
   </div>

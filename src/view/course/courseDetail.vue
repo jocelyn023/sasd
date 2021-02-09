@@ -129,6 +129,7 @@
       toExam(type) {
         if (type == 1) {
           setCookie("purchaseId", this.purchaseId);
+          setCookie("__step", "",-1);
           this.getStep();
         } else {
           toExam({
@@ -137,6 +138,7 @@
             console.log(res);
             if (res.code == 200) {
               setCookie("purchaseId", this.purchaseId);
+              setCookie("__step", "",-1);
               this.getStep();
             }
           });
