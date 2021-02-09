@@ -10,6 +10,9 @@ export const setCookies = (param) => {
 }
 
 export const setCookie = (name, value, expireDays) => {
+  if(!expireDays){
+    expireDays = 7
+  }
   if (name) {
     let expires
     if (expireDays) {

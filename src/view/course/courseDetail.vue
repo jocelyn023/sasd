@@ -4,9 +4,8 @@
       <p class="online-status green_bg">
         <span>{{courseInfo.teachingTypeValue}}</span>
       </p>
-
-      <video :src="videoPath" ref="j_video" :poster="courseInfo.thumbnail" @pause="handlePause()"
-        type="video/mp4"></video>
+      <video controls :src="videoPath" ref="j_video" @play="handelPalyVideo" :poster="courseInfo.thumbnail"
+        @pause="handlePause()" type="video/mp4"></video>
       <i v-if="!isPlay" class="icon_play" @click.stop="handleClickPlay(-1)"></i>
     </div>
     <div class="course-main-con">
@@ -35,21 +34,10 @@
       </van-tabs>
     </div>
     <div class="b-btn-box">
-      <van-button
-        v-if="!courseInfo.coursePurchaseInfo || (courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.status=='PAYING') || $route.query.rePurchase == 1"
-        type="theme" class="btn" @click="buyCourse">去购买</van-button>
-      <van-button v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNING'"
-        type="theme disabled" class="btn">参加考试</van-button>
-      <van-button
-        v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='LEARNED' && courseInfo.coursePurchaseInfo.status=='PAYED'"
-        type="theme" class="btn" @click="toExam">参加考试</van-button>
-      <van-button v-else-if="courseInfo.coursePurchaseInfo && courseInfo.coursePurchaseInfo.learnStatus=='FINISH'"
-        type="theme" class="btn" to="/scoreList">查看成绩</van-button>
-      <van-button v-else-if="courseInfo.coursePurchaseInfo
-         && (courseInfo.coursePurchaseInfo.status!='PAYED' ||
-          courseInfo.coursePurchaseInfo.status!='PAYING'|| 
-          courseInfo.coursePurchaseInfo.status!='FINISH')" type="theme" class="btn" @click="toExam(1)">参加考试
-      </van-button>
+      <van-button v-if="status == 1" type="theme" class="btn" @click="buyCourse">去购买</van-button>
+      <van-button v-else-if="status == 2" type="theme disabled" class="btn">参加考试</van-button>
+      <van-button v-else-if="status == 3" type="theme" class="btn" @click="toExam">参加考试</van-button>
+      <van-button v-else-if="status == 4" type="theme" class="btn" to="/scoreList">查看成绩</van-button>
     </div>
   </div>
 </template>
@@ -64,7 +52,8 @@
     finishCatalog
   } from "@/api/course";
   import {
-    setCookie
+    setCookie,
+    getCookie
   } from '@/utils/utils'
   import {
     toExam
@@ -88,37 +77,11 @@
         videoPath: "",
         isPlay: false,
         isBuy: false,
-        courseInfo: {
-          // cityId: "110102"
-          // cityNamePath: "北京,北京市,西城区"
-          // courseHours: 30
-          // courseLength: "30"
-          // dancyLevel: "lv3"
-          // dancyLevelValue: "三级"
-          // dancyType: "Popping"
-          // dancyTypeValue: "Popping"
-          // endDate: "2022-01-22"
-          // id: "1349729841098825729"
-          // intro: null
-          // name: "111"
-          // price: 199
-          // startDate: "2021-01-21"
-          // teachingType: "ON"
-          // teachingTypeValue: "线上"
-          // thumbnail: "http://qiniu.csda.cn.com/picture/1610621367127.jpg"
-        },
-        courseCatalogList: [{
-          // duration: "120"
-          // id: "1352456149945257985"
-          // ifTry: "1"
-          // name: "breaking课程1"
-          // orderNo: 1
-          // thumbnail: "http://qiniu.csda.cn.com/picture/1611297816825.jpg"
-          // tryDuration: "2"
-          // vedioId: "1352456149848788993"
-        }],
+        courseInfo: {},
+        courseCatalogList: [],
         curVideoItem: {},
-        lastPlaySecond: 0
+        lastPlaySecond: 0,
+        status: 1, // 1 去购买 2 已购买/未学完 参加考试置灰 3参加考试 4 查看成绩
       };
     },
     mounted() {
@@ -126,25 +89,54 @@
     },
 
     methods: {
-      toExam(type) {
-        if (type == 1) {
-          setCookie("purchaseId", this.purchaseId);
-          setCookie("__step", "",-1);
-          this.getStep();
-        } else {
-          toExam({
-            purchaseId: this.purchaseId
-          }).then(res => {
-            console.log(res);
-            if (res.code == 200) {
-              setCookie("purchaseId", this.purchaseId);
-              setCookie("__step", "",-1);
-              this.getStep();
-            }
-          });
+      changeStatus() {
+        let s = 1;
+        if (this.$route.query.rePurchase == 1) {
+          this.status = s;
+          return;
         }
-      },
 
+        let coursePInfo = this.courseInfo.coursePurchaseInfo;
+        if (coursePInfo) {
+          let buyStatus = coursePInfo.status;
+          switch (buyStatus) {
+            case "PAYING":
+              s = 1
+              break;
+            case "PAYED":
+              if (coursePInfo.learnStatus == "LEARNED") {
+                s = 3
+              } else {
+                s = 2
+              }
+              break;
+            case "PASS":
+              s = 4
+              break;
+            case "EDIT_ADDR":
+              s = 4
+              break;
+            case "EDIT_INFO":
+              s = 4
+              break;
+            case "FINISH":
+              s = 4
+              break;
+            default:
+              s = 3
+          }
+        }
+        this.status = s;
+      },
+      toExam(type) {
+        toExam({
+          purchaseId: this.purchaseId
+        }).then(res => {
+          setCookie("purchaseId", this.purchaseId);
+          setCookie("__step", "", -1);
+          this.getStep();
+        });
+      },
       finishCatalog(curD, d) {
         if (this.isBuy) {
           let params = {
@@ -153,7 +145,6 @@
           }
           if (d == curD) {
             finishCatalog(params).then(res => {
-              console.log(res)
               this.getCourseDetailInfo()
             })
           } else {
@@ -207,6 +198,13 @@
         duration = Math.floor(video.duration);
         this.finishCatalog(timeDisplay, duration);
       },
+      handelPalyVideo() {
+        if (!this.isBuy) {
+          if (this.$refs.j_video.currentTime >= this.activeVideoIndex) {
+            this.$refs.j_video.pause();
+          }
+        }
+      },
       pauseVideo(timeDisplay, type) {
         if (!this.isBuy) {
           if (timeDisplay >= this.activeVideoIndex) {
@@ -219,7 +217,6 @@
         } else {
           this.playVideo(type);
         }
-        //console.log(this.isPlay,timeDisplay,this.activeVideoIndex);
       },
       playVideo(type) {
         if (type != 1) {
@@ -299,6 +296,7 @@
             this.isBuy = true;
             this.purchaseId = this.courseInfo.coursePurchaseInfo.id;
           }
+          this.changeStatus();
           this.getCourseCatalogList();
         });
       }
