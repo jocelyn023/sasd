@@ -123,25 +123,30 @@ export default {
       }
       cashoutApply(params).then(res => {
         if (res.code == 200) {
-          this.$emit('applyAgain', 'ok')
+          getMyPersonalInfo().then(res => {
+            localStorage.setItem('userInfo', JSON.stringify(res.data));
+            this.$emit('applyAgain', 'ok')
+          })
         } else {
           Toast.fail(res.returnMsg)
         }
-      }).then(() => {
-        getMyPersonalInfo().then(res => {
-          localStorage.setItem('userInfo', JSON.stringify(res.data));
-        })
       })
     },
     onFailed (errorInfo) {
       console.log('failed', errorInfo);
     },
     init () {
-      getCashoutApplyInfo().then(res => {
-        let data = res.data || {}
-        data['amount'] = ''
-        this.form = data
-      })
+      let userInfo = localStorage.getItem('userInfo') || {}
+      userInfo = JSON.parse(userInfo)
+      
+      if (userInfo.cashoutStatus != null) {
+        getCashoutApplyInfo().then(res => {
+          let data = res.data || {}
+          data['amount'] = ''
+          this.form = data
+        })
+      }
+      
     }
   }
 }
