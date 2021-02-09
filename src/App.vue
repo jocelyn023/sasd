@@ -34,7 +34,7 @@ export default {
       shareTitle: document.title,
       shareDesc: document.title,
       shareUrl: url,
-      shareImg: url + 'favicon.png',
+      shareImg: require('@/assets/logo.png'),
     });
   },
   methods: {

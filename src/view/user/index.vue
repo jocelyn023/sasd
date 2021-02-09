@@ -30,7 +30,7 @@
     </div>
 
     <van-cell-group>
-      <van-cell v-if="userInfo.ifAgent == 0" title="申请成为推广员" @click="jumpAgent" is-link />
+      <van-cell v-if="userInfo.ifAgent != 1" title="申请成为推广员" @click="jumpAgent" is-link />
       <van-cell title="消息中心" to="/msgCenter" is-link />
       <van-cell title="我的订单" :to="{path: '/orderList', query: {type: 1}}" is-link />
       <van-cell title="成绩查询" :to="{path: '/scoreList', query: {type: 2}}" is-link />
@@ -73,7 +73,7 @@ export default {
         this.userInfo = res.data
         localStorage.setItem('userInfo', JSON.stringify(res.data));
 
-        if (res.data.ifAgent == 0) {
+        if (res.data.ifAgent != 1) {
           this.getAgentResult()
         }
       })

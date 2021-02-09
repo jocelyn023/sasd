@@ -118,7 +118,7 @@
       />
     </van-popup>
 
-    <van-popup v-model="isShowPicker" round position="bottom" :style="{ height: '40%' }">
+    <van-popup v-model="isShowPicker" round position="bottom">
       <van-area title="选择城市" :area-list="cityObj" :columns-num="2" value="110101"
         @cancel="isShowPicker = false" @confirm="onConfirmArea" />
     </van-popup>
