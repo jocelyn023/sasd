@@ -1,7 +1,7 @@
 import { get, post } from '@/utils/request'
 
 // 获取课程目录详情
-export const getCourseCatalogList = params => get('/wx/api/course/getCourseCourseCatalogList', params)
+export const getCourseCatalogList = params => get('/wx/api/course/getCourseCatalogList', params)
 
 // 获取课程详情
 export const getCourseDetailInfo = params => get('/wx/api/course/getCourseDetailInfo', params)
