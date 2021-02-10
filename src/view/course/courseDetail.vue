@@ -34,10 +34,10 @@
       </van-tabs>
     </div>
     <div class="b-btn-box">
-      <van-button v-if="status == 1" type="theme" class="btn" @click="buyCourse">去购买</van-button>
+      <van-button v-if="status == 1" type="theme" class="btn" @click="buyCourse()">去购买</van-button>
       <van-button v-else-if="status == 2" type="theme disabled" class="btn">参加考试</van-button>
-      <van-button v-else-if="status == 3" type="theme" class="btn" @click="toExam">参加考试</van-button>
-      <van-button v-else-if="status == 4" type="theme" class="btn" to="/scoreList">查看成绩</van-button>
+      <van-button v-else-if="status == 3" type="theme" class="btn" @click="toExam()">参加考试</van-button>
+      <van-button v-else-if="status == 4" type="theme" class="btn" @click="viewScore()">查看成绩</van-button>
     </div>
   </div>
 </template>
@@ -137,6 +137,11 @@
           this.getStep();
         });
       },
+      viewScore() {
+        setCookie("purchaseId", this.purchaseId);
+        setCookie("__step", "", -1);
+        this.getStep();
+      },
       finishCatalog(curD, d) {
         if (this.isBuy) {
           let params = {
@@ -174,7 +179,7 @@
             let video = this.$refs.j_video;
             video.src = res.data;
             setTimeout(() => {
-              console.log(_this.lastPlaySecond,_this.curVideoItem);
+              console.log(_this.lastPlaySecond, _this.curVideoItem);
               if (_this.curVideoItem.learnStatus != "LEARNED") {
                 video.currentTime = _this.lastPlaySecond ? _this.lastPlaySecond : 0
               }

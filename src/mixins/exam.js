@@ -6,13 +6,25 @@ import {
   setCookie
 } from '@/utils/utils'
 export default {
+  beforeRouteLeave(to, from, next) {
+    if (from.name.indexOf("examStep") != -1) {
+      window.addEventListener('popstate', () => {
+        console.log("popstate")
+        next("/courseDetail?id=" + getCookie("courseId"));
+        return;
+      }, false);
+        next()
+    } else {
+      next()
+    }
+  },
+
   data() {
     return {
       purchaseId: this.$route.query.id || getCookie("purchaseId"),
       examInfo: {}
     };
   },
-
   methods: {
     getStep() {
       this.getExamInfo(1)
@@ -24,10 +36,11 @@ export default {
         res.data.cardTypeStr = "";
         res.data.sexStr = "";
         this.examInfo = res.data;
+        setCookie("courseId", this.examInfo.courseId);
         if (type == 1) {
           this.updateRouter()
         }
-        console.log(JSON.stringify(res.data))
+        //console.log(JSON.stringify(res.data))
       })
     },
     nextStep(step) {
@@ -66,12 +79,12 @@ export default {
       }
 
       this.$router.push({
-        path: getCookie("__step") ? getCookie("__step"): path,
+        path: getCookie("__step") ? getCookie("__step") : path,
         query: {
           id: this.purchaseId
         }
       })
-
+      setCookie("__step", (getCookie("__step") ? getCookie("__step") : path));
     }
 
   }
