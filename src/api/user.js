@@ -45,6 +45,7 @@ export const cashoutApply = params => post('/wx/api/personal/cashoutApply', para
 
 // 提现结果
 export const cashoutResult = params => get('/wx/api/personal/getCashoutApplyResult', params)
+export const cashoutResultById = params => get('/wx/api/personal/getCashoutApplyById', params)
 
 // 收支明细
 export const getIncomeCashoutDetail = params => post('/wx/api/personal/getIncomeCashoutDetail', params)

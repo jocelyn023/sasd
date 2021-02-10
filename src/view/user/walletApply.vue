@@ -7,7 +7,7 @@
       @click-left="onClickLeft"
     /> -->
 
-    <walletApply v-if="!loading && showApply" @applyAgain="applyAgain"></walletApply>
+    <walletApply v-if="!loading && showApply" :resultObj="result" @applyAgain="applyAgain"></walletApply>
     <walletResult ref="walletResult" :resultObj="result" v-if="!loading && !showApply"></walletResult>
   </div>
 </template>
@@ -15,7 +15,7 @@
 <script>
 import walletApply from '@/components/page/walletApply'
 import walletResult from '@/components/page/walletResult'
-import { getMyPersonalInfo, cashoutResult } from '@/api/user'
+import { getMyPersonalInfo, cashoutResult, cashoutResultById } from '@/api/user'
 
 export default {
   components: {
@@ -30,7 +30,7 @@ export default {
     }
   },
   created () {
-    this.init()
+    this.cashoutResult()
   },
   methods: {
     applyAgain(val) {
@@ -41,30 +41,27 @@ export default {
     init () {
       getMyPersonalInfo().then(res => {
         const userInfo = res.data
-        localStorage.setItem('userInfo', JSON.stringify(res.data))
-        
-        this.loading = false
-        
-        if (userInfo.cashoutStatus == 'APPROVING') {
-          this.showApply = false
-          this.result = {
-            approvalResult: 'APPROVING'
-          }
-        } else {
-          if (userInfo.cashoutStatus != null) {
-            this.cashoutResult()
-          }
-        }
+        localStorage.setItem('userInfo', JSON.stringify(userInfo))
       })
     },
     cashoutResult () {
       cashoutResult().then(res => {
         if (res.code == 200) {
-          this.result = res.data
-          if ((res.data && res.data.approvalResult && res.data.approvalResult == 'PASS')) {
-            this.showApply = false
+          if (res.data == null) {
+            this.showApply = true
+            this.loading = false
+          } else {
+            this.cashoutResultById(res.data.businessId)
           }
         }
+      })
+    },
+    cashoutResultById(id) {
+      cashoutResultById({'applyId': id}).then(res => {
+        this.loading = false
+        this.result = res.data
+        console.log('========', this.result)
+        this.showApply = false
       })
     },
     onClickLeft () {

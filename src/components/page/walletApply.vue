@@ -71,8 +71,19 @@ import { getCashoutApplyInfo, cashoutApply, getMyPersonalInfo } from '@/api/user
 
 export default {
   components: {},
+  watch: {
+    resultObj: {
+      immediate: true,
+      handler(val) {
+        val.amount = ''
+        this.form = val
+      }
+    }
+  },
+  props: {
+    resultObj: {}
+  },
   data () {
-    let self = this;
     return {
       username: '',
       regFailed: false,
@@ -95,20 +106,9 @@ export default {
       }
     }
   },
-  created () {
-    this.init()
-  },
+  created () {},
   methods: {
     onSubmit (val) {
-      for( var key in val ){
-        if (key == 'undefined') {
-          this.regFailed = true
-        }
-      }
-
-      if (!this.regFailed) {
-        return;
-      }
       let params = {
         recevierName: this.form.recevierName,
         bankNam: this.form.bankNam,
@@ -116,6 +116,10 @@ export default {
         acceptAccount: this.form.acceptAccount,
         telNo: this.form.telNo,
         amount: this.form.amount
+      }
+      if (this.form.status == 'REJECT') {
+        params.id = this.form.id
+        params.busiessId = this.form.busiessId
       }
       if (this.form.amount == 0) {
         Toast('提现金额需大于0')
@@ -134,19 +138,6 @@ export default {
     },
     onFailed (errorInfo) {
       console.log('failed', errorInfo);
-    },
-    init () {
-      let userInfo = localStorage.getItem('userInfo') || {}
-      userInfo = JSON.parse(userInfo)
-      
-      if (userInfo.cashoutStatus != null) {
-        getCashoutApplyInfo().then(res => {
-          let data = res.data || {}
-          data['amount'] = ''
-          this.form = data
-        })
-      }
-      
     }
   }
 }
