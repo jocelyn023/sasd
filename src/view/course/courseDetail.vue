@@ -4,7 +4,7 @@
       <p class="online-status green_bg">
         <span>{{courseInfo.teachingTypeValue}}</span>
       </p>
-      <video controls :src="videoPath" ref="j_video" @play="handelPalyVideo" :poster="courseInfo.thumbnail"
+      <video :src="videoPath" ref="j_video" @play="handelPalyVideo" :poster="courseInfo.thumbnail"
         @pause="handlePause()" type="video/mp4"></video>
       <i v-if="!isPlay" class="icon_play" @click.stop="handleClickPlay(-1)"></i>
     </div>
@@ -165,6 +165,7 @@
         }
       },
       getVedioAddress(id) {
+        let _this = this;
         getVedioAddress({
           vedioId: id
         }).then(res => {
@@ -173,16 +174,19 @@
             let video = this.$refs.j_video;
             video.src = res.data;
             setTimeout(() => {
+              console.log(_this.lastPlaySecond,_this.curVideoItem);
+              if (_this.curVideoItem.learnStatus != "LEARNED") {
+                video.currentTime = _this.lastPlaySecond ? _this.lastPlaySecond : 0
+              }
               video.play();
-              video.currentTime = this.lastPlaySecond ? this.lastPlaySecond : 0
               video.addEventListener("timeupdate", () => {
                 var timeDisplay;
                 var duration;
                 timeDisplay = Math.floor(video.currentTime);
                 duration = Math.floor(video.duration);
-                this.pauseVideo(timeDisplay, 1)
+                _this.pauseVideo(timeDisplay, 1)
               }, false);
-              this.isPlay = true;
+              _this.isPlay = true;
             }, 150);
           } else {
             console.log(res.returnMsg);
@@ -202,7 +206,14 @@
         if (!this.isBuy) {
           if (this.$refs.j_video.currentTime >= this.activeVideoIndex) {
             this.$refs.j_video.pause();
+            this.isPlay = false;
           }
+        } else {
+          this.isPlay = true;
+          if (this.curVideoItem.learnStatus != "LEARNED") {
+            this.$refs.j_video.currentTime = this.curVideoItem.lastPlaySecond
+          }
+
         }
       },
       pauseVideo(timeDisplay, type) {
@@ -228,6 +239,9 @@
         if (item.ifTry == 1 || this.isBuy) {
           this.handleClickPlay(item)
         }
+        // if ((!this.isBuy && item.ifTry == 1) || (this.isBuy && item.learnStatus != "LEARNED") ) {
+        //   this.handleClickPlay(item)
+        // }
       },
 
       handleClickPlay(item) {

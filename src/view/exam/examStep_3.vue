@@ -243,7 +243,7 @@
           params = {
             id: this.examInfo.id,
             vedio1: this.examInfo.vedio1,
-            vedio1: this.examInfo.vedio1,
+            vedio2: this.examInfo.vedio2,
             vedio3: this.examInfo.vedio3,
             vedio4: this.examInfo.vedio4,
             vedio5: this.examInfo.vedio5,
@@ -311,9 +311,9 @@
         WeixinJSBridge.invoke('getBrandWCPayRequest', params, function (res) {
           if (res.err_msg == "get_brand_wcpay_request:ok") {
             if (type == 2) {
-              _this.nextStep(4)
+              _this.nextStep(4);
             } else {
-              _this.backCourse();
+              _this.getExamInfo();
             }
           }
         })

@@ -101,9 +101,9 @@
         }
       },
       async handlePay(values) {
-        if(this.purchaseId == -1){
-          await this.saveCoursePurchaseInfo();
-        }
+        //if(this.purchaseId == -1){
+        await this.saveCoursePurchaseInfo();
+        //}
         let _this = this;
         getCoursePurchaseOrder(this.purchaseId).then(res => {
           if (res.code == 200) {
