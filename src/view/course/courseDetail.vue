@@ -179,10 +179,10 @@
             let video = this.$refs.j_video;
             video.src = res.data;
             setTimeout(() => {
-              console.log(_this.lastPlaySecond, _this.curVideoItem);
               if (_this.curVideoItem.learnStatus != "LEARNED") {
                 video.currentTime = _this.lastPlaySecond ? _this.lastPlaySecond : 0
               }
+              console.log("video:"+ video,"lastPlaySecond:"+_this.lastPlaySecond, _this.curVideoItem);
               video.play();
               video.addEventListener("timeupdate", () => {
                 var timeDisplay;
@@ -282,11 +282,18 @@
         }
       },
       buyCourse() {
-        this.$router.push({
-          path: "/courseBuy",
-          query: {
+        let query =  {
             id: this.$route.query.id
           }
+        if(this.$route.query.rePurchase == 1){
+          query = {
+            id: this.$route.query.id,
+            rePurchase:1
+          }
+        }
+        this.$router.push({
+          path: "/courseBuy",
+          query: query
         });
       },
       getCourseCatalogList() {

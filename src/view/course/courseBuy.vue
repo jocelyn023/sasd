@@ -3,7 +3,7 @@
     <van-form @submit="handlePay">
       <div class="buy-user-info">
         <h3>基础信息填写</h3>
-        <div v-if="purchaseId == -1">
+        <div v-if="purchaseId == -1 || $route.query.rePurchase == 1">
           <van-field v-model="purchaseInfo.purchaserName" label="姓名" :rules="[{ required: true, message: '请填写姓名' }]"
             placeholder="请输入" />
           <van-field v-model="purchaseInfo.contractInfo" type="tel" name="pattern" label="联系方式"
