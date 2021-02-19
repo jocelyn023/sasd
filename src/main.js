@@ -5,6 +5,9 @@ import Vant from 'vant';
 import { Lazyload } from 'vant';
 import 'vant/lib/index.css';
 import 'lib-flexible/flexible'
+import Video from "video.js"
+import "video.js/dist/video-js.css"
+Vue.prototype.$video = Video;
 import Vconsole from 'vconsole';
 new Vconsole();
 

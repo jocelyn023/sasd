@@ -4,8 +4,10 @@
       <p class="online-status green_bg">
         <span>{{courseInfo.teachingTypeValue}}</span>
       </p>
-      <video :src="videoPath" ref="j_video" @play="handelPalyVideo" :poster="courseInfo.thumbnail"
-        @pause="handlePause()" type="video/mp4"></video>
+      <video ref="j_video" :poster="courseInfo.thumbnail" @play="handelPalyVideo" @pause="handlePause()"
+        class="video-js"></video>
+      <!-- <video ref="j_video" @play="handelPalyVideo" :poster="courseInfo.thumbnail"
+        @pause="handlePause()" type="video/mp4"></video> -->
       <i v-if="!isPlay" class="icon_play" @click.stop="handleClickPlay(-1)"></i>
     </div>
     <div class="course-main-con">
@@ -63,6 +65,7 @@
   } from 'vant';
   import cardCourse from "@/components/cardCourse";
   import examMixin from "@/mixins/exam";
+  import videojs from "video.js";
   export default {
     mixins: [examMixin],
     components: {
@@ -70,6 +73,20 @@
     },
     data() {
       return {
+        player: null,
+        videoOptions: {
+          autoplay: true, //自动播放
+          controls: true, //用户可以与之交互的控件
+          loop: false, //视频一结束就重新开始
+          muted: false, //默认情况下将使所有音频静音
+          aspectRatio: "16:9", //显示比率
+          fullscreen: {
+            options: {
+              navigationUI: "hide"
+            }
+          },
+          sources: []
+        },
         purchaseId: -1,
         activeVideoIndex: -1,
         active: 1,
@@ -176,55 +193,95 @@
         }).then(res => {
           if (res.code == 200) {
             this.videoPath = res.data;
-            let video = this.$refs.j_video;
-            video.src = res.data;
-            setTimeout(() => {
+            //let video = this.$refs.j_video;
+            //video.src = res.data;
+
+            if (_this.player) {
+              _this.player.src(_this.videoPath);
               if (_this.curVideoItem.learnStatus != "LEARNED") {
-                video.currentTime = _this.lastPlaySecond ? _this.lastPlaySecond : 0
+                _this.player.currentTime(_this.lastPlaySecond ? _this.lastPlaySecond : 0)
               }
-              console.log("video:"+ video,"lastPlaySecond:"+_this.lastPlaySecond, _this.curVideoItem);
-              video.play();
-              video.addEventListener("timeupdate", () => {
-                var timeDisplay;
-                var duration;
-                timeDisplay = Math.floor(video.currentTime);
-                duration = Math.floor(video.duration);
-                _this.pauseVideo(timeDisplay, 1)
-              }, false);
+              _this.player.load();
+              _this.player.play();
               _this.isPlay = true;
-            }, 150);
+            } else {
+              _this.player = _this.$video(
+                _this.$refs.j_video,
+                _this.videoOptions,
+                function onPlayerReady() {
+                  console.log("onPlayerReady", this);
+                  this.src(_this.videoPath);
+                  this.load();
+                  this.play();
+                  if (_this.curVideoItem.learnStatus != "LEARNED") {
+                    this.currentTime(_this.lastPlaySecond ? _this.lastPlaySecond : 0)
+                    _this.isPlay = true;
+                  }
+                  this.on('timeupdate', function () {
+                    var timeDisplay;
+                    var duration;
+                    timeDisplay = Math.floor(this.currentTime());
+                    duration = Math.floor(this.duration());
+                    _this.pauseVideo(timeDisplay, 1)
+
+                  })
+                }
+              );
+            }
+
+            // setTimeout(() => {
+            //   if (_this.curVideoItem.learnStatus != "LEARNED") {
+            //     video.currentTime = _this.lastPlaySecond ? _this.lastPlaySecond : 0
+            //   }
+            //   console.log("video:"+ video,"lastPlaySecond:"+_this.lastPlaySecond, _this.curVideoItem);
+            //   video.play();
+            //   video.addEventListener("timeupdate", () => {
+            //     var timeDisplay;
+            //     var duration;
+            //     timeDisplay = Math.floor(video.currentTime);
+            //     duration = Math.floor(video.duration);
+            //     _this.pauseVideo(timeDisplay, 1)
+            //   }, false);
+            //   _this.isPlay = true;
+            // }, 150);
           } else {
             console.log(res.returnMsg);
           }
         });
       },
+      videoPlay() {
+
+      },
       handlePause() {
+        console.log("handlePause")
         this.isPlay = false;
-        let video = this.$refs.j_video;
+        //let video = this.$refs.j_video;
         var timeDisplay;
         var duration;
-        timeDisplay = Math.floor(video.currentTime);
-        duration = Math.floor(video.duration);
+        timeDisplay = Math.floor(this.player.currentTime());
+        duration = Math.floor(this.player.duration());
         this.finishCatalog(timeDisplay, duration);
       },
       handelPalyVideo() {
+        console.log("handelPalyVideo")
         if (!this.isBuy) {
-          if (this.$refs.j_video.currentTime >= this.activeVideoIndex) {
-            this.$refs.j_video.pause();
+          if (this.player.currentTime() >= this.activeVideoIndex) {
+            this.player.pause();
             this.isPlay = false;
           }
         } else {
           this.isPlay = true;
           if (this.curVideoItem.learnStatus != "LEARNED") {
-            this.$refs.j_video.currentTime = this.curVideoItem.lastPlaySecond
+            this.player.currentTime(this.curVideoItem.lastPlaySecond);
           }
 
         }
       },
       pauseVideo(timeDisplay, type) {
+        console.log("pauseVideo")
         if (!this.isBuy) {
           if (timeDisplay >= this.activeVideoIndex) {
-            this.$refs.j_video.pause();
+            this.player.pause();
             this.isPlay = false;
             Toast("试看时间已到");
           } else {
@@ -235,12 +292,14 @@
         }
       },
       playVideo(type) {
+        console.log("playVideo")
         if (type != 1) {
-          this.$refs.j_video.play();
+          this.player.play();
           this.isPlay = true;
         }
       },
       handleClick(item) {
+        console.log("handleClick")
         if (item.ifTry == 1 || this.isBuy) {
           this.handleClickPlay(item)
         }
@@ -250,9 +309,10 @@
       },
 
       handleClickPlay(item) {
+        console.log("handleClickPlay")
         if (item == -1) {
           if (this.isPlay) {
-            this.$refs.j_video.pause();
+            this.player.pause();
             this.isPlay = false;
           } else {
             if (this.activeVideoIndex == -1) {
@@ -271,7 +331,8 @@
                 }
               }
             } else {
-              this.pauseVideo(this.$refs.j_video.currentTime);
+               console.log(this.player,"---------------")
+              this.pauseVideo(this.player.currentTime());
             }
           }
         } else {
@@ -282,13 +343,13 @@
         }
       },
       buyCourse() {
-        let query =  {
-            id: this.$route.query.id
-          }
-        if(this.$route.query.rePurchase == 1){
+        let query = {
+          id: this.$route.query.id
+        }
+        if (this.$route.query.rePurchase == 1) {
           query = {
             id: this.$route.query.id,
-            rePurchase:1
+            rePurchase: 1
           }
         }
         this.$router.push({
@@ -333,6 +394,9 @@
 <style lang="less" scoped>
   .course-detail-page {
     padding-bottom: 92px;
+    /deep/.vjs-big-play-button {
+      display: none;
+    }
 
     .course-video-block {
       position: relative;
