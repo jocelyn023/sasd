@@ -41,10 +41,12 @@
       <van-button v-else-if="status == 3" type="theme" class="btn" @click="toExam()">参加考试</van-button>
       <van-button v-else-if="status == 4" type="theme" class="btn" @click="viewScore()">查看成绩</van-button>
     </div>
+    <CommonFt :active="0"></CommonFt>
   </div>
 </template>
 
 <script>
+  import CommonFt from '@/components/commonFt'
   import {
     getCourseDetailInfo,
     getCourseCatalogList,
@@ -69,7 +71,8 @@
   export default {
     mixins: [examMixin],
     components: {
-      cardCourse
+      cardCourse,
+      CommonFt
     },
     data() {
       return {
@@ -283,7 +286,7 @@
           if (timeDisplay >= this.activeVideoIndex) {
             this.player.pause();
             this.isPlay = false;
-            Toast("试看时间已到");
+            Toast("试看时间已到！");
           } else {
             this.playVideo(type);
           }
@@ -331,7 +334,7 @@
                 }
               }
             } else {
-               console.log(this.player,"---------------")
+               //console.log(this.player,"---------------")
               this.pauseVideo(this.player.currentTime());
             }
           }

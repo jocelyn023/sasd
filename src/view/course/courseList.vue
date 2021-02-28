@@ -40,12 +40,14 @@
       <van-picker v-show="selectActive == 3" show-toolbar :columns="teachingTypeList" @cancel="showPicker = false"
         @confirm="onConfirm" />
     </van-popup>
+    <CommonFt :active="0"></CommonFt>
   </div>
 </template>
 <script>
   import {
     queryCourseInfoPage,
   } from '@/api/course'
+  import CommonFt from '@/components/commonFt'
   import {
     serchByKeyGroup,
   } from '@/api/common'
@@ -56,7 +58,8 @@
   import city from "@/mixins/city";
   export default {
     components: {
-      commonCover
+      commonCover,
+      CommonFt
     },
     mixins: [city],
     data() {

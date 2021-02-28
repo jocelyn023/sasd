@@ -10,11 +10,16 @@
     </div>
 
     <router-view :key="active+ 'step'" />
+    <CommonFt :active="0"></CommonFt>
   </div>
 </template>
 
 <script>
+  import CommonFt from '@/components/commonFt'
   export default {
+    components: {
+      CommonFt
+    },
     data() {
       return {
         active: this.$route.meta.stepActive,
