@@ -244,6 +244,7 @@ export default {
         params.id = this.form.id
       }
       if (this.fileList && this.fileList.length < 2) {
+        Toast('请确认上传的身份证照片是否正确')
         return;
       }
       params.idChardFontPhoto = this.fileList[0].url

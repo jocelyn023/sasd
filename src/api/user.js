@@ -10,7 +10,7 @@ export const updateMyPersonalInfo = params => post('/wx/api/personal/updateMyPer
 // 消息
 // 消息中心
 export const messageCenter = params => get('/wx/api/personal/messageCenter', params)
-
+export const getReadMessageCount = params => get('/wx/api/personal/toReadMessageCount', params)
 // 获取消息分页列表
 export const getMessagePageByType = params => post('/wx/api/personal/getMessagePageByType', params)
 

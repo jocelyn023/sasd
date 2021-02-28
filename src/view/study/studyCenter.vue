@@ -15,8 +15,8 @@
               ></cardProgress>
             </template>
           </template>
-
-          <template v-else-if="list && list.length > 1">
+          
+          <template v-if="list && list.length > 1">
             <p class="title">更早</p>
             <template v-for="(item, index) in list">
               <cardProgress

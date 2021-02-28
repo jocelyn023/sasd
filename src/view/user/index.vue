@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="me">
     <div class="user-head">
       <div class="user-info bg-theme flex ">
         <van-image
@@ -13,7 +13,10 @@
         <div class="user-other">
           <div class="f16 col-white" :class="{'m-b-10': userInfo.ifAgent}">{{ userInfo.nickName }}</div>
           <template v-if="userInfo.ifAgent == 1">
-            <div class="f12 col-white m-b-10">代理商编码：{{ userInfo.agentNo }}</div>
+            <template>
+              <div v-if="userInfo.agentType == 'TEACHING_CAMP'" class="f14 col-white m-b-10">训练营编码: {{ userInfo.agentNo }}</div>
+              <div v-else class="f14 col-white m-b-10">推广员编码: {{ userInfo.agentNo }}</div>
+            </template>
             <div class="badge f12">
               <span v-if="userInfo.agentType == 'TEACHING_CAMP'">师资营</span>
               <span v-else>思爱思帝推广员</span>
@@ -31,7 +34,16 @@
 
     <van-cell-group>
       <van-cell v-if="userInfo.ifAgent != 1" title="申请成为推广员" @click="jumpAgent" is-link />
-      <van-cell title="消息中心" to="/msgCenter" is-link />
+      <van-cell to="/msgCenter" is-link >
+        <!-- 使用 title 插槽来自定义标题 -->
+        <template #title>
+          <van-badge dot>
+            <span class="custom-title">消息中心</span>
+          </van-badge>
+          
+          <!-- <van-tag type="danger">标签</van-tag> -->
+        </template>
+      </van-cell>
       <van-cell title="我的订单" :to="{path: '/orderList', query: {type: 1}}" is-link />
       <van-cell title="成绩查询" :to="{path: '/scoreList', query: {type: 2}}" is-link />
       <van-cell title="我的证书" to="/certificateType" is-link />
@@ -44,12 +56,13 @@
 
 <script>
 import CommonFt from '@/components/commonFt'
-import { getMyPersonalInfo, getAgentStatus } from '@/api/user'
+import { getMyPersonalInfo, getAgentStatus, getReadMessageCount } from '@/api/user'
 
 export default {
   components: { CommonFt },
   data () {
     return {
+      hasNoReadMsg: false,
       isLogin: false,
       userInfo: {
         nickName: '六羽',
@@ -66,8 +79,16 @@ export default {
   },
   created () {
     this.getMyPersonalInfo()
+    this.getReadMessageCount()
   },
   methods: {
+    getReadMessageCount () {
+      getReadMessageCount().then(res => {
+        if (res.data && res.data > 0) {
+          this.hasNoReadMsg = true
+        }
+      })
+    },
     getMyPersonalInfo () {
       getMyPersonalInfo().then(res => {
         this.userInfo = res.data
@@ -98,6 +119,9 @@ export default {
 </script>
 
 <style lang="less">
+.me .van-badge--fixed {
+  top: 50%
+}
 .user-head {
   position: relative;
 

@@ -5,20 +5,21 @@
       <div class="qrcode">
         <vue-qr class="bicode" :text="codeValue" :margin="10" :dotScale="1"></vue-qr>
       </div>
-
     </div>
 
     <div class="desc">
       <span class="red">*</span> 注意：此为思爱思帝推广员专属二维码，用于分享CSDA课程，让学员保存扫描此二维码后进入CSDA课程页面，成为您的代理学员。
     </div>
+    <CommonFt :active="2"></CommonFt>
   </div>
 </template>
 
 <script>
 import vueQr from 'vue-qr'
+import CommonFt from '@/components/commonFt'
 
 export default {
-  components: { vueQr },
+  components: { vueQr, CommonFt },
   data () {
     return {
       codeValue: '',
