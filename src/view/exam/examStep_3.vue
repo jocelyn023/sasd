@@ -13,8 +13,9 @@
             <div v-for="(v,index) in videoObj.lv4" :key="index">
               <p>{{v.text}}：</p>
               <div class="video-upload-list">
-                <div v-if="examInfo[v.key]" class="video-box" @click="playVideo(index,'lv4')">
-                  <video :src="examInfo[v.key]" :ref="'J_video_'+index"></video>
+                <div v-if="examInfo[v.key]" class="video-box" @click="playVideo(index,examInfo[v.key],'lv4')">
+                  <video :poster="examInfo[v.key]+'?vframe/jpg/offset/5'" :id="'J_video_'+index" :src="examInfo[v.key]" class="video-js"></video>
+                  <!-- <video  :src="examInfo[v.key]" :ref="'J_video_'+index"></video> -->
                   <i v-if="!v.isPlay" class="icon_play" @pause="pauseVideo(index,'lv4')"></i>
                 </div>
                 <upload v-if="examInfo.status != 'OVER_EXAM'" @success="url=>getVideoPath(url,v.key)"></upload>
@@ -29,8 +30,9 @@
             <div v-for="(v,index) in videoObj.other" :key="index">
               <p>{{v.text}}：</p>
               <div class="video-upload-list">
-                <div v-if="examInfo[v.key]" class="video-box" @click="playVideo(index,'other')">
-                  <video :src="examInfo[v.key]" :ref="'J_video_'+index" @pause="pauseVideo(index,'other')"></video>
+                <div v-if="examInfo[v.key]" class="video-box" @click="playVideo(index,examInfo[v.key],'other')">
+                  <!-- <video :src="examInfo[v.key]" :ref="'J_video_'+index" @pause="pauseVideo(index,'other')"></video> -->
+                  <video :poster="examInfo[v.key]+'?vframe/jpg/offset/5'" :id="'J_video_'+index" :src="examInfo[v.key]" class="video-js"></video>
                   <i v-if="!v.isPlay" class="icon_play"></i>
                 </div>
                 <upload v-if="examInfo.status != 'OVER_EXAM'" @success="url=>getVideoPath(url,v.key)"></upload>
@@ -203,6 +205,21 @@
             score: "20分"
           }]
         },
+        player: null,
+        videoOptions: {
+          preload: "metadata",
+          autoplay: false, //自动播放
+          controls: false, //用户可以与之交互的控件
+          loop: false, //视频一结束就重新开始
+          muted: false, //默认情况下将使所有音频静音
+          aspectRatio: "16:9", //显示比率
+          fullscreen: {
+            options: {
+              navigationUI: "hide"
+            }
+          },
+          sources: []
+        },
       };
     },
     created() {
@@ -215,26 +232,42 @@
       })
     },
     methods: {
-      playVideo(index, key) {
-        if (this.videoObj[key][index].isPlay) {
-          this.videoObj[key][index].isPlay = false
-          this.$refs['J_video_' + index][0].pause()
-        } else {
-          this.videoObj[key].forEach((item, vIndex) => {
-            if (vIndex == index) {
-              item.isPlay = true
-              this.$refs['J_video_' + vIndex][0].play()
-            } else {
-              item.isPlay = false
-              this.$refs['J_video_' + vIndex][0].pause()
-            }
-          });
-        }
-        this.$forceUpdate()
+      initPlayer() {
+
+      },
+      playVideo(index, src, key) {
+        let _this = this;
+        this.$nextTick(() => {
+          if (this.videoObj[key][index].isPlay) {
+            this.videoObj[key][index].isPlay = false
+            _this.player.pause()
+
+          } else {
+            this.videoObj[key].forEach((item, vIndex) => {
+              if (vIndex == index) {
+                item.isPlay = true
+                _this.player = _this.$video(
+                  "J_video_" + index,
+                  _this.videoOptions,
+                  function onPlayerReady() {
+                    console.log("onPlayerReady", this);
+                    this.src(src);
+                    this.load();
+                    this.play();
+                  }
+                );
+              } else {
+                item.isPlay = false
+                _this.player.pause()
+              }
+            });
+          }
+          this.$forceUpdate()
+        })
       },
       pauseVideo(index, key) {
         this.videoObj[key][index].isPlay = false
-        this.$refs['J_video_' + index][0].pause()
+        this.player.pause()
         this.$forceUpdate()
       },
       saveVideo() {
@@ -528,7 +561,7 @@
 
       .video-box {
         position: relative;
-        width: 91px;
+        width: 131.5px;
         height: 74px;
       }
 
@@ -545,7 +578,7 @@
 
       img,
       video {
-        width: 91px;
+        width: 131.5px;
         height: 74px;
       }
     }

@@ -50,10 +50,15 @@
       },
     },
     created() {
-      if(!this.$route.query.id){
+      let _this = this;
+      if (!this.$route.query.id) {
         this.status = 2
+        setTimeout(() => {
+          _this.getExamInfo(1);
+        }, 200)
+      } else {
+        this.getExamInfo(1);
       }
-      this.getExamInfo(1);
     },
     methods: {
       saveWritten() {

@@ -1,10 +1,11 @@
 <template>
   <div class="course-detail-page">
-    <div class="course-video-block" @click="handleClickPlay(-1)">
+    <div  class="course-detail-con">
+      <div class="course-video-block" @click="handleClickPlay(-1)">
       <p class="online-status green_bg">
         <span>{{courseInfo.teachingTypeValue}}</span>
       </p>
-      <video ref="j_video" :poster="courseInfo.thumbnail" @play="handelPalyVideo" @pause="handlePause()"
+      <video ref="j_video" id="j_video" controls :poster="courseInfo.thumbnail" @play="handelPalyVideo" @pause="handlePause()"
         class="video-js"></video>
       <!-- <video ref="j_video" @play="handelPalyVideo" :poster="courseInfo.thumbnail"
         @pause="handlePause()" type="video/mp4"></video> -->
@@ -40,7 +41,11 @@
       <van-button v-else-if="status == 2" type="theme disabled" class="btn">参加考试</van-button>
       <van-button v-else-if="status == 3" type="theme" class="btn" @click="toExam()">参加考试</van-button>
       <van-button v-else-if="status == 4" type="theme" class="btn" @click="viewScore()">查看成绩</van-button>
+      <van-button v-else-if="status == 5" type="theme" class="btn" @click="viewScore()">通过考试</van-button>
     </div>
+    </div>
+    
+
     <CommonFt :active="0"></CommonFt>
   </div>
 </template>
@@ -67,7 +72,6 @@
   } from 'vant';
   import cardCourse from "@/components/cardCourse";
   import examMixin from "@/mixins/exam";
-  import videojs from "video.js";
   export default {
     mixins: [examMixin],
     components: {
@@ -134,13 +138,13 @@
               s = 4
               break;
             case "EDIT_ADDR":
-              s = 4
+              s = 5
               break;
             case "EDIT_INFO":
-              s = 4
+              s = 5
               break;
             case "FINISH":
-              s = 4
+              s = 5
               break;
             default:
               s = 3
@@ -209,7 +213,7 @@
               _this.isPlay = true;
             } else {
               _this.player = _this.$video(
-                _this.$refs.j_video,
+                "j_video",
                 _this.videoOptions,
                 function onPlayerReady() {
                   console.log("onPlayerReady", this);
@@ -396,7 +400,10 @@
 
 <style lang="less" scoped>
   .course-detail-page {
-    padding-bottom: 92px;
+    //padding-bottom: 92px;
+    .course-detail-con{
+      padding-bottom: 92px;
+    }
     /deep/.vjs-big-play-button {
       display: none;
     }
@@ -529,7 +536,7 @@
     .b-btn-box {
       text-align: center;
       position: fixed;
-      bottom: 0;
+      bottom: 50px;
       left: 0;
       right: 0;
       width: 100%;
