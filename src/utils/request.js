@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '../router'
 
 axios.defaults.baseURL = process.env.NODE_ENV == "development" ? process.env.VUE_APP_PROXY_API_URL : process.env.VUE_APP_BASE_API_URL
 axios.defaults.timeout = 10000
@@ -16,6 +17,25 @@ axios.interceptors.request.use(
   },
   error => {
     return Promise.error(error)
+  }
+)
+// 响应拦截器
+axios.interceptors.response.use(
+  response => {
+    return Promise.resolve(response)
+  },
+  error => {
+    if (error.response.status && error.response.status == 403) {
+      // localStorage.clear('token')
+      localStorage.removeItem('token');
+      let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + process.env.VUE_APP_APPID        
+      url = url + '&redirect_uri='+ process.env.VUE_APP_BASE_API_URL +'/sasd/wx/auth/' + process.env.VUE_APP_APPID + '/greetUser'
+        url = url + '?callBackAction=' + router.currentRoute.fullPath
+        url = url + '&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect'
+
+        window.location.href = url
+    }
+    return Promise.reject(error.response)
   }
 )
 //
