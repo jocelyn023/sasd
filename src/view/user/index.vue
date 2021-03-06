@@ -19,7 +19,8 @@
             </template>
             <div class="badge f12">
               <span v-if="userInfo.agentType == 'TEACHING_CAMP'">师资营</span>
-              <span v-else>思爱思帝推广员</span>
+              <span v-else>推广员</span>
+              <!-- <span v-else>思爱思帝推广员</span> -->
             </div>
           </template>
         </div>
@@ -37,10 +38,10 @@
       <van-cell to="/msgCenter" is-link >
         <!-- 使用 title 插槽来自定义标题 -->
         <template #title>
-          <van-badge dot>
+          <van-badge dot v-if="hasNoReadMsg">
             <span class="custom-title">消息中心</span>
           </van-badge>
-          
+          <span v-else class="custom-title">消息中心</span>
           <!-- <van-tag type="danger">标签</van-tag> -->
         </template>
       </van-cell>
@@ -120,7 +121,8 @@ export default {
 
 <style lang="less">
 .me .van-badge--fixed {
-  top: 50%
+  top: 50%;
+  right: -5px;
 }
 .user-head {
   position: relative;
@@ -175,10 +177,10 @@ export default {
 
     span {
       position: absolute;
-      left: 12px;
+      left: 28px;
       top: 6px;
       width: 90px;
-      transform: scale(0.7);
+      /* transform: scale(0.9); */
     }
   }
 }
