@@ -61,13 +61,13 @@
         <div class="table-box col-3-table flex txt-c">
           <div class="item w50">文化理论（20分）</div>
           <div class="item">{{examInfo.writtenExamScore}}分</div>
-          <div class="item green-color">合格</div>
+          <div class="item green-color">{{examInfo.writtenExamScoreText}}</div>
           <template v-if="examInfo.dancyLevel == 'lv4'">
             <template v-for="(v,index) in videoObj.lv4">
               <div :key="index+'score'" class="item w50">{{v.text}}</div>
               <div :key="index+'score'" class="item">{{examInfo[v.key+'Score']}}分</div>
-              <div v-if="examInfo[v.key+'Status'] == 1" :key="index+'score'" class="item green-color">合格</div>
-              <div v-else :key="index+'score'" class="item red-color">不合格</div>
+              <div v-if="examInfo[v.key+'Status'] == 1" :key="index+'score'" class="item green-color">{{examInfo[v.key+'ScoreText']}}</div>
+              <div v-else :key="index+'score'" class="item red-color">{{examInfo[v.key+'ScoreText']}}</div>
             </template>
           </template>
           <template v-else>
@@ -75,19 +75,19 @@
               <div :key="index+'score1'" class="item w50">{{v.text}}（{{v.score}}） {{examInfo['vedioStatus'+v.key]}}
               </div>
               <div :key="index+'scor12'" class="item">{{examInfo['vedioScore'+ v.sKey]}}分</div>
-              <div v-if="examInfo['vedioStatus'+v.sKey] == 1" :key="index+'score'" class="item green-color">合格</div>
-              <div v-else :key="index+'scor13'" class="item red-color">不合格</div>
+              <div v-if="examInfo['vedioStatus'+v.sKey] == 1" :key="index+'score'" class="item green-color">{{examInfo['vedioScore'+v.key+'Text']}}</div>
+              <div v-else :key="index+'scor13'" class="item red-color">{{examInfo['vedioScore'+v.key+'Text']}}</div>
             </template>
           </template>
           <div class="item w50">总得分</div>
           <div class="item">{{examInfo.vedioScoreTotal}}分</div>
-          <div class="item green-color" v-if="examInfo.finalStatus == 1">合格</div>
-          <div class="item red-color" v-else>不合格</div>
+          <div class="item green-color" v-if="examInfo.finalStatus == 1">{{examInfo.finalStatusText}}</div>
+          <div class="item red-color" v-else>{{examInfo.finalStatusText}}</div>
 
           <div class="item w50">最终结果</div>
           <div class="item">{{examInfo.finalScore}}分</div>
-          <div class="item green-color" v-if="examInfo.finalStatus == 1">合格</div>
-          <div class="item red-color" v-else>不合格</div>
+          <div class="item green-color" v-if="examInfo.finalStatus == 1">{{examInfo.finalStatusText}}</div>
+          <div class="item red-color" v-else>{{examInfo.finalStatusText}}</div>
         </div>
       </div>
     </template>
